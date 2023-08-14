@@ -13,6 +13,9 @@ class AuthPage extends StatelessWidget {
       Navigator.pushNamed(context, '/register');
     }
 
+    const String _termsAndPrivacy =
+        "Al continuar, aceptas los Términos de Uso y la Política de Privacidad de GymTec.";
+
     return Scaffold(
         body: Center(
       child: Column(
@@ -40,7 +43,16 @@ class AuthPage extends StatelessWidget {
                     minimumSize:
                         MaterialStateProperty.all(const Size(200, 40))),
                 child: const Text('Registrarse')),
-            const Text('Al continuar aceptas nuestros términos y condiciones, y nuestra politica de privacidad')
+            const SizedBox(height: 20),
+            const Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Text(
+                _termsAndPrivacy,
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+                overflow: TextOverflow.clip,
+                textAlign: TextAlign.center,
+              ),
+            ),
           ]),
     ));
   }
