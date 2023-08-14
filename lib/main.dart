@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gym_tec/auth/auth.dart';
+import 'package:gym_tec/auth/login.dart';
+import 'package:gym_tec/auth/register.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +34,12 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: '/',
+      routes: {
+        '/':(context) => const AuthPage(),
+        '/login':(context) => const LoginPage(),
+        '/register': (context) => const RegisterPage(),
+      },
     );
   }
 }
