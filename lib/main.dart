@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gym_tec/auth/auth.dart';
+import 'package:gym_tec/auth/login.dart';
+import 'package:gym_tec/auth/register.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,10 +31,26 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: const ColorScheme(
+            brightness: Brightness.light,
+            primary: Colors.green,
+            onPrimary: Colors.white,
+            secondary: Colors.purple,
+            onSecondary: Colors.black,
+            error: Colors.red,
+            onError: Colors.white,
+            background: Colors.black,
+            onBackground: Colors.white,
+            surface: Colors.grey,
+            onSurface: Colors.white,),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const AuthPage(),
+        '/login': (context) => const LoginPage(),
+        '/register': (context) => const RegisterPage(),
+      },
     );
   }
 }
