@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gym_tec/components/ui/separators/context_separator.dart';
+import 'package:gym_tec/components/ui/separators/item_separator.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -33,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
                   hintText: 'example@mail.com',
                   border: OutlineInputBorder()),
             ),
-            const SizedBox(height: 10),
+            const ItemSeparator(),
             TextFormField(
               decoration: InputDecoration(
                   labelText: 'Contraseña',
@@ -46,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
                           : Icons.visibility_off))),
               obscureText: _isObscure,
             ),
-            const SizedBox(height: 20),
+            const ContextSeparator(),
             FilledButton(
               onPressed: () {},
               child: const Text('Login'),

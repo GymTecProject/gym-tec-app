@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_tec/components/ui/separators/context_separator.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -29,21 +30,21 @@ class AuthPage extends StatelessWidget {
                   child: const Image(
                       image: AssetImage('assets/images/gym_tec_ logo.jpg'))),
             ),
-            const SizedBox(height: 20),
+            const ContextSeparator(),
             FilledButton(
                 onPressed: navigateToLogin,
                 style: ButtonStyle(
                     minimumSize:
                         MaterialStateProperty.all(const Size(200, 40))),
                 child: const Text('Iniciar Sesión')),
-            const SizedBox(height: 20),
+            const ContextSeparator(),
             FilledButton(
                 onPressed: navigateToRegister,
                 style: ButtonStyle(
                     minimumSize:
                         MaterialStateProperty.all(const Size(200, 40))),
                 child: const Text('Registrarse')),
-            const SizedBox(height: 20),
+            const ContextSeparator(),
             const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
