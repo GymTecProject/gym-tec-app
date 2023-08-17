@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_tec/profile/profile.dart';
+import 'package:gym_tec/profile/measurement.dart';
 
 void main() {
   runApp(const MyApp());
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const ProfilePage(),
-      //  '/login': (context) => const LoginPage(),
+        '/measurement': (context) => const MeasurementPage(),
       //  '/register': (context) => const RegisterPage(),
       }
     );

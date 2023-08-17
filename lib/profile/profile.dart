@@ -15,18 +15,19 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: const Text('Profile'),
       ),
-      body: const AlignTopCenterColumn(),
+      body: const PageBody(),
     );
   }
 }
-class AlignTopCenterColumn extends StatefulWidget {
-  const AlignTopCenterColumn({super.key});
+
+class PageBody extends StatefulWidget {
+  const PageBody({super.key});
   @override
 
-  _AlignTopCenterColumnState createState() => _AlignTopCenterColumnState();
+  _PageBody createState() => _PageBody();
 }
 
-class _AlignTopCenterColumnState extends State<AlignTopCenterColumn>  {
+class _PageBody extends State<PageBody>  {
   String _selectedOption1 = 'Opción 1';
   String _selectedOption2 = 'Opción A';
   
@@ -49,6 +50,12 @@ class _AlignTopCenterColumnState extends State<AlignTopCenterColumn>  {
 */
   @override
   Widget build(BuildContext context) {
+
+    navigateToMeasurement() {
+      Navigator.pushNamed(context, '/measurement');
+    }
+
+
     return Align(
       alignment: Alignment.topCenter,
       child: Column(
@@ -142,7 +149,7 @@ class _AlignTopCenterColumnState extends State<AlignTopCenterColumn>  {
           ),
         SizedBox(
           height: 75,
-          child: Center(child: FilledButton(onPressed: (){}, child: const Text('Visualizar'))),
+          child: Center(child: FilledButton(onPressed: navigateToMeasurement, child: const Text('Visualizar'))),
         )],
       ),
     );
