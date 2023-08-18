@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
                 HomeButton(
                   title: 'Weekly Challenges',
                   subtitle: 'Can you complete them all?',
-                  imgPath: 'assets/images/h1.png',
+                  imgPath: 'assets/images/h1-1.png',
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -64,7 +64,7 @@ class HomePage extends StatelessWidget {
                 HomeButton(
                   title: 'Routine',
                   subtitle: 'Follow your weekly routine',
-                  imgPath: 'assets/images/h2.png',
+                  imgPath: 'assets/images/h2-1.png',
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -83,7 +83,7 @@ class HomePage extends StatelessWidget {
                 HomeButton(
                   title: 'Progress',
                   subtitle: 'See how far you\'ve gone',
-                  imgPath: 'assets/images/h3.png',
+                  imgPath: 'assets/images/h3-1.png',
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
