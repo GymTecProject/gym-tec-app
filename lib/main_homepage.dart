@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gym_tec/home_page.dart';
-import 'package:gym_tec/settings_page.dart';
+import 'package:gym_tec/homePage/home_page.dart';
+import 'package:gym_tec/homePage/settings_page.dart';
 
 void main() {
   runApp(const MyApp());

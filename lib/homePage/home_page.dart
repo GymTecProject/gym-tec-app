@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gym_tec/home_button.dart';
-import 'package:gym_tec/progress_page.dart';
-import 'package:gym_tec/routine_page.dart';
-import 'package:gym_tec/weekly_routines_page.dart';
+import 'package:gym_tec/components/ui/buttons/home_button.dart';
+import 'package:gym_tec/homePage/progress_page.dart';
+import 'package:gym_tec/homePage/routine_page.dart';
+import 'package:gym_tec/homePage/weekly_routines_page.dart';
 
 class HomePage extends StatelessWidget {
   //Variables needed
