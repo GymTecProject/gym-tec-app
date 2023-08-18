@@ -36,9 +36,9 @@ class _UserRootPageState extends State<UserRootPage> {
         ),
         bottomNavigationBar: BottomNavigationBar(
           //backgroundColor: Color.fromARGB(255, 53, 45, 45),
-          selectedItemColor: const Color.fromARGB(255, 42, 42, 42),
-          unselectedItemColor: const Color.fromARGB(255, 42, 42, 42)
-              .withOpacity(0.5), // Unselected icon and text color
+          // selectedItemColor: const Color.fromARGB(255, 42, 42, 42),
+          // unselectedItemColor: const Color.fromARGB(255, 42, 42, 42)
+          //     .withOpacity(0.5), 
           currentIndex: _currentPage,
           onTap: (int index) {
             setState(() {

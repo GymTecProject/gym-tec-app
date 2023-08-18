@@ -36,14 +36,14 @@ class AuthPage extends StatelessWidget {
                 style: ButtonStyle(
                     minimumSize:
                         MaterialStateProperty.all(const Size(200, 40))),
-                child: const Text('Iniciar Sesión')),
+                child: const Text('Iniciar Sesión', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
             const ContextSeparator(),
             FilledButton(
                 onPressed: navigateToRegister,
                 style: ButtonStyle(
                     minimumSize:
                         MaterialStateProperty.all(const Size(200, 40))),
-                child: const Text('Registrarse')),
+                child: const Text('Registrarse', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
             const ContextSeparator(),
             const Padding(
               padding: EdgeInsets.all(20.0),

@@ -11,11 +11,8 @@ class _ProfilePageState extends State<ProfilePage> {
  
   @override
   Widget build(BuildContext context){
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-      ),
-      body: const PageBody(),
+    return const Scaffold(
+      body: PageBody(),
     );
   }
 }

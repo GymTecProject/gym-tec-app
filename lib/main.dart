@@ -34,15 +34,15 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: const ColorScheme(
             brightness: Brightness.light,
-            primary: Colors.green,
-            onPrimary: Colors.white,
+            primary: Color(0xFFa2e200),
+            onPrimary: Color.fromARGB(255, 0, 0, 0),
             secondary: Colors.purple,
             onSecondary: Colors.black,
             error: Colors.red,
             onError: Colors.white,
             background: Colors.black,
             onBackground: Colors.white,
-            surface: Colors.grey,
+            surface: Color(0xFF424242),
             onSurface: Colors.white,),
         useMaterial3: true,
       ),
