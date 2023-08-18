@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_tec/auth/auth.dart';
 import 'package:gym_tec/auth/login.dart';
 import 'package:gym_tec/auth/register.dart';
+import 'package:gym_tec/homePage/user_root_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const AuthPage(),
+        '/user': (context) => const UserRootPage(),
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
       },

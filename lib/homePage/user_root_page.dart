@@ -1,47 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:gym_tec/homePage/home_page.dart';
 import 'package:gym_tec/homePage/settings_page.dart';
+import 'package:gym_tec/profile/profile.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+class UserRootPage extends StatefulWidget {
+  const UserRootPage({super.key});
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Gym Tec',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 96, 182, 39)),
-        useMaterial3: true,
-      ),
-      home: const RootPage(title: 'Home Page'),
-    );
-  }
-}
-
-class RootPage extends StatefulWidget {
-  const RootPage({super.key, required this.title});
-
-  final String title;
 
   @override
-  State<RootPage> createState() => _RootPageState();
+  State<UserRootPage> createState() => _UserRootPageState();
 }
 
-class _RootPageState extends State<RootPage> {
+class _UserRootPageState extends State<UserRootPage> {
   var _currentPage = 0;
 
   List<Widget> pages = const [
-    HomePage(),
-    HomePage(),
-    HomePage(),
-    SettingsPage()
+    HomePage(), // home
+    HomePage(), // routines
+    ProfilePage(),// profile
+    SettingsPage() //settings
   ];
 
   @override

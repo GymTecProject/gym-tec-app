@@ -18,6 +18,10 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  void onNavigateToUser() {
+    Navigator.pushNamed(context, '/user');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const ContextSeparator(),
             FilledButton(
-              onPressed: () {},
+              onPressed: onNavigateToUser,
               child: const Text('Login'),
             )
           ],

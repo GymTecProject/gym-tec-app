@@ -17,6 +17,10 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
+  void onNavigateToUser() {
+    Navigator.pushNamed(context, '/user');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     obscureText: _isObscure,
                   ),
                   const SizedBox(height: 20.0),
-                  FilledButton(onPressed: (){}, child: const Text('Registrarse')),
+                  FilledButton(onPressed: onNavigateToUser, child: const Text('Registrarse')),
                 ]),
           ),
         ));
