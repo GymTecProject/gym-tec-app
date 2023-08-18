@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gym_tec/profile/profile.dart';
-import 'package:gym_tec/profile/measurement.dart';
+import 'package:gym_tec/auth/auth.dart';
+import 'package:gym_tec/auth/login.dart';
+import 'package:gym_tec/auth/register.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,7 +31,6 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         colorScheme: const ColorScheme(
             brightness: Brightness.light,
             primary: Colors.green,
@@ -47,10 +47,10 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const ProfilePage(),
-        '/measurement': (context) => const MeasurementPage(),
-      //  '/register': (context) => const RegisterPage(),
-      }
+        '/': (context) => const AuthPage(),
+        '/login': (context) => const LoginPage(),
+        '/register': (context) => const RegisterPage(),
+      },
     );
   }
 }
