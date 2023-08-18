@@ -24,8 +24,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+    return SafeArea(
+        child: Scaffold(
       body: Center(
           child: Padding(
         padding: const EdgeInsets.all(25.0),
@@ -60,6 +60,6 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       )),
-    );
+    ));
   }
 }
