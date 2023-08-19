@@ -14,7 +14,7 @@ class AuthPage extends StatelessWidget {
       Navigator.pushNamed(context, '/register');
     }
 
-    const String _termsAndPrivacy =
+    const String termsAndPrivacy =
         "Al continuar, aceptas los Términos de Uso y la Política de Privacidad de GymTec.";
 
     return Scaffold(
@@ -28,7 +28,7 @@ class AuthPage extends StatelessWidget {
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(500),
                   child: const Image(
-                      image: AssetImage('assets/images/gym_tec_ logo.jpg'))),
+                      image: AssetImage('assets/images/gym_tec_logo.png'))),
             ),
             const ContextSeparator(),
             FilledButton(
@@ -48,7 +48,7 @@ class AuthPage extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
-                _termsAndPrivacy,
+                termsAndPrivacy,
                 style: TextStyle(fontSize: 12, color: Colors.grey),
                 overflow: TextOverflow.clip,
                 textAlign: TextAlign.center,
