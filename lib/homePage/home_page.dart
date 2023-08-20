@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/buttons/home_button.dart';
 import 'package:gym_tec/homePage/progress_page.dart';
-import 'package:gym_tec/homePage/routine_page.dart';
+import 'package:gym_tec/routines/routine_page.dart';
 import 'package:gym_tec/homePage/weekly_routines_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -69,7 +69,7 @@ class HomePage extends StatelessWidget {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return const RoutinePage();
+                          return RoutinePage();
                         },
                       ),
                     );
