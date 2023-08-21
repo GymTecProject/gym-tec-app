@@ -3,6 +3,8 @@ import 'package:gym_tec/homePage/home_page.dart';
 import 'package:gym_tec/homePage/settings_page.dart';
 import 'package:gym_tec/profile/profile.dart';
 
+import 'package:gym_tec/routines/routine_page.dart';
+
 class UserRootPage extends StatefulWidget {
   const UserRootPage({super.key});
 
@@ -13,11 +15,11 @@ class UserRootPage extends StatefulWidget {
 class _UserRootPageState extends State<UserRootPage> {
   var _currentPage = 0;
 
-  List<Widget> pages = const [
-    HomePage(), // home
-    HomePage(), // routines
-    ProfilePage(), // profile
-    SettingsPage() //settings
+  List<Widget> pages = [
+    const HomePage(), // home
+    RoutinePage(), // routines
+    const ProfilePage(), // profile
+    const SettingsPage() //settings
   ];
 
   @override

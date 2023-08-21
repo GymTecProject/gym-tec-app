@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/buttons/RoutineButton.dart';
+import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/routines/routine_data.dart';
 import 'package:gym_tec/routines/routine_daY.dart';
 
 class RoutinePage extends StatelessWidget {
-  RoutinePage({Key? key}) : super(key: key);
+  RoutinePage({super.key});
 
   static const String date = 'MONDAY, SEPTEMBER 11';
 
@@ -21,10 +22,10 @@ class RoutinePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         // Aquí puedes personalizar el AppBar según tus necesidades
-        title: Text('Your daily routines:'),
+        title: const Text('Your daily routines:'),
         // Agrega un botón de regreso en la AppBar
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             // Agrega aquí la lógica para regresar a la pantalla de inicio
             // Puedes utilizar Navigator.pop() para regresar a la pantalla anterior
@@ -60,8 +61,8 @@ class RoutinePage extends StatelessWidget {
               child: ListView.separated(
                 itemCount: routines.length,
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                separatorBuilder: (context, index) => SizedBox(height: 16.0), // Espacio entre botones
+                physics: const NeverScrollableScrollPhysics(),
+                separatorBuilder: (context, index) => const ItemSeparator(), // Espacio entre botones
                 itemBuilder: (BuildContext context, int index) {
                   return RoutineButton(
                     title: routines[index].title,
