@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../components/ui/buttons/action_btn.dart';
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -84,9 +86,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 obscureText: _isObscure,
               ),
               const SizedBox(height: 20.0),
-              FilledButton(
-                  onPressed: onNavigateToUser,
-                  child: const Text('Registrarse')),
+              ActionBtn(title: 'Registrarse', onPressed: onNavigateToUser, fontWeight: FontWeight.bold),
             ]),
       ),
     )));

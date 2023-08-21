@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gym_tec/components/ui/buttons/home_button.dart';
+import 'package:gym_tec/components/ui/buttons/card_btn.dart';
+import 'package:gym_tec/components/ui/padding/content_padding.dart';
+import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/homePage/progress_page.dart';
 import 'package:gym_tec/routines/routine_page.dart';
 import 'package:gym_tec/homePage/weekly_routines_page.dart';
@@ -11,7 +13,28 @@ class HomePage extends StatelessWidget {
 
   static const double spaceBetweenButtons = 20.0;
 
-  const HomePage({Key? key}) : super(key: key);
+  static const cardData = [
+    {
+      'title': 'Weekly Challenges',
+      'subtitle': 'Can you complete them all?',
+      'imgPath': 'assets/images/h1-1.png',
+      'page': WeeklyRoutines(),
+    },
+    {
+      'title': 'Routine',
+      'subtitle': 'Follow your weekly routine',
+      'imgPath': 'assets/images/h2-1.png',
+      'page': RoutinePage(),
+    },
+    {
+      'title': 'Progress',
+      'subtitle': 'See how far you\'ve gone',
+      'imgPath': 'assets/images/h3-1.png',
+      'page': ProgressPage(),
+    },
+  ];
+
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +53,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
           const Padding(
-            padding: EdgeInsets.only(left: 15.0, bottom: 50.0),
+            padding: EdgeInsets.only(left: 15.0),
             child: Text(
               'Hi, $firstName!',
               style: TextStyle(
@@ -39,62 +62,32 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 50),
           Center(
-            child: Column(
-              children: [
-                HomeButton(
-                  title: 'Weekly Challenges',
-                  subtitle: 'Can you complete them all?',
-                  imgPath: 'assets/images/h1-1.png',
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return const WeeklyRoutines();
-                        },
-                      ),
-                    );
-                  },
-                ),
-
-                const SizedBox(
-                    height:
-                        spaceBetweenButtons), // Add spacing between the buttons
-
-                HomeButton(
-                  title: 'Routine',
-                  subtitle: 'Follow your weekly routine',
-                  imgPath: 'assets/images/h2-1.png',
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return RoutinePage();
-                        },
-                      ),
-                    );
-                  },
-                ),
-
-                const SizedBox(
-                    height:
-                        spaceBetweenButtons), // Add spacing between the buttons
-
-                HomeButton(
-                  title: 'Progress',
-                  subtitle: 'See how far you\'ve gone',
-                  imgPath: 'assets/images/h3-1.png',
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return const ProgressPage();
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ],
+            child: ContentPadding(
+              child: Column(
+                children: [
+                  ListView.separated(
+                    itemCount: cardData.length,
+                    shrinkWrap: true,
+                    separatorBuilder: (context, index) => const ContextSeparator(),
+                    itemBuilder: (context, index) => CardBtn(
+                      title: cardData[index]['title'] as String,
+                      subtitle: cardData[index]['subtitle'] as String,
+                      imgPath: cardData[index]['imgPath'] as String,
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return cardData[index]['page'] as Widget;
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ],

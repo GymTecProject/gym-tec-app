@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_tec/components/ui/buttons/action_btn.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 
@@ -53,10 +54,7 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: _isObscure,
             ),
             const ContextSeparator(),
-            FilledButton(
-              onPressed: onNavigateToUser,
-              child: const Text('Login'),
-            )
+            ActionBtn(title: 'Iniciar Sesión', onPressed: onNavigateToUser, fontWeight: FontWeight.bold),
           ],
         ),
       )),

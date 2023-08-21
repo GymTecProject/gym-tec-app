@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gym_tec/components/ui/buttons/action_btn.dart';
+import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 
 class AuthPage extends StatelessWidget {
@@ -23,27 +25,26 @@ class AuthPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(20.0),
+            ContentPadding(
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(500),
                   child: const Image(
                       image: AssetImage('assets/images/gym_tec_logo.png'))),
             ),
             const ContextSeparator(),
-            FilledButton(
-                onPressed: navigateToLogin,
-                style: ButtonStyle(
-                    minimumSize:
-                        MaterialStateProperty.all(const Size(200, 40))),
-                child: const Text('Iniciar Sesión', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+            ActionBtn(
+              title: 'Iniciar Sesión',
+              onPressed: navigateToLogin,
+              fontWeight: FontWeight.bold,
+              style: ButtonStyle(minimumSize: MaterialStateProperty.all(const Size(200, 40)))
+            ),
             const ContextSeparator(),
-            FilledButton(
-                onPressed: navigateToRegister,
-                style: ButtonStyle(
-                    minimumSize:
-                        MaterialStateProperty.all(const Size(200, 40))),
-                child: const Text('Registrarse', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+            ActionBtn(
+              title: 'Registrarse',
+              onPressed: navigateToRegister,
+              fontWeight: FontWeight.bold,
+              style: ButtonStyle(minimumSize: MaterialStateProperty.all(const Size(200, 40)))
+            ),
             const ContextSeparator(),
             const Padding(
               padding: EdgeInsets.all(20.0),
