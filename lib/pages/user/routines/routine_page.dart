@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
-import 'package:gym_tec/routines/routine_data.dart';
-import 'package:gym_tec/routines/routine_day.dart';
+import 'package:gym_tec/pages/user/routines/routine_data.dart';
+import 'package:gym_tec/pages/user/routines/routine_day.dart';
 
 class RoutinePage extends StatelessWidget {
   const RoutinePage({super.key});
