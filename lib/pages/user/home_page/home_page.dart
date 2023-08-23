@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
-import 'package:gym_tec/homePage/progress_page.dart';
-import 'package:gym_tec/routines/routine_page.dart';
-import 'package:gym_tec/homePage/weekly_routines_page.dart';
+import 'package:gym_tec/pages/user/home_page/progress_page.dart';
+import 'package:gym_tec/pages/user/routines/routine_page.dart';
+import 'package:gym_tec/pages/user/home_page/weekly_routines_page.dart';
 
 class HomePage extends StatelessWidget {
   //Variables needed
