@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "65200996131",
+    "project_id": "gymtec-2023",
+    "storage_bucket": "gymtec-2023.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:65200996131:android:6e17938d71b210d505d696",
+        "android_client_info": {
+          "package_name": "com.example.gym_tec"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDN-z_1Vjxzt_f0aoWU2XwXT9nAkaNgGNA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

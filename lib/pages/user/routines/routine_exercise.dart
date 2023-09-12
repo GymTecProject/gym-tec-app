@@ -6,6 +6,6 @@ class RoutineExercise extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RoutineExercise();
+    return const RoutineExercise();
   }
 }

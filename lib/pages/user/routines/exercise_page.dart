@@ -22,7 +22,7 @@ class ExercisePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Exercise Details'),
+        title: const Text('Exercise Details'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -31,34 +31,34 @@ class ExercisePage extends StatelessWidget {
           children: [
             Text(
               'Title: $title',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
               'Subtitle: $subtitle',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 20), // Espacio entre los elementos
+            const SizedBox(height: 20), // Espacio entre los elementos
             Image.asset(
               imgPath,
               width: double.infinity,
               height: 200,
               fit: BoxFit.cover,
             ),
-            SizedBox(height: 20), // Espacio entre la imagen y el siguiente texto
+            const SizedBox(height: 20), // Espacio entre la imagen y el siguiente texto
             Text(
               'URL: $url',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
             Text(
               'Comment: $comment',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
             Text(
               'Category: $category',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
           ],
         ),
