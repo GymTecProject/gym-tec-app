@@ -34,28 +34,31 @@ class _RegisterPageState extends State<RegisterPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               TextFormField(
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
+                decoration:  InputDecoration(
+                    border: const OutlineInputBorder(),
                     labelText: 'Nombre',
-                    hintText: 'Alex'),
+                    hintText: 'Alex',
+                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.surface)),
               ),
               const SizedBox(
                 height: 10.0,
               ),
               TextFormField(
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
                     labelText: 'Apellido',
-                    hintText: 'Gonzalez'),
+                    hintText: 'Gonzalez',
+                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.surface)),
               ),
               const SizedBox(
                 height: 10.0,
               ),
               TextFormField(
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
                     labelText: 'Correo',
-                    hintText: 'example@email.com'),
+                    hintText: 'example@email.com',
+                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.surface)),
               ),
               const SizedBox(
                 height: 10.0,
@@ -64,6 +67,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: InputDecoration(
                     labelText: 'Contraseña',
                     hintText: 'Enter your password',
+                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.surface),
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
                         onPressed: _hideText,
@@ -77,6 +81,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: InputDecoration(
                     labelText: 'Confirmar contraseña',
                     hintText: 'Enter your password',
+                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.surface),
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
                         onPressed: _hideText,

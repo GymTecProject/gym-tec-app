@@ -11,6 +11,6 @@ install firebase cli
 `npm install -g firebase-tools`
 
 ### run emulators
-run in the terminal:
+to start the app in debug mode make shure to use the emulators as follows:
 `firebase emulators:start`
 
