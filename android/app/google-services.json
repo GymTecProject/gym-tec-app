@@ -12,7 +12,12 @@
           "package_name": "com.example.gym_tec"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "65200996131-ailo6ngjrhtgtget8f7j3spfrf8tjoq5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDN-z_1Vjxzt_f0aoWU2XwXT9nAkaNgGNA"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "65200996131-ailo6ngjrhtgtget8f7j3spfrf8tjoq5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "65200996131-04peih50iv4gv5fdrmjie6ic4adhk9lm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gymTec"
+              }
+            }
+          ]
         }
       }
     }

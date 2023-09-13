@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/buttons/action_btn.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
+import 'package:gym_tec/interfaces/auth_interface.dart';
+import 'package:gym_tec/models/users/user_login_form.dart';
+import 'package:gym_tec/services/dependency_manager.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,7 +14,20 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool _isObscure = true;
+  late AuthInterface _authService;
+  late bool _isObscure;
+  late UserLoginForm _userLoginForm;
+
+  @override
+  void initState() {
+    super.initState();
+    _isObscure = true;
+    _authService = DependencyManager.authService;
+    _userLoginForm = UserLoginForm(
+      email: '',
+      password: '',
+    );
+  }
 
   void _hideText() {
     setState(() {
@@ -19,8 +35,11 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  void onNavigateToUser() {
-    Navigator.pushNamed(context, '/user');
+  onLogin() async {
+    print('${_userLoginForm.email} ${_userLoginForm.password}');
+    var cred = await _authService.emailAndPasswordLogin(_userLoginForm);
+    if (!mounted) return;
+    if (cred != null) Navigator.pushNamed(context, '/user');
   }
 
   @override
@@ -35,16 +54,22 @@ class _LoginPageState extends State<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             TextFormField(
-              decoration: const InputDecoration(
+              onChanged: (value) => _userLoginForm.email = value,
+              decoration: InputDecoration(
                   labelText: 'Correo electrónico',
                   hintText: 'example@mail.com',
-                  border: OutlineInputBorder()),
+                  hintStyle:
+                      TextStyle(color: Theme.of(context).colorScheme.surface),
+                  border: const OutlineInputBorder()),
             ),
             const ItemSeparator(),
             TextFormField(
+              onChanged: (value) => _userLoginForm.password = value,
               decoration: InputDecoration(
                   labelText: 'Contraseña',
                   hintText: 'Ingrese su contraseña',
+                  hintStyle:
+                      TextStyle(color: Theme.of(context).colorScheme.surface),
                   border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
                       onPressed: _hideText,
@@ -54,7 +79,10 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: _isObscure,
             ),
             const ContextSeparator(),
-            ActionBtn(title: 'Iniciar Sesión', onPressed: onNavigateToUser, fontWeight: FontWeight.bold),
+            ActionBtn(
+                title: 'Iniciar Sesión',
+                onPressed: onLogin,
+                fontWeight: FontWeight.bold),
           ],
         ),
       )),
