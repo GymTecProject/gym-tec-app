@@ -127,22 +127,35 @@ class _SearchUserState extends State<SearchUser> {
             Expanded(
               child: ListView.builder(
                 itemCount: _foundUsers.length,
-                itemBuilder: (context, index) => GestureDetector(
-                  onTap: () {
-                    openDialog(_foundUsers[index]);
-                  },
-                  child: Card(
-                    key: ValueKey(_foundUsers[index]["id"]),
-                    color: Theme.of(context).colorScheme.inversePrimary,
-                    elevation: 4,
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    child: ListTile(
-                      //leading: Text(_foundUsers[index]['id'].toString()),
-                      title: Text(_foundUsers[index]['name']),
-                      subtitle: Text(
-                          "Phone: ${_foundUsers[index]['phone'].toString()} - Email: ${_foundUsers[index]['email']}"),
-                    ),
+                itemBuilder: (context, index) => ExpansionTile(
+                  key: ValueKey(_foundUsers[index]["id"]),
+                  title: Text(_foundUsers[index]['name']),
+                  subtitle: Text(
+                    "Phone: ${_foundUsers[index]['phone'].toString()} - Email: ${_foundUsers[index]['email']}",
                   ),
+                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text("Hi"), // Add your "Hi" text here
+                    ),
+                    Column(
+                      children: [
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text('Routine'),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              openDialog(_foundUsers[index]);
+                            },
+                            child: const Text('Measurements')),
+                      ],
+                    )
+                  ],
                 ),
               ),
             ),
@@ -160,17 +173,12 @@ class _SearchUserState extends State<SearchUser> {
             const SizedBox(height: 10),
             Text("Phone: ${s['phone']}"),
           ]),
-          actions: [
+          actions: const [
             Row(
               children: [
-                TextButton(
-                  onPressed: () {},
-                  child: const Text('Routine'),
-                ),
-                const SizedBox(
+                SizedBox(
                   width: 20,
                 ),
-                TextButton(onPressed: () {}, child: const Text('Measurements')),
               ],
             )
           ],
