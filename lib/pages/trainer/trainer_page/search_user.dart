@@ -8,6 +8,7 @@ class SearchUser extends StatefulWidget {
 }
 
 class _SearchUserState extends State<SearchUser> {
+  //variables
   final List<Map<String, dynamic>> _allUsers = [
     // UserPublicData
     {
@@ -71,6 +72,9 @@ class _SearchUserState extends State<SearchUser> {
       "email": "becky@example.com"
     },
   ];
+
+  //age, gender, role, medical conditions, objective, expiration date
+  //Dialog -> height, water, protein, minerals, fat, weight, skeletalMuscleMass, imc, fatPercentage
 
   List<Map<String, dynamic>> _foundUsers = [];
   @override
@@ -137,7 +141,21 @@ class _SearchUserState extends State<SearchUser> {
                   children: [
                     const Padding(
                       padding: EdgeInsets.all(16.0),
-                      child: Text("Hi"), // Add your "Hi" text here
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Text("Age: 21"),
+                              Text("Gender: Male"),
+                              Text("Role: Client"),
+                            ],
+                          ),
+                          Text("Medical Conditions: None"),
+                          Text("Objective: Hypertrophy"),
+                          Text("Expiration Date: 20/10/2023"),
+                        ],
+                      ),
                     ),
                     Column(
                       children: [
@@ -169,9 +187,18 @@ class _SearchUserState extends State<SearchUser> {
         context: context,
         builder: (context) => AlertDialog(
           title: Text("Client: ${s['name']}"),
-          content: Column(mainAxisSize: MainAxisSize.min, children: [
-            const SizedBox(height: 10),
-            Text("Phone: ${s['phone']}"),
+          content: const Column(mainAxisSize: MainAxisSize.min, children: [
+            //Text("User added measurements"),
+            SizedBox(height: 10),
+            Text("Height: "),
+            Text("Weight: "),
+            Text("Water: "),
+            Text("Protein: "),
+            Text("Minerals: "),
+            Text("Fat: "),
+            Text("Skeletal Muscle Mass: "),
+            Text("IMC: "),
+            Text("Fat Percentage: "),
           ]),
           actions: const [
             Row(
