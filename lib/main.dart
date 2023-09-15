@@ -10,6 +10,7 @@ import 'package:gym_tec/pages/trainer/trainer_root_page.dart';
 import 'package:gym_tec/pages/user/user_root_page.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'color_schemes.g.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -41,22 +42,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: const ColorScheme(
-          brightness: Brightness.light,
-          primary: Color(0xFFA7F502),
-          onPrimary: Color(0xFF000000),
-          secondary: Color(0xFFFD497C),
-          onSecondary: Colors.black,
-          error: Colors.red,
-          onError: Color(0xFFFFFFFF),
-          background: Color(0xFF2F3437),
-          onBackground: Color(0xFFFFFFFF),
-          surface: Color(0xFFC0C0C0),
-          onSurface: Color(0xFFFFFFFF),
-        ),
-        useMaterial3: true,
-      ),
+      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+      darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+      themeMode: ThemeMode.system,
+    
       initialRoute: '/',
       routes: {
         '/': (context) => const AuthPage(),

@@ -5,12 +5,11 @@ import '../../models/users/user_login_form.dart';
 
 class AuthFirebase implements AuthInterface {
   @override
-  Future<UserCredential?> emailAndPasswordLogin(UserLoginForm userLoginForm) async {
+  Future<UserCredential?> emailAndPasswordLogin(
+      UserLoginForm userLoginForm) async {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: userLoginForm.email, 
-          password: userLoginForm.password
-        );
+          email: userLoginForm.email, password: userLoginForm.password);
       return credential;
     } on FirebaseAuthException catch (error) {
       if (error.code == 'user-not-found') {
@@ -33,6 +32,11 @@ class AuthFirebase implements AuthInterface {
 
   @override
   void emailAndPasswordRegister() {}
-  
+
+  @override
+  void logout() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
   const AuthFirebase();
 }
