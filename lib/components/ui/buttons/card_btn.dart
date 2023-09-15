@@ -18,7 +18,7 @@ class CardBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ButtonStyle defaultStyle = ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xFF424242), // Hex color #424242
+      // backgroundColor: const Color(0xFF424242), // Hex color #424242
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0), // Curved edges
       ),
@@ -55,7 +55,6 @@ class CardBtn extends StatelessWidget {
                 child: Text(
                   title,
                   style: const TextStyle(
-                    color: Colors.white,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -65,7 +64,7 @@ class CardBtn extends StatelessWidget {
               Text(
                 subtitle ?? '',
                 style: const TextStyle(
-                  color: Colors.grey,
+                  // color: Colors.grey,
                   fontSize: 14,
                 ),
               ),

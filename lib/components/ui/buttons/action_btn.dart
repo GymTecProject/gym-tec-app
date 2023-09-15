@@ -8,6 +8,7 @@ class ActionBtn extends StatelessWidget {
     this.style,
     this.fontWeight = FontWeight.normal,
     this.fontSize = 16.0,
+    this.disabled = false,
   });
 
   final String title;
@@ -15,9 +16,10 @@ class ActionBtn extends StatelessWidget {
   final ButtonStyle? style;
   final FontWeight? fontWeight;
   final double? fontSize;
+  final bool disabled;
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton(onPressed: onPressed, style: style, child: Text(title, style: TextStyle(fontSize: fontSize, fontWeight: fontWeight)));
+    return FilledButton(onPressed: disabled? null : onPressed, style: style, child: Text(title, style: TextStyle(fontSize: fontSize, fontWeight: fontWeight)));
   }
 }

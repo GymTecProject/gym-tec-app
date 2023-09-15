@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gym_tec/components/ui/buttons/action_btn.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
@@ -6,6 +7,12 @@ import 'package:gym_tec/components/ui/separators/context_separator.dart';
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
 
+// ClipRRect(
+//                   borderRadius: BorderRadius.circular(500),
+//                   child: Image(
+//                       image: Theme.of(context).brightness == Brightness.light
+//                           ? const SvgPicture.asset('assets/images/logo-gymtec-fondo-claro.svg')
+//                           : const AssetImage('assets/images/logo-gymtec-fondo-oscuro.svg'))),
   @override
   Widget build(BuildContext context) {
     navigateToLogin() {
@@ -26,10 +33,9 @@ class AuthPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             ContentPadding(
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(500),
-                  child: const Image(
-                      image: AssetImage('assets/images/gym_tec_logo.png'))),
+              child: Theme.of(context).brightness == Brightness.light
+                  ? SvgPicture.asset('assets/images/logo-gymtec-fondo-claro.svg', height: MediaQuery.of(context).size.height * 0.4)
+                  : SvgPicture.asset('assets/images/logo-gymtec-fondo-oscuro.svg', height: MediaQuery.of(context).size.height * 0.4),
             ),
             const ContextSeparator(),
             ActionBtn(
