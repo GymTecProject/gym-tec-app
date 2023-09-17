@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_tec/pages/trainer/CRUD_routine/create_routine.dart';
 
 class SearchUser extends StatefulWidget {
   const SearchUser({super.key});
@@ -160,7 +161,15 @@ class _SearchUserState extends State<SearchUser> {
                     Column(
                       children: [
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return const CreateRoutinePage();
+                            },
+                          ),
+                        );
+                      },
                           child: const Text('Routine'),
                         ),
                         const SizedBox(
