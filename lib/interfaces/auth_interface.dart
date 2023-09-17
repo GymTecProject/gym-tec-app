@@ -7,5 +7,6 @@ abstract class AuthInterface {
   void facebookLogin();
   void appleLogin();
   void emailAndPasswordRegister();
+  void logout();
 }
 

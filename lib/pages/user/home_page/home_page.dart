@@ -42,21 +42,22 @@ class HomePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(15.0),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
             child: Text(
               date,
               style: TextStyle(
-                color: Colors.grey,
+                color: Theme.of(context).colorScheme.onBackground,
                 fontSize: 16,
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(left: 15.0),
+           Padding(
+            padding: const EdgeInsets.only(left: 15.0),
             child: Text(
               'Hi, $firstName!',
               style: TextStyle(
+                color: Theme.of(context).colorScheme.onBackground,
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
               ),

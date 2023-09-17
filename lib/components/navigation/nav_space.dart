@@ -22,19 +22,16 @@ class _NavSpaceState extends State<NavSpace> {
                 return widget.tabs[_currentPage].widget;
               },
             ),
-            bottomNavigationBar: BottomNavigationBar(
-              selectedItemColor: const Color.fromARGB(255, 255, 255, 255),
-              unselectedItemColor: const Color.fromARGB(255, 155, 155, 155).withOpacity(0.5),
-              currentIndex: _currentPage,
-              onTap: (int index) {
-                setState(() {
-                  _currentPage = index;
-                });
-              },
-              items: [
-                for (var tab in widget.tabs)
-                  BottomNavigationBarItem(icon: tab.icon, label: tab.label),
+            bottomNavigationBar: NavigationBar(
+              destinations: [
+                  for (var tab in widget.tabs)
+                  NavigationDestination(icon: tab.icon, label: tab.label),
               ],
+              onDestinationSelected: (value) => setState(() {
+                _currentPage = value;
+              }),
+              selectedIndex: _currentPage,
+
             )));
   }
 }
