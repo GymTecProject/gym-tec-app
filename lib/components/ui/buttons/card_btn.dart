@@ -40,10 +40,10 @@ class CardBtn extends StatelessWidget {
         Container(
             alignment: Alignment.bottomRight,
             clipBehavior: Clip.hardEdge,
-            decoration:
-                const BoxDecoration(borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(12.0),
-                )),
+            decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+              bottomRight: Radius.circular(12.0),
+            )),
             child: img),
         Align(
           alignment: Alignment.topLeft,

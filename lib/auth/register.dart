@@ -19,7 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void onNavigateToUser() {
-    Navigator.pushNamed(context, '/user');
+    Navigator.pushNamed(context, '/trainer');
   }
 
   @override

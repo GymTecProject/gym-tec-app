@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gym_tec/components/ui/buttons/action_fab.dart';
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
+import 'package:gym_tec/components/ui/buttons/expandable_fab.dart';
+import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/pages/trainer/CRUD_routine/modify_collection.dart';
-
-import '../../../components/ui/buttons/action_btn.dart';
 
 class CreateRoutinePage extends StatefulWidget {
   const CreateRoutinePage({super.key});
@@ -15,6 +16,41 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
   //Variables
   List<Widget> buttons = [];
 
+  void addCollection() {
+    setState(() {
+      if (buttons.length < 7) {
+        final buttonName = 'Colección ${buttons.length + 1}';
+        buttons.add(
+          CardBtn(
+            title: buttonName,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ModifyCollectionPage(buttonName: buttonName),
+                ),
+              );
+            },
+          ),
+        );
+      }
+    });
+  }
+
+  void removeCollection() {
+    setState(() {
+      if (buttons.isNotEmpty) {
+        buttons.removeLast();
+      }
+    });
+  }
+
+  void saveRoutine() {
+    bool saveState = true; // firestore service call
+    Navigator.pop(context, saveState);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,88 +58,59 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
         title: const Text(
           'Crear Rutina',
           style: TextStyle(
-            color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor:
-            Colors.transparent,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+      body: ContentPadding(
         child: Column(
-          children: [    
-            Expanded(
+          children: [
+            Visibility(
+                visible: buttons.isEmpty,
+                child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(children: [
+                      const TextSpan(
+                        text: 'No hay colecciones creadas, presiona ',
+                      ),
+                      WidgetSpan(
+                          child: Icon(Icons.edit,
+                              size: 16,
+                              color: Theme.of(context).colorScheme.primary)),
+                      const TextSpan(text: ' para crear una nueva')
+                    ]))),
+            Flexible(
               child: ListView.builder(
+                shrinkWrap: true,
                 itemCount: buttons.length + 1,
                 itemBuilder: (context, index) {
-                  if (index == buttons.length) {
-                    return Visibility(
-                      visible: buttons.length < 7,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: ActionBtn(
-                          title: '+',
-                          onPressed: () {
-                            setState(() {
-                              if (buttons.length < 7) {
-                                final buttonName = 'Colección ${buttons.length + 1}';
-                                buttons.add(
-                                  CardBtn(
-                                    title: buttonName,
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ModifyCollectionPage(buttonName: buttonName),
-                                        ),
-                                      );
-                                    },
-                                    //child: Padding(
-                                    //  padding: const EdgeInsets.symmetric(vertical: 12.0),
-                                    //  child: Text(
-                                    //    'Colección ${buttons.length + 1}',
-                                    //    style: const TextStyle(fontSize: 24.0),
-                                    //  ),
-                                    //),
-                                  ),
-                                );
-                              }
-                            });
-                          },
-                          //child: const Padding(
-                          //  padding: EdgeInsets.symmetric(vertical: 12.0),
-                          //  child: Icon(Icons.add),
-                          //),
-                        fontSize: 24,),
-                      ),
+                  if (index != buttons.length) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: buttons[index],
                     );
                   }
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: buttons[index],
-                  );
+                  return null;
                 },
-              )
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20.0),
-              /*child: ElevatedButton(
-                onPressed: () {
-                  // save logic
-                },
-                child: const Text(
-                  'Guardar',
-                  style: TextStyle(fontSize: 24.0),
-                ),
-              ),*/
-              child: ActionBtn(title: 'Guardar', onPressed: () {
-                  // save logic
-              }, fontSize: 24, )
-            ),
+              ),
+            )
           ],
+        ),
       ),
-    ),
+      floatingActionButton: ExpandableFab(distance: 100, children: [
+        ActionFab(
+          onPressed: saveRoutine,
+          icon: const Icon(Icons.save),
+        ),
+        ActionFab(
+          onPressed: removeCollection,
+          icon: const Icon(Icons.delete),
+        ),
+        ActionFab(
+          onPressed: addCollection,
+          icon: const Icon(Icons.add),
+        )
+      ]),
     );
   }
 }

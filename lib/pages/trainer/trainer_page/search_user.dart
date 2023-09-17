@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gym_tec/components/ui/padding/content_padding.dart';
+import 'package:gym_tec/components/ui/separators/context_separator.dart';
+import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/pages/trainer/CRUD_routine/create_routine.dart';
 
 class SearchUser extends StatefulWidget {
@@ -100,19 +103,35 @@ class _SearchUserState extends State<SearchUser> {
     });
   }
 
+  void _navigateToCreateRoutine() async {
+    dynamic state = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const CreateRoutinePage(),
+        ));
+    if (!mounted) return;
+    if (state == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Rutina creada exitosamente /falta integrar/'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'RU Clients',
+          'Clientes',
           style: TextStyle(
-            color: Colors.white,
+            // color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor:
-            Colors.transparent, // .of(context).colorScheme.inversePrimary,
+        //backgroundColor:   Colors.transparent, // .of(context).colorScheme.inversePrimary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -121,68 +140,90 @@ class _SearchUserState extends State<SearchUser> {
             const SizedBox(
               height: 10,
             ),
-            TextField(
-              onChanged: (value) => _runFilter(value),
-              decoration: const InputDecoration(
-                  labelText: 'Search Clients', suffixIcon: Icon(Icons.search)),
+            SearchAnchor(
+              builder: (context, controller) => SearchBar(
+                hintText: 'Buscar Clientes',
+                padding: const MaterialStatePropertyAll<EdgeInsets>(
+                    EdgeInsets.symmetric(horizontal: 16.0)),
+                onChanged: ((value) => _runFilter(value)),
+                trailing: const <Widget>[Icon(Icons.search)],
+              ),
+              suggestionsBuilder:
+                  (BuildContext context, SearchController controller) {
+                return List<ListTile>.generate(5, (index) {
+                  final String item = 'item $index';
+                  return ListTile(
+                    title: Text(item),
+                    onTap: () {
+                      setState(() {
+                        controller.closeView(item);
+                      });
+                    },
+                  );
+                });
+              },
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            // TextField(
+            //   onChanged: (value) => _runFilter(value),
+            //   decoration: const InputDecoration(
+            //       labelText: 'Search Clients', suffixIcon: Icon(Icons.search)),
+            // ),
+            const ContextSeparator(),
             Expanded(
               child: ListView.builder(
                 itemCount: _foundUsers.length,
-                itemBuilder: (context, index) => ExpansionTile(
-                  key: ValueKey(_foundUsers[index]["id"]),
-                  title: Text(_foundUsers[index]['name']),
-                  subtitle: Text(
-                    "Phone: ${_foundUsers[index]['phone'].toString()} - Email: ${_foundUsers[index]['email']}",
-                  ),
-                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text("Age: 21"),
-                              Text("Gender: Male"),
-                              Text("Role: Client"),
-                            ],
-                          ),
-                          Text("Medical Conditions: None"),
-                          Text("Objective: Hypertrophy"),
-                          Text("Expiration Date: 20/10/2023"),
-                        ],
-                      ),
+                itemBuilder: (context, index) => Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: ExpansionTile(
+                    key: ValueKey(_foundUsers[index]["id"]),
+                    title: Text(_foundUsers[index]['name']),
+                    subtitle: Text(
+                      "Phone: ${_foundUsers[index]['phone'].toString()} - Email: ${_foundUsers[index]['email']}",
                     ),
-                    Column(
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return const CreateRoutinePage();
-                            },
-                          ),
-                        );
-                      },
-                          child: const Text('Routine'),
+                    shape: const Border(),
+                    // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text("Age: 21"),
+                                Text("Gender: Male"),
+                                Text("Role: Client"),
+                              ],
+                            ),
+                            Text("Medical Conditions: None"),
+                            Text("Objective: Hypertrophy"),
+                            Text("Expiration Date: 20/10/2023"),
+                          ],
                         ),
-                        const SizedBox(
-                          width: 20,
+                      ),
+                      ContentPadding(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            IconButton.filledTonal(
+                              icon: const Icon(Icons.straighten),
+                              tooltip: 'Ver medidas',
+                              onPressed: () {
+                                openDialog(_foundUsers[index]);
+                              },
+                              // child: const Text('Measurements')
+                            ),
+                            const ItemSeparator(),
+                            IconButton.filledTonal(
+                              icon: const Icon(Icons.fitness_center),
+                              tooltip: 'Crear rutina',
+                              onPressed: _navigateToCreateRoutine,
+                            ),
+                          ],
                         ),
-                        TextButton(
-                            onPressed: () {
-                              openDialog(_foundUsers[index]);
-                            },
-                            child: const Text('Measurements')),
-                      ],
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
