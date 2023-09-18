@@ -12,5 +12,5 @@ install firebase cli
 
 ### run emulators
 to start the app in debug mode make shure to use the emulators as follows:
-`firebase emulators:start`
+`firebase emulators:start --import emulator_data`
 

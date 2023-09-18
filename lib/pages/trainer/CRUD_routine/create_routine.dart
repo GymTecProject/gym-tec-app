@@ -70,14 +70,20 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
                 child: RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(children: [
-                      const TextSpan(
-                        text: 'No hay colecciones creadas, presiona ',
-                      ),
+                      TextSpan(
+                          text: 'No hay colecciones creadas, presiona ',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          )),
                       WidgetSpan(
                           child: Icon(Icons.edit,
                               size: 16,
                               color: Theme.of(context).colorScheme.primary)),
-                      const TextSpan(text: ' para crear una nueva')
+                      TextSpan(
+                          text: ' para crear una nueva',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ))
                     ]))),
             Flexible(
               child: ListView.builder(

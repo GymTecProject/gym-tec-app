@@ -7,12 +7,6 @@ import 'package:gym_tec/components/ui/separators/context_separator.dart';
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
 
-// ClipRRect(
-//                   borderRadius: BorderRadius.circular(500),
-//                   child: Image(
-//                       image: Theme.of(context).brightness == Brightness.light
-//                           ? const SvgPicture.asset('assets/images/logo-gymtec-fondo-claro.svg')
-//                           : const AssetImage('assets/images/logo-gymtec-fondo-oscuro.svg'))),
   @override
   Widget build(BuildContext context) {
     navigateToLogin() {

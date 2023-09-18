@@ -45,7 +45,6 @@ class TrainerPage extends StatelessWidget {
             child: Text(
               '$userType\'s Tab',
               style: TextStyle(
-                color: Colors.white,
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
               ),

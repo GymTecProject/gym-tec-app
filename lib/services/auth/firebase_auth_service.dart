@@ -1,16 +1,30 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
+import 'package:gym_tec/interfaces/database_interface.dart';
+import 'package:gym_tec/models/users/user_data_private.dart';
+import 'package:gym_tec/services/dependency_manager.dart';
 
 import '../../models/users/user_login_form.dart';
 
 class AuthFirebase implements AuthInterface {
+  final DatabaseInterface dbService = DependencyManager.databaseService;
+
   @override
-  Future<UserCredential?> emailAndPasswordLogin(
+  Future<AccountType?> emailAndPasswordLogin(
       UserLoginForm userLoginForm) async {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: userLoginForm.email, password: userLoginForm.password);
-      return credential;
+
+      String? userId = credential.user?.uid;
+      if (userId == null) return null;
+
+      UserPrivateData? userPrivateData =
+          await dbService.getUserPrivateData(userId);
+      if (userPrivateData == null) return null;
+
+      return userPrivateData.accountType;
+
     } on FirebaseAuthException catch (error) {
       if (error.code == 'user-not-found') {
         print('No user found for that email.');
@@ -38,5 +52,5 @@ class AuthFirebase implements AuthInterface {
     await FirebaseAuth.instance.signOut();
   }
 
-  const AuthFirebase();
+  AuthFirebase();
 }
