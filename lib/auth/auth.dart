@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gym_tec/components/ui/buttons/action_btn.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 
-class AuthPage extends StatelessWidget {
+
+class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
 
   @override
+  State<AuthPage> createState() => _AuthPageState();
+}
+
+class _AuthPageState extends State<AuthPage> {
+
+  @override
   Widget build(BuildContext context) {
+
     navigateToLogin() {
-      Navigator.pushNamed(context, '/login');
+      context.push('/login');
     }
 
     navigateToRegister() {
-      Navigator.pushNamed(context, '/register');
+      context.push('/register');
     }
 
     const String termsAndPrivacy =
@@ -28,23 +37,29 @@ class AuthPage extends StatelessWidget {
           children: <Widget>[
             ContentPadding(
               child: Theme.of(context).brightness == Brightness.light
-                  ? SvgPicture.asset('assets/images/logo-gymtec-fondo-claro.svg', height: MediaQuery.of(context).size.height * 0.4)
-                  : SvgPicture.asset('assets/images/logo-gymtec-fondo-oscuro.svg', height: MediaQuery.of(context).size.height * 0.4),
+                  ? SvgPicture.asset(
+                      'assets/images/logo-gymtec-fondo-claro.svg',
+                      height: MediaQuery.of(context).size.height * 0.4)
+                  : SvgPicture.asset(
+                      'assets/images/logo-gymtec-fondo-oscuro.svg',
+                      height: MediaQuery.of(context).size.height * 0.4),
             ),
             const ContextSeparator(),
             ActionBtn(
-              title: 'Iniciar Sesión',
-              onPressed: navigateToLogin,
-              fontWeight: FontWeight.bold,
-              style: ButtonStyle(minimumSize: MaterialStateProperty.all(const Size(200, 40)))
-            ),
+                title: 'Iniciar Sesión',
+                onPressed: navigateToLogin,
+                fontWeight: FontWeight.bold,
+                style: ButtonStyle(
+                    minimumSize:
+                        MaterialStateProperty.all(const Size(200, 40)))),
             const ContextSeparator(),
             ActionBtn(
-              title: 'Registrarse',
-              onPressed: navigateToRegister,
-              fontWeight: FontWeight.bold,
-              style: ButtonStyle(minimumSize: MaterialStateProperty.all(const Size(200, 40)))
-            ),
+                title: 'Registrarse',
+                onPressed: navigateToRegister,
+                fontWeight: FontWeight.bold,
+                style: ButtonStyle(
+                    minimumSize:
+                        MaterialStateProperty.all(const Size(200, 40)))),
             const ContextSeparator(),
             const Padding(
               padding: EdgeInsets.all(20.0),

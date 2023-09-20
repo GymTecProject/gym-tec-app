@@ -26,6 +26,9 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+            appBar: AppBar(
+              title: const Text('Registrarse'),
+            ),
             body: Center(
       child: Padding(
         padding: const EdgeInsets.all(25.0),
