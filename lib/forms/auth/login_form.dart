@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/models/users/user_login_form.dart';
 
 import '../../components/ui/buttons/action_btn.dart';
@@ -62,9 +63,9 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Column(
-        children: <Widget>[
-          Column(
+      child: SingleChildScrollView(
+        child: ContentPadding(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -120,8 +121,8 @@ class _LoginFormState extends State<LoginForm> {
                   },
                   fontWeight: FontWeight.bold),
             ],
-          )
-        ],
+          ),
+        ),
       ),
     );
   }

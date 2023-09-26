@@ -60,13 +60,9 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: const Text('Iniciar Sesión'),
       ),
-      body: Center(
-          child: Padding(
-        padding: const EdgeInsets.all(25.0),
-        child: LoginForm(
-          onSubmit: onLogin,
-        ),
-      )),
+      body: LoginForm(
+        onSubmit: onLogin,
+      ),
     ));
   }
 }

@@ -14,23 +14,22 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   @override
   void initState() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final AuthInterface authService = DependencyManager.authService;
       final DatabaseInterface dbService = DependencyManager.databaseService;
 
-      final user = authService.currentUser$;
+      final user = authService.currentUser;
 
-      if(user == null) {
+      if (user == null) {
         context.go('/auth');
         return;
       }
 
       dbService.getUserPrivateData(user.uid).then((value) {
-        if(value != null) {
-          switch(value.accountType) {
+        if (value != null) {
+          switch (value.accountType) {
             case AccountType.administrator:
               context.go('/admin');
               break;
@@ -43,7 +42,6 @@ class _SplashScreenState extends State<SplashScreen> {
           }
         }
       });
-   
     });
 
     super.initState();

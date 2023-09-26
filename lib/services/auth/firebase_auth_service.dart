@@ -10,7 +10,7 @@ class AuthFirebase implements AuthInterface {
   final DatabaseInterface dbService = DependencyManager.databaseService;
 
   @override
-  User? get currentUser$ => FirebaseAuth.instance.currentUser;
+  User? get currentUser => FirebaseAuth.instance.currentUser;
 
   @override
   Future<AccountType?> emailAndPasswordLogin(
