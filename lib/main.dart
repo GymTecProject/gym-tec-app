@@ -13,6 +13,19 @@ import 'package:firebase_core/firebase_core.dart';
 import 'color_schemes.g.dart';
 import 'firebase_options.dart';
 
+// TEST USERS
+/*
+ADMIN
+  - email: amandadickerson@example.net
+  - password: 123456
+TRAINER
+  - email: andersonroberta@example.org
+  - password: 123456
+USER
+  - email: qjefferson@example.com
+  - password: 123456
+*/
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -49,7 +62,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const AuthPage(),
-        '/user': (context) => const UserRootPage(),
+        '/client': (context) => const UserRootPage(),
         '/admin': (context) => const AdminRootPage(),
         '/trainer': (context) => const TrainerRootPage(),
         '/login': (context) => const LoginPage(),

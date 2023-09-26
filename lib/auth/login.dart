@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:gym_tec/forms/auth/login_form.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
+import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_login_form.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
@@ -22,10 +23,22 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void onLogin(UserLoginForm userData) async {
-    var cred = await _authService.emailAndPasswordLogin(userData);
+    AccountType? account = await _authService.emailAndPasswordLogin(userData);
     if (!mounted) return;
-    if (cred == null) showLoginError();
-    Navigator.pushNamed(context, '/user');
+    if (account == null) showLoginError();
+    switch (account) {
+      case AccountType.administrator:
+        Navigator.pushNamed(context, '/admin');
+        break;
+      case AccountType.trainer:
+        Navigator.pushNamed(context, '/trainer');
+        break;
+      case AccountType.client:
+        Navigator.pushNamed(context, '/client');
+        break;
+      default:
+        showLoginError();
+    }
   }
 
   void showLoginError() {

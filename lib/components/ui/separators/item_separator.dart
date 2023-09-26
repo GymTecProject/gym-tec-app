@@ -7,6 +7,7 @@ class ItemSeparator extends StatelessWidget {
   Widget build(BuildContext context) {
     return const SizedBox(
       height: 10,
+      width: 10,
     );
   }
 }
