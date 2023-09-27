@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:gym_tec/forms/auth/login_form.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
@@ -28,13 +29,13 @@ class _LoginPageState extends State<LoginPage> {
     if (account == null) showLoginError();
     switch (account) {
       case AccountType.administrator:
-        Navigator.pushNamed(context, '/admin');
+        context.go('/admin');
         break;
       case AccountType.trainer:
-        Navigator.pushNamed(context, '/trainer');
+        context.go('/trainer');
         break;
       case AccountType.client:
-        Navigator.pushNamed(context, '/client');
+        context.go('/client');
         break;
       default:
         showLoginError();
@@ -47,7 +48,6 @@ class _LoginPageState extends State<LoginPage> {
         'Correo o contraseña incorrectos',
         style: TextStyle(color: Theme.of(context).colorScheme.error),
       ),
-      behavior: SnackBarBehavior.floating,
       duration: const Duration(seconds: 3),
     );
     ScaffoldMessenger.of(context).showSnackBar(logginErrorSnackBar);
@@ -57,13 +57,12 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      body: Center(
-          child: Padding(
-        padding: const EdgeInsets.all(25.0),
-        child: LoginForm(
-          onSubmit: onLogin,
-        ),
-      )),
+      appBar: AppBar(
+        title: const Text('Iniciar Sesión'),
+      ),
+      body: LoginForm(
+        onSubmit: onLogin,
+      ),
     ));
   }
 }

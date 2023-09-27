@@ -10,6 +10,9 @@ class AuthFirebase implements AuthInterface {
   final DatabaseInterface dbService = DependencyManager.databaseService;
 
   @override
+  User? get currentUser => FirebaseAuth.instance.currentUser;
+
+  @override
   Future<AccountType?> emailAndPasswordLogin(
       UserLoginForm userLoginForm) async {
     try {
@@ -24,7 +27,6 @@ class AuthFirebase implements AuthInterface {
       if (userPrivateData == null) return null;
 
       return userPrivateData.accountType;
-
     } on FirebaseAuthException catch (error) {
       if (error.code == 'user-not-found') {
         print('No user found for that email.');

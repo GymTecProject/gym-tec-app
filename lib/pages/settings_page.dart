@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 
@@ -22,7 +23,7 @@ class _SettingsPageState extends State<SettingsPage> {
         'icon': Icons.logout,
         'onPressed': () {
           authService.logout();
-          Navigator.pushNamed(context, '/');
+          context.go('/');
         }
       }
     ];
@@ -36,14 +37,22 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Card(
           child: Column(
             children: [
-              Expanded(child: ListView.builder(
+              Expanded(
+                  child: ListView.builder(
                 itemCount: settingsList.length,
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(settingsList[index]['title']),
-                    leading: Icon(settingsList[index]['icon'], color:settingsList[index]['title'] == 'Cerrar Sesión' ? Colors.red : null,),
+                    leading: Icon(
+                      settingsList[index]['icon'],
+                      color: settingsList[index]['title'] == 'Cerrar Sesión'
+                          ? Colors.red
+                          : null,
+                    ),
                     onTap: settingsList[index]['onPressed'],
-                    textColor: settingsList[index]['title'] == 'Cerrar Sesión' ? Colors.red : null,
+                    textColor: settingsList[index]['title'] == 'Cerrar Sesión'
+                        ? Colors.red
+                        : null,
                   );
                 },
               )),

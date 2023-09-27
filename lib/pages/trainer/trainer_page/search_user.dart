@@ -77,9 +77,6 @@ class _SearchUserState extends State<SearchUser> {
     },
   ];
 
-  //age, gender, role, medical conditions, objective, expiration date
-  //Dialog -> height, water, protein, minerals, fat, weight, skeletalMuscleMass, imc, fatPercentage
-
   List<Map<String, dynamic>> _foundUsers = [];
   @override
   void initState() {
@@ -127,11 +124,9 @@ class _SearchUserState extends State<SearchUser> {
         title: const Text(
           'Clientes',
           style: TextStyle(
-            // color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        //backgroundColor:   Colors.transparent, // .of(context).colorScheme.inversePrimary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -163,11 +158,6 @@ class _SearchUserState extends State<SearchUser> {
                 });
               },
             ),
-            // TextField(
-            //   onChanged: (value) => _runFilter(value),
-            //   decoration: const InputDecoration(
-            //       labelText: 'Search Clients', suffixIcon: Icon(Icons.search)),
-            // ),
             const ContextSeparator(),
             Expanded(
               child: ListView.builder(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/models/users/user_login_form.dart';
 
 import '../../components/ui/buttons/action_btn.dart';
@@ -6,17 +7,14 @@ import '../../components/ui/separators/context_separator.dart';
 import '../../components/ui/separators/item_separator.dart';
 import '../../interfaces/form_interface.dart';
 
-class LoginForm extends StatefulWidget implements FormInterface{
-
+class LoginForm extends StatefulWidget implements FormInterface {
   const LoginForm({super.key, required this.onSubmit});
 
   @override
   final void Function(UserLoginForm) onSubmit;
 
-
   @override
   State<LoginForm> createState() => _LoginFormState();
-  
 }
 
 class _LoginFormState extends State<LoginForm> {
@@ -62,9 +60,9 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Column(
-        children: <Widget>[
-          Column(
+      child: SingleChildScrollView(
+        child: ContentPadding(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -80,6 +78,7 @@ class _LoginFormState extends State<LoginForm> {
                   return null;
                 },
                 decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.email),
                     labelText: 'Correo electrónico',
                     hintText: 'example@mail.com',
                     border: OutlineInputBorder()),
@@ -91,12 +90,13 @@ class _LoginFormState extends State<LoginForm> {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingrese su contraseña';
                   }
-                  if(value.length < 6){
+                  if (value.length < 6) {
                     return 'La contraseña debe tener al menos 6 caracteres';
                   }
                   return null;
                 },
                 decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.lock),
                     labelText: 'Contraseña',
                     hintText: 'Ingrese su contraseña',
                     border: const OutlineInputBorder(),
@@ -120,8 +120,8 @@ class _LoginFormState extends State<LoginForm> {
                   },
                   fontWeight: FontWeight.bold),
             ],
-          )
-        ],
+          ),
+        ),
       ),
     );
   }
