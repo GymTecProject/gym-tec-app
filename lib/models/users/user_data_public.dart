@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum Sex { male, female, none }
+enum Sex { male, female, other }
 
 class UserPublicData {
   final String name;

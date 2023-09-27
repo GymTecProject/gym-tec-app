@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_tec/forms/auth/register_form.dart';
+import 'package:gym_tec/models/users/user_register_form.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -13,6 +14,10 @@ class _RegisterPageState extends State<RegisterPage> {
     Navigator.pushNamed(context, '/trainer');
   }
 
+  void onRegister(UserRegisterForm newUser) {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -20,6 +25,8 @@ class _RegisterPageState extends State<RegisterPage> {
             appBar: AppBar(
               title: const Text('Registrarse'),
             ),
-            body: const RegisterForm()));
+            body: RegisterForm(
+              onSubmit: onRegister,
+            )));
   }
 }
