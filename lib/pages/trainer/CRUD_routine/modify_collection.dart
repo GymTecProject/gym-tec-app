@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gym_tec/components/ui/buttons/action_btn.dart';
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
+import 'package:gym_tec/components/ui/buttons/action_fab.dart';
+import 'package:gym_tec/components/ui/buttons/expandable_fab.dart';
+import 'package:gym_tec/components/ui/padding/content_padding.dart';
+import 'package:gym_tec/pages/Exercise/create_exercise.dart';
 
 class ModifyCollectionPage extends StatefulWidget {
   final String buttonName;
@@ -14,135 +17,123 @@ class ModifyCollectionPage extends StatefulWidget {
 class _ModifyCollectionPageState extends State<ModifyCollectionPage> {
   // Variables
   List<Widget> buttons = [];
-  List<int> selectedButtonIndexes = [];
-  int exerciseCount = 0; // Track the number of added exercises
+
+  void addCollection() {
+    setState(() {
+      final buttonName = 'Ejercicio ${buttons.length + 1}';
+      buttons.add(
+        CardBtn(
+          title: buttonName,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    const CreateExercisePage(),
+              ),
+            );
+          },
+        ),
+      );
+    });
+  }
+
+  void removeCollection() {
+    setState(() {
+      if (buttons.isNotEmpty) {
+        buttons.removeLast();
+      }
+    });
+  }
+
+  void saveRoutine() {
+    bool saveState = true; // firestore service call
+    Navigator.pop(context, saveState);
+  }
+
+  void _navigateToCreateExercise() async {
+    dynamic state = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const CreateExercisePage(),
+        ));
+    if (!mounted) return;
+    if (state == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Rutina creada exitosamente /falta integrar/'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Editar ${widget.buttonName}',
-          style: const TextStyle(
-            color: Colors.white,
+        title: const Text(
+          'Modificar colección',
+          style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.transparent,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+      body: ContentPadding(
         child: Column(
           children: [
-            // day buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(7, (index) {
-                return Expanded( 
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          if (selectedButtonIndexes.contains(index)) {
-                            selectedButtonIndexes.remove(index);
-                          } else {
-                            selectedButtonIndexes.add(index);
-                          }
-                        });
-                      },
-                      child: Container(
-                        height: 50, // buttons height
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: selectedButtonIndexes.contains(index)
-                              ? const Color(0xFFA7F502) // while selected
-                              : const Color(0xFFC0C0C0), // default
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Text(
-                          '${index + 1}',
-                          style: const TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }),
-            ),
-            // Add exercise buttons
-            Expanded(
+            Visibility(
+                visible: buttons.isEmpty,
+                child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(children: [
+                      TextSpan(
+                          text: 'No hay ejercicios creados, presiona ',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          )),
+                      WidgetSpan(
+                          child: Icon(Icons.edit,
+                              size: 16,
+                              color: Theme.of(context).colorScheme.primary)),
+                      TextSpan(
+                          text: ' para crear uno nuevo',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ))
+                    ]))),
+            Flexible(
               child: ListView.builder(
+                shrinkWrap: true,
                 itemCount: buttons.length + 1,
                 itemBuilder: (context, index) {
-                  if (index == buttons.length) {
+                  if (index != buttons.length) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: ActionBtn(
-                        title: '+',
-                        onPressed: () {
-                          final exerciseName = 'Ejercicio ${exerciseCount + 1}';
-                          buttons.add(
-                            CardBtn(
-                              title: exerciseName,
-                              onPressed: () {
-                                
-                              },
-                              
-                              /*
-                              onPressed: () {
-
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                                child: Text(
-                                  exerciseName,
-                                  style: const TextStyle(fontSize: 24.0),
-                                ),
-                              ),*/
-                            ),
-                          );
-                          setState(() {
-                            exerciseCount++; // Increment the exercise count
-                          });
-                        },
-                        fontSize: 24,
-                        /*child: const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 12.0),
-                          child: Icon(Icons.add),
-                        ),*/
-                      ),
+                      child: buttons[index],
                     );
                   }
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: buttons[index],
-                  );
+                  return null;
                 },
               ),
-            ),
-            // Save button
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20.0),
-              /*child: ElevatedButton(
-                onPressed: () {
-                  // save logic
-                },
-                child: const Text(
-                  'Guardar',
-                  style: TextStyle(fontSize: 24.0),
-                ),
-              ),*/
-              child: ActionBtn(title: 'Guardar', onPressed: () {
-                  // save logic
-              }, fontSize: 24, )
-            ),
+            )
           ],
         ),
       ),
+      floatingActionButton: ExpandableFab(distance: 100, children: [
+        ActionFab(
+          onPressed: saveRoutine,
+          icon: const Icon(Icons.save),
+        ),
+        ActionFab(
+          onPressed: removeCollection,
+          icon: const Icon(Icons.delete),
+        ),
+        ActionFab(
+          onPressed: addCollection,
+          icon: const Icon(Icons.add),
+        )
+      ]),
     );
   }
 }
