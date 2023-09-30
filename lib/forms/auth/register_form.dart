@@ -68,7 +68,7 @@ class _RegisterFormState extends State<RegisterForm> {
     _formKey = GlobalKey<FormState>();
     _userRegisterForm = UserRegisterForm(
         name: "",
-        phone: "",
+        phoneNumber: "",
         email: "",
         birthDay: Timestamp.now(),
         sex: Sex.other,
@@ -120,7 +120,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
       _userRegisterForm.name =
           _nameController.text.trim().toLowerCase().toTitleCase();
-      _userRegisterForm.phone = _phoneController.text;
+      _userRegisterForm.phoneNumber = _phoneController.text;
       _userRegisterForm.email = _emailController.text;
       _userRegisterForm.birthDay =
           Timestamp.fromDate(DateTime.parse(validBirthDate));

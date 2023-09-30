@@ -2,6 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
+import 'package:gym_tec/models/users/user_data_protected.dart';
+import 'package:gym_tec/models/users/user_data_public.dart';
+import 'package:gym_tec/models/users/user_register_form.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
 import '../../models/users/user_login_form.dart';
@@ -32,9 +35,48 @@ class AuthFirebase implements AuthInterface {
         print('No user found for that email.');
       } else if (error.code == 'wrong-password') {
         print('Wrong password provided for that user.');
+      } else {
+        print(error.code);
       }
     }
     return null;
+  }
+
+  @override
+  Future<String?> registerUser(UserRegisterForm newUser) async {
+    try {
+      final jsonUser = newUser.toJson();
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: jsonUser['email'], password: jsonUser['password']);
+
+      await credential.user!.updateDisplayName(jsonUser['name']);
+
+      final userPublicData = UserPublicData.fromMap(jsonUser).toJson();
+      final userProtectedData = UserProtectedData.fromMap(jsonUser).toJson();
+      final userPrivateData = {'accountType': 'client'};
+
+      final public = await dbService.createUserPublicData(
+          credential.user!.uid, userPublicData);
+
+      final protected = await dbService.createUserProtectedData(
+          credential.user!.uid, userProtectedData);
+
+      final private = await dbService.createUserPrivateData(
+          credential.user!.uid, userPrivateData);
+
+      return (public != null && protected != null && private != null)
+          ? credential.user!.uid
+          : null;
+    } on FirebaseAuthException catch (error) {
+      if (error.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (error.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+
+      return null;
+    }
   }
 
   @override

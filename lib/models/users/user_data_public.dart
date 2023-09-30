@@ -8,4 +8,13 @@ class UserPublicData {
   final Timestamp expirationDate;
 
   UserPublicData(this.name, this.sex, this.expirationDate);
+
+  factory UserPublicData.fromMap(Map<String, dynamic> map) => UserPublicData(
+      map['name'], Sex.values.byName(map['sex']), map['expirationDate']);
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'sex': sex.name,
+        'expirationDate': expirationDate,
+      };
 }

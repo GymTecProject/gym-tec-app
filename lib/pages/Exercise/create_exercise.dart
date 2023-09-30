@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_tec/components/ui/buttons/action_btn.dart';
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
-import 'package:gym_tec/components/ui/padding/content_padding.dart';
-import 'package:gym_tec/components/ui/separators/context_separator.dart';
-import 'package:gym_tec/components/ui/separators/item_separator.dart';
 
 class CreateExercisePage extends StatefulWidget {
   const CreateExercisePage({super.key});
@@ -14,7 +10,7 @@ class CreateExercisePage extends StatefulWidget {
 
 class _CreateExercisePageState extends State<CreateExercisePage> {
 
-  List<String> _categories = ['Pecho', 'Espalda', 'Hombro', 'Biceps', 'Triceps', 'Pierna'];
+  final List<String> _categories = ['Pecho', 'Espalda', 'Hombro', 'Biceps', 'Triceps', 'Pierna'];
   int? _value;
   String actEntry = '';
 

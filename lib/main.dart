@@ -6,6 +6,8 @@ import 'package:gym_tec/app_router.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:gym_tec/utils/image_utils.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'color_schemes.g.dart';
 import 'firebase_options.dart';
 
@@ -18,7 +20,7 @@ TRAINER
   - email: andersonroberta@example.org
   - password: 123456
 USER
-  - email: qjefferson@example.com
+  - email: baileymanuel@example.net
   - password: 123456
 */
 
@@ -42,6 +44,8 @@ void main() async {
     }
   }
   ImageUtils.svgPrecacheImage();
+  Intl.defaultLocale = 'es-419';
+  await initializeDateFormatting('es_419');
   runApp(const MyApp());
 }
 

@@ -17,4 +17,8 @@ class UserPrivateData {
         throw Exception('Invalid account type');
     }
   }
+
+  Map<String, dynamic> toJson() => {
+        'accountType': accountType.name,
+      };
 }

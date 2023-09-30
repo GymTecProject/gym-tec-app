@@ -2,58 +2,71 @@ import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
+import 'package:gym_tec/interfaces/auth_interface.dart';
+import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/pages/user/routines/routine_data.dart';
 import 'package:gym_tec/pages/user/routines/routine_day.dart';
 
-class RoutinePage extends StatelessWidget {
+import '../../../services/dependency_manager.dart';
+
+class RoutinePage extends StatefulWidget {
   const RoutinePage({super.key});
 
-  static const String date = 'MONDAY, SEPTEMBER 11';
+  @override
+  State<RoutinePage> createState() => _RoutinePageState();
+}
 
-  // Define una lista de datos para tus botones
-  static const List<RoutineData> routines = [
+class _RoutinePageState extends State<RoutinePage> {
+
+  final DatabaseInterface dbService = DependencyManager.databaseService;
+  final AuthInterface authService = DependencyManager.authService;
+
+  late var _routineData;
+
+  void _fetchRoutineData() async {
+    final user = authService.currentUser;
+    if (user == null) return;
+    _routineData = await dbService.getUserRoutine(user.uid);
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRoutineData();
+  }
+  
+  final List<RoutineData> routines = [
     RoutineData(
-        title: 'Día 1',
-        subtitle: 'Tren inferior',
-        imgPath: 'assets/images/h1-1.png'),
+      title: 'Rutina 1',
+      subtitle: 'Rutina de principiante',
+      imgPath: 'assets/images/h2-1.png',
+    ),
     RoutineData(
-        title: 'Día 2',
-        subtitle: 'Tren superior',
-        imgPath: 'assets/images/h1-1.png'),
+      title: 'Rutina 2',
+      subtitle: 'Rutina de intermedio',
+      imgPath: 'assets/images/h2-1.png',
+    ),
     RoutineData(
-        title: 'Día 3',
-        subtitle: 'Tren superior',
-        imgPath: 'assets/images/h1-1.png')
+      title: 'Rutina 3',
+      subtitle: 'Rutina de avanzado',
+      imgPath: 'assets/images/h2-1.png',
+    ),
   ];
+
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Rutina'),
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Text(
-                date,
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 15.0),
-              child: Text(
-                'Here is your routine:',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(height: 50),
             Center(
               child: ContentPadding(
                 child: Column(

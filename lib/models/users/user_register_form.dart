@@ -3,15 +3,16 @@ import 'package:gym_tec/models/users/user_data_public.dart';
 
 class UserRegisterForm {
   String name;
-  String phone;
+  String phoneNumber;
   String email;
   Timestamp birthDay;
   Sex sex;
   String password;
+  Timestamp expirationDate = Timestamp.now();
 
   UserRegisterForm({
     required this.name,
-    required this.phone, 
+    required this.phoneNumber, 
     required this.email,
     required this.birthDay,
     required this.sex, 
@@ -20,10 +21,11 @@ class UserRegisterForm {
 
   Map<String, dynamic> toJson() => {
         'name': name,
-        'phone': phone,
+        'phoneNumber': phoneNumber,
         'email': email,
         'birthDay': birthDay,
-        'sex': sex,
+        'sex': sex.name,
         'password': password,
+        'expirationDate': expirationDate,
       };
 }

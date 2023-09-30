@@ -39,6 +39,9 @@ class _SplashScreenState extends State<SplashScreen> {
             case AccountType.client:
               context.go('/client');
               break;
+            default:
+              context.go('/auth');
+              break;
           }
         }
       });

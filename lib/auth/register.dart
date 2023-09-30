@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+
 import 'package:gym_tec/forms/auth/register_form.dart';
+import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/models/users/user_register_form.dart';
+import 'package:gym_tec/services/dependency_manager.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -10,12 +15,14 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  void onNavigateToUser() {
-    Navigator.pushNamed(context, '/trainer');
-  }
+  final AuthInterface authService = DependencyManager.authService;
 
-  void onRegister(UserRegisterForm newUser) {
-
+  void onRegister(UserRegisterForm newUser) async {
+    String? uid = await authService.registerUser(newUser);
+    if(!mounted) return;
+    if (uid != null) {
+      context.go('/client');
+    }
   }
 
   @override

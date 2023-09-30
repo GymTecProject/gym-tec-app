@@ -11,27 +11,37 @@ class NavSpace extends StatefulWidget {
 }
 
 class _NavSpaceState extends State<NavSpace> {
-  var _currentPage = 0;
+  int _currentPage = 0;
+
+  void setTab(int index) {
+    setState(() {
+      _currentPage = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            body: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                return widget.tabs[_currentPage].widget;
-              },
+            body: IndexedStack(
+              index: _currentPage,
+              children: [
+                for (final tab in widget.tabs) tab.widget
+              ]
             ),
             bottomNavigationBar: NavigationBar(
-              destinations: [
-                  for (var tab in widget.tabs)
-                  NavigationDestination(icon: tab.icon, label: tab.label),
-              ],
-              onDestinationSelected: (value) => setState(() {
-                _currentPage = value;
-              }),
+              labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
               selectedIndex: _currentPage,
-
-            )));
+              onDestinationSelected: setTab,
+              destinations: [
+                for (final tab in widget.tabs)
+                  NavigationDestination(
+                    icon: tab.icon,
+                    label: tab.label,
+                  )
+              ],
+            )
+              
+            ));
   }
 }
