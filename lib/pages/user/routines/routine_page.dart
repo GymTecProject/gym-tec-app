@@ -21,12 +21,10 @@ class _RoutinePageState extends State<RoutinePage> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
   final AuthInterface authService = DependencyManager.authService;
 
-  late var _routineData;
 
   void _fetchRoutineData() async {
     final user = authService.currentUser;
     if (user == null) return;
-    _routineData = await dbService.getUserRoutine(user.uid);
     setState(() {});
   }
 

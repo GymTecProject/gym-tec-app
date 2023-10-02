@@ -1,21 +1,25 @@
 class UserProtectedData {
+  String id;
   String email;
   String phoneNumber;
-  List<String> medicalConditions;
+  List<dynamic> medicalConditions;
   String objective;
 
-  UserProtectedData({    
+  UserProtectedData({
+    required this.id,
     required this.email,
     required this.phoneNumber,
     required this.medicalConditions,
     required this.objective,
-    });
+  });
 
-  factory UserProtectedData.fromMap(Map<String, dynamic> map) => UserProtectedData(
+  factory UserProtectedData.fromMap(Map<String, dynamic> map) =>
+      UserProtectedData(
+        id: map['uid'],
         email: map['email'],
         phoneNumber: map['phoneNumber'],
-        medicalConditions: map['medicalConditions']??[],
-        objective: map['objective']??'',
+        medicalConditions: map['medicalConditions'] ?? [],
+        objective: map['objective'] ?? '',
       );
 
   Map<String, dynamic> toJson() => {
@@ -23,5 +27,5 @@ class UserProtectedData {
         'phoneNumber': phoneNumber,
         'medicalConditions': medicalConditions,
         'objective': objective,
-  };
+      };
 }

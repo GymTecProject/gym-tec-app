@@ -1,29 +1,83 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
+import 'package:gym_tec/models/routines/routine_data.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
+import 'package:gym_tec/models/users/user_data_protected.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
 
 class DatabaseFirebase implements DatabaseInterface {
-  getAllUsers() async {}
-  getNotExpiredUsers() async {}
+  @override
+  Future<List<UserPublicData>?> getAllUsers() async {
+    try {
+      var users = await FirebaseFirestore.instance.collection('users').get();
+      if (users.docs.isNotEmpty) {
+        return users.docs.map((doc) {
+          final data = doc.data();
+          data.addAll({'uid': doc.id});
+          return UserPublicData.fromJson(data);
+        }).toList();
+      }
+    } catch (e) {
+      return null;
+    }
+    return null;
+  }
+
+  @override
+  Future<List<UserPublicData>?> getActiveUsers() async {
+    try {
+      var users = await FirebaseFirestore.instance
+          .collection('users')
+          .where('expirationDate', isGreaterThan: Timestamp.now())
+          .get();
+      if (users.docs.isNotEmpty) {
+        return users.docs.map((doc) {
+          final data = doc.data();
+          data.addAll({'uid': doc.id});
+          return UserPublicData.fromJson(data);
+        }).toList();
+      }
+    } catch (e) {
+      return null;
+    }
+    return null;
+  }
 
   @override
   Future<UserPublicData?> getUserPublicData(String uid) async {
     try {
-      var userPublicData = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .get();
+      var userPublicData =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
       if (userPublicData.exists) {
         final data = userPublicData.data()!;
-        return UserPublicData.fromMap(data);
+        data.addAll({'uid': userPublicData.id});
+        return UserPublicData.fromJson(data);
       }
       return null;
     } on FirebaseException {
       return null;
     }
   }
-  getUserProtectedData(String uid) async {}
+
+  @override
+  Future<UserProtectedData?> getUserProtectedData(String uid) async {
+    try {
+      var userProtectedData = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('protected')
+          .doc('data')
+          .get();
+      if (userProtectedData.exists) {
+        var data = userProtectedData.data()!;
+        data.addAll({'uid': userProtectedData.id});
+        return UserProtectedData.fromMap(data);
+      }
+      return null;
+    } on FirebaseException {
+      return null;
+    }
+  }
 
   @override
   Future<UserPrivateData?> getUserPrivateData(String uid) async {
@@ -87,7 +141,9 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
-  getUserRoutine(String uid) async {}
+  Future<RoutineData?>getUserRoutine(String uid) async {
+    return null;
+  }
 
   DatabaseFirebase();
 }
