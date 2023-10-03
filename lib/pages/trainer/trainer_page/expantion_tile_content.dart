@@ -14,12 +14,12 @@ class ExpansionTileContent extends StatefulWidget {
 }
 
 class _ExpansionTileContentState extends State<ExpansionTileContent> {
-
   final DatabaseInterface dbService = DependencyManager.databaseService;
   UserProtectedData? _userProtectedData;
 
   void _getUserProtectedData() async {
-    UserProtectedData? userProtectedData = await dbService.getUserProtectedData(widget.id);
+    UserProtectedData? userProtectedData =
+        await dbService.getUserProtectedData(widget.id);
     if (userProtectedData != null) {
       setState(() {
         _userProtectedData = userProtectedData;
@@ -37,14 +37,33 @@ class _ExpansionTileContentState extends State<ExpansionTileContent> {
   Widget build(BuildContext context) {
     return Skeletonizer(
       enabled: _userProtectedData == null,
-      child: Column(
-        children: [
-          Text(_userProtectedData?.email??''),
-          Text(_userProtectedData?.phoneNumber??''),
-          Text(_userProtectedData?.objective??''),
-        ],
-      ), // !=el valor nunca va a ser nullo | ?=el valor puede ser nullo
+      child: _userProtectedData != null
+          ? Column(
+              children: [
+                ListTile(
+                  title: Text('Correo: ${_userProtectedData!.email}'),
+                ),
+                ListTile(
+                  title: Text('Telefono: ${_userProtectedData!.phoneNumber}'),
+                ),
+                ListTile(
+                  title: Text('Objetivo: ${_userProtectedData!.objective}'),
+                )
+              ],
+            )
+          : const Column(
+              children: [
+                ListTile(
+                  title: Text('Correo: example@gmail.com'),
+                ),
+                ListTile(
+                  title: Text('Telefono: xxxxxxxx'),
+                ),
+                ListTile(
+                  title: Text('Fecha de expiración: xx/xx/xxxx'),
+                )
+              ],
+            ),
     );
   }
 }
-

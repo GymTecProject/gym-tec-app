@@ -116,61 +116,65 @@ class _SearchUserState extends State<SearchUser> {
               ),
               const ContextSeparator(),
               Expanded(
-                child: ListView.builder(
-                  itemCount: _foundUsers.length,
-                  itemBuilder: (context, index) => Card(
-                    clipBehavior: Clip.antiAlias,
-                    child: ExpansionTile(
-                      key: ValueKey(_foundUsers[index].id),
-                      title: Text(_foundUsers[index].name),
-                      subtitle: Text(_foundUsers[index].expirationDate.toDate().toString()),
-                      shape: const Border(),
-                      // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                      children: [
-                         Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
+                child: _allUsers.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: _foundUsers.length,
+                        itemBuilder: (context, index) => Card(
+                          clipBehavior: Clip.antiAlias,
+                          child: ExpansionTile(
+                            key: ValueKey(_foundUsers[index].id),
+                            title: Text(_foundUsers[index].name),
+                            subtitle: Text(_foundUsers[index]
+                                .expirationDate
+                                .toDate()
+                                .toString()),
+                            shape: const Border(),
+                            // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                             children: [
-                              ExpansionTileContent(id: _foundUsers[index].id),
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              //   children: [
-                              //     Text("Age: 21"),
-                              //     Text("Gender: Male"),
-                              //     Text("Role: Client"),
-                              //   ],
-                              // ),
-                              // Text("Medical Conditions: None"),
-                              // Text("Objective: Hypertrophy"),
-
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  children: [
+                                    ExpansionTileContent(
+                                        id: _foundUsers[index].id),
+                                  ],
+                                ),
+                              ),
+                              ContentPadding(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    IconButton.filledTonal(
+                                      icon: const Icon(Icons.straighten),
+                                      tooltip: 'Ver medidas',
+                                      onPressed: () {
+                                        openDialog(_foundUsers[index]);
+                                      },
+                                      // child: const Text('Measurements')
+                                    ),
+                                    const ItemSeparator(),
+                                    IconButton.filledTonal(
+                                      icon: const Icon(Icons.fitness_center),
+                                      tooltip: 'Crear rutina',
+                                      onPressed: _navigateToCreateRoutine,
+                                    ),
+                                  ],
+                                ),
+                              )
                             ],
                           ),
                         ),
-                        ContentPadding(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              IconButton.filledTonal(
-                                icon: const Icon(Icons.straighten),
-                                tooltip: 'Ver medidas',
-                                onPressed: () {
-                                  openDialog(_foundUsers[index]);
-                                },
-                                // child: const Text('Measurements')
-                              ),
-                              const ItemSeparator(),
-                              IconButton.filledTonal(
-                                icon: const Icon(Icons.fitness_center),
-                                tooltip: 'Crear rutina',
-                                onPressed: _navigateToCreateRoutine,
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                      )
+                    : ListView.builder(
+                        itemCount: 15,
+                        itemBuilder: (context, index) => const Card(
+                            clipBehavior: Clip.antiAlias,
+                            child: ExpansionTile(
+                              title: Text("Nombre de ejemplo"),
+                              subtitle: Text("Fecha de expiracion: xx/xx/xxxx"),
+                            )),
+                      ),
               ),
             ],
           ),

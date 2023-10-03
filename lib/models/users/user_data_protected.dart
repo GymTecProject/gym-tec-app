@@ -2,7 +2,7 @@ class UserProtectedData {
   String id;
   String email;
   String phoneNumber;
-  List<dynamic> medicalConditions;
+  List<String> medicalConditions;
   String objective;
 
   UserProtectedData({
@@ -18,7 +18,7 @@ class UserProtectedData {
         id: map['uid'],
         email: map['email'],
         phoneNumber: map['phoneNumber'],
-        medicalConditions: map['medicalConditions'] ?? [],
+        medicalConditions: (map['medicalConditions'] as List).map((item) => item as String).toList(),
         objective: map['objective'] ?? '',
       );
 

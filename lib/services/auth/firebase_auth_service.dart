@@ -51,8 +51,7 @@ class AuthFirebase implements AuthInterface {
               email: jsonUser['email'], password: jsonUser['password']);
 
       await credential.user!.updateDisplayName(jsonUser['name']);
-      jsonUser.addAll({'uid': credential.user!.uid});
-      
+      jsonUser.addAll({'uid': credential.user!.uid, 'medicalConditions': []});
       final userPublicData = UserPublicData.fromJson(jsonUser).toJson();
       final userProtectedData = UserProtectedData.fromMap(jsonUser).toJson();
       final userPrivateData = {'accountType': 'client'};
