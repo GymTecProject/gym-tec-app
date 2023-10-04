@@ -5,6 +5,8 @@ import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_protected.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
 
+import '../../models/users/user_measurements.dart';
+
 class DatabaseFirebase implements DatabaseInterface {
   @override
   Future<List<UserPublicData>?> getAllUsers() async {
@@ -98,6 +100,24 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
+  Future<UserMeasurements?> getUserMeasurements(String uid) async {
+    try {
+      var userMeasurements = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('measurements')
+          .doc('data')
+          .get();
+      if (userMeasurements.exists) {
+        return UserMeasurements.fromMap(userMeasurements.data()!);
+      }
+      return null;
+    } on FirebaseException {
+      return null;
+    }
+  }
+
+  @override
   Future<String?> createUserPublicData(
       String uid, Map<String, dynamic> data) async {
     try {
@@ -141,7 +161,7 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
-  Future<RoutineData?>getUserRoutine(String uid) async {
+  Future<RoutineData?> getUserRoutine(String uid) async {
     return null;
   }
 

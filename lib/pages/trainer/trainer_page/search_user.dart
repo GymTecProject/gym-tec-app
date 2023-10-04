@@ -4,10 +4,13 @@ import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
+import 'package:gym_tec/models/users/user_measurements.dart';
 import 'package:gym_tec/pages/trainer/CRUD_routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+
+import 'dialog/measurements_dialog.dart';
 
 class SearchUser extends StatefulWidget {
   const SearchUser({super.key});
@@ -149,7 +152,8 @@ class _SearchUserState extends State<SearchUser> {
                                       icon: const Icon(Icons.straighten),
                                       tooltip: 'Ver medidas',
                                       onPressed: () {
-                                        openDialog(_foundUsers[index]);
+                                        openDialog(_foundUsers[index].id,
+                                            _foundUsers[index].name, dbService);
                                       },
                                       // child: const Text('Measurements')
                                     ),
@@ -183,32 +187,18 @@ class _SearchUserState extends State<SearchUser> {
     );
   }
 
-  Future openDialog(UserPublicData s) => showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Client: ${s.name}"),
-          content: const Column(mainAxisSize: MainAxisSize.min, children: [
-            //Text("User added measurements"),
-            SizedBox(height: 10),
-            Text("Height: "),
-            Text("Weight: "),
-            Text("Water: "),
-            Text("Protein: "),
-            Text("Minerals: "),
-            Text("Fat: "),
-            Text("Skeletal Muscle Mass: "),
-            Text("IMC: "),
-            Text("Fat Percentage: "),
-          ]),
-          actions: const [
-            Row(
-              children: [
-                SizedBox(
-                  width: 20,
-                ),
-              ],
-            )
-          ],
-        ),
-      );
+//TO DO: Agua corporal total, Masa Grasa Corporal, Masa de Musculo Esqueletico, Porcentaje de grasa corporal, Nivel de Grasa Viceral
+  Future openDialog(String uid, String name, DatabaseInterface db) async {
+    UserMeasurements? s = await db.getUserMeasurements(uid);
+
+    if (!mounted) return;
+
+    return showDialog(
+      context: context,
+      builder: (context) => MeasurementsDialog(
+        name: name,
+        m: s,
+      ),
+    );
+  }
 }
