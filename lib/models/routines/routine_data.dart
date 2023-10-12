@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gym_tec/models/routines/routine_workout.dart';
 
 class RoutineData {
   Timestamp date;
   String clientId;
   String trainerId;
   List<String> comments;
-  // List<String> workout;
+  List<Workout> workout;
   Timestamp expirationDate;
 
   RoutineData({
@@ -13,17 +14,19 @@ class RoutineData {
     required this.clientId,
     required this.trainerId,
     required this.comments,
-    // required this.workout,
+    required this.workout,
     required this.expirationDate,
   });
 
-  factory RoutineData.fromMap(Map<String, dynamic> map) {
+  factory RoutineData.fromJson(Map<String, dynamic> map) {
     return RoutineData(
       date: map['date'],
       clientId: map['clientId'],
       trainerId: map['trainerId'],
       comments: map['comments'],
-      // workout: map['workout'],
+      workout: (map['workout'] as List)
+          .map((item) => Workout.fromJson(item))
+          .toList(),
       expirationDate: map['expirationDate'],
     );
   }
@@ -34,7 +37,7 @@ class RoutineData {
       'clientId': clientId,
       'trainerId': trainerId,
       'comments': comments,
-      // 'workout': workout,
+      'workout': workout.map((item) => item.toJson()).toList(),
       'expirationDate': expirationDate,
     };
   }

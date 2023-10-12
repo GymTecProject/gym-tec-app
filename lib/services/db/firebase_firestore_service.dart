@@ -141,8 +141,31 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
-  Future<RoutineData?>getUserRoutine(String uid) async {
-    return null;
+  Future<RoutineData?> getUserLastestRoutine(String uid) async {
+    try {
+      var routine = await FirebaseFirestore.instance
+          .collection('routines')
+          .where('clientId', isEqualTo: uid)
+          .orderBy('date', descending: true)
+          .limit(1)
+          .get();
+      if (routine.docs.isNotEmpty) {
+        return RoutineData.fromJson(routine.docs.first.data());
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<String?> createRoutine(Map<String, dynamic> data) async {
+    try {
+      await FirebaseFirestore.instance.collection('routines').add(data);
+      return 'success';
+    } catch (e) {
+      return null;
+    }
   }
 
   DatabaseFirebase();
