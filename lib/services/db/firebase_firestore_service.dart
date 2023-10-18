@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/routines/routine_data.dart';
-import 'package:gym_tec/models/routines/routine_exercise.dart';
+import 'package:gym_tec/models/excercises/exercise.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_protected.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
@@ -143,17 +143,17 @@ class DatabaseFirebase implements DatabaseInterface {
 
   @override
   Future<List<Exercise>> getExercises() async {
-    try{
-      var exercises = await FirebaseFirestore.instance.collection('exercises').get();
-      if(exercises.docs.isNotEmpty){
+    try {
+      var exercises =
+          await FirebaseFirestore.instance.collection('exercises').get();
+      if (exercises.docs.isNotEmpty) {
         return exercises.docs.map((doc) {
           final data = doc.data();
           return Exercise.fromJson(data);
         }).toList();
       }
       return [];
-    }
-    catch(e){
+    } catch (e) {
       return [];
     }
   }

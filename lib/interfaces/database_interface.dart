@@ -1,5 +1,5 @@
 import 'package:gym_tec/models/routines/routine_data.dart';
-import 'package:gym_tec/models/routines/routine_exercise.dart';
+import 'package:gym_tec/models/excercises/exercise.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
 

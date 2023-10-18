@@ -4,7 +4,7 @@ import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
-import 'package:gym_tec/pages/trainer/CRUD_routine/create_routine.dart';
+import 'package:gym_tec/pages/trainer/routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
