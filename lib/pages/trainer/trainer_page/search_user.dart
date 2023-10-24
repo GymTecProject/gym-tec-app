@@ -6,13 +6,11 @@ import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
-import 'package:gym_tec/models/users/user_measurements.dart';
 import 'package:gym_tec/pages/trainer/routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import 'dialog/measurements_dialog.dart';
 
 class SearchUser extends StatefulWidget {
   const SearchUser({super.key});
@@ -170,8 +168,7 @@ class _SearchUserState extends State<SearchUser> {
                                       icon: const Icon(Icons.straighten),
                                       tooltip: 'Ver medidas',
                                       onPressed: () {
-                                        openDialog(_foundUsers[index].id,
-                                            _foundUsers[index].name, dbService);
+                                        openDialog(_foundUsers[index]);
                                       },
                                       // child: const Text('Measurements')
                                     ),
