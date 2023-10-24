@@ -11,7 +11,6 @@ import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-
 class SearchUser extends StatefulWidget {
   const SearchUser({super.key});
 
@@ -28,7 +27,9 @@ class _SearchUserState extends State<SearchUser> {
   late List<UserPublicData> _allUsers = [];
 
   void _getAllUsers() async {
-    List<UserPublicData>? users = await dbService.getActiveUsers();
+    List<UserPublicData>? users = (isAdmin)
+        ? await dbService.getAllUsers()
+        : await dbService.getActiveUsers();
     if (users != null) {
       setState(() {
         _allUsers = users;
@@ -53,8 +54,8 @@ class _SearchUserState extends State<SearchUser> {
   @override
   void initState() {
     super.initState();
-    _getAllUsers();
     _getCurrentRole();
+    _getAllUsers();
   }
 
   void _runFilter(String entered) {
@@ -212,7 +213,6 @@ class _SearchUserState extends State<SearchUser> {
       ),
     );
   }
-
 
 //TO DO: Agua corporal total, Masa Grasa Corporal, Masa de Musculo Esqueletico, Porcentaje de grasa corporal, Nivel de Grasa Viceral
   Future openAdminDialog(UserPublicData s) => showDialog(
