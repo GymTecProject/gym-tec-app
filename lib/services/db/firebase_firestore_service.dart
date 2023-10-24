@@ -162,10 +162,11 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
-
   Future<RoutineData?> getUserRoutine(String uid) async {
     return null;
+  }
 
+  @override
   Future<List<Exercise>> getExercises() async {
     try {
       var exercises =
@@ -208,7 +209,6 @@ class DatabaseFirebase implements DatabaseInterface {
     } catch (e) {
       return null;
     }
-
   }
 
   DatabaseFirebase();
