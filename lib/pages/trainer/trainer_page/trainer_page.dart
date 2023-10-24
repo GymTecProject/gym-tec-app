@@ -4,18 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
+import 'package:gym_tec/interfaces/auth_interface.dart';
+import 'package:gym_tec/interfaces/database_interface.dart';
+import 'package:gym_tec/models/users/user_data_private.dart';
 
 import 'package:gym_tec/pages/trainer/trainer_page/weekly_edit.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/search_user.dart';
+import 'package:gym_tec/services/dependency_manager.dart';
 
-class TrainerPage extends StatelessWidget {
-  //Variables needed
-  static const String date = 'MONDAY, SEPTEMBER 11';
-  static const String firstName = 'Jack';
-  static const String userType = "Trainer";
+class TrainerPage extends StatefulWidget {
+  const TrainerPage({super.key});
+  @override
+  _TrainerPageState createState() => _TrainerPageState();
+}
 
-  static const double spaceBetweenButtons = 20.0;
-
+class _TrainerPageState extends State<TrainerPage> {
   static const cardData = [
     {
       'title': 'Clients',
@@ -31,7 +34,35 @@ class TrainerPage extends StatelessWidget {
     },
   ];
 
-  const TrainerPage({super.key});
+  UserPrivateData? _userPrivateData;
+  final DatabaseInterface dbService = DependencyManager.databaseService;
+  final AuthInterface authService = DependencyManager.authService;
+  static String userType = "Trainer";
+
+  void _fetchUserPrivateData() async {
+    final user = authService.currentUser;
+    if (user == null) return;
+    final userPrivateData = await dbService.getUserPrivateData(user.uid);
+    if (userPrivateData == null) return;
+
+    setState(() {
+      _userPrivateData = userPrivateData;
+      switch (_userPrivateData?.accountType) {
+        case AccountType.administrator:
+          userType = 'Admin';
+        case AccountType.trainer:
+          userType = 'Trainer';
+        default:
+          userType = '';
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserPrivateData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +71,11 @@ class TrainerPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 10),
-          const Padding(
-            padding: EdgeInsets.all(15.0),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
             child: Text(
               '$userType\'s Tab',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
               ),
