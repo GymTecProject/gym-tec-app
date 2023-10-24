@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/routines/routine_data.dart';
+import 'package:gym_tec/models/excercises/exercise.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_protected.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
@@ -161,8 +162,53 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
+
   Future<RoutineData?> getUserRoutine(String uid) async {
     return null;
+
+  Future<List<Exercise>> getExercises() async {
+    try {
+      var exercises =
+          await FirebaseFirestore.instance.collection('exercises').get();
+      if (exercises.docs.isNotEmpty) {
+        return exercises.docs.map((doc) {
+          final data = doc.data();
+          return Exercise.fromJson(data);
+        }).toList();
+      }
+      return [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  @override
+  Future<RoutineData?> getUserLastestRoutine(String uid) async {
+    try {
+      var routine = await FirebaseFirestore.instance
+          .collection('routines')
+          .where('clientId', isEqualTo: uid)
+          .orderBy('date', descending: true)
+          .limit(1)
+          .get();
+      if (routine.docs.isNotEmpty) {
+        return RoutineData.fromJson(routine.docs.first.data());
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<String?> createRoutine(Map<String, dynamic> data) async {
+    try {
+      await FirebaseFirestore.instance.collection('routines').add(data);
+      return 'success';
+    } catch (e) {
+      return null;
+    }
+
   }
 
   DatabaseFirebase();

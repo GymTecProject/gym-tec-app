@@ -1,4 +1,5 @@
 import 'package:gym_tec/models/routines/routine_data.dart';
+import 'package:gym_tec/models/excercises/exercise.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
 import 'package:gym_tec/models/users/user_measurements.dart';
@@ -17,4 +18,8 @@ abstract class DatabaseInterface {
   Future<String?> createUserPrivateData(String uid, Map<String, dynamic> data);
   Future<RoutineData?> getUserRoutine(String uid);
   Future<UserMeasurements?> getUserMeasurements(String uid);
+  Future<List<Exercise>> getExercises();
+  Future<RoutineData?> getUserLastestRoutine(String uid);
+  Future<String?> createRoutine(Map<String, dynamic> data);
+
 }

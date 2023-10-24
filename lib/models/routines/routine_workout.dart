@@ -1,19 +1,24 @@
-class Workout{
+
+
+import 'package:gym_tec/models/routines/routine_exercise.dart';
+
+class Workout {
   final List<int> days;
-  final List<String> exercises;
+  final List<RoutineExercise> exercises;
 
   Workout({required this.days, required this.exercises});
-
 
   factory Workout.fromJson(Map<String, dynamic> json) {
     return Workout(
       days: json['days'],
-      exercises: (json['exercises'] as List).map((item) => item as String).toList(),
+      exercises: (json['exercises'] as List)
+          .map((item) => RoutineExercise.fromJson(item))
+          .toList(),
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'days': days,
-    'exercises': exercises,
-  };
+        'days': days,
+        'exercises': exercises.map((item) => item.toJson()).toList(),
+      };
 }
