@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
+import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
+import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
 import 'package:gym_tec/pages/trainer/routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
@@ -18,7 +20,9 @@ class SearchUser extends StatefulWidget {
 
 class _SearchUserState extends State<SearchUser> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
+  final AuthInterface authService = DependencyManager.authService;
 
+  bool isAdmin = false;
   late List<UserPublicData> _foundUsers = [];
   late List<UserPublicData> _allUsers = [];
 
@@ -32,10 +36,24 @@ class _SearchUserState extends State<SearchUser> {
     }
   }
 
+  void _getCurrentRole() async {
+    final user = authService.currentUser;
+    if (user == null) return;
+    final userPrivateData = await dbService.getUserPrivateData(user.uid);
+    if (userPrivateData == null) return;
+
+    setState(() {
+      (userPrivateData.accountType == AccountType.administrator)
+          ? isAdmin = true
+          : isAdmin = false;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _getAllUsers();
+    _getCurrentRole();
   }
 
   void _runFilter(String entered) {
@@ -159,6 +177,17 @@ class _SearchUserState extends State<SearchUser> {
                                       tooltip: 'Crear rutina',
                                       onPressed: _navigateToCreateRoutine,
                                     ),
+                                    if (isAdmin) ...{
+                                      const ItemSeparator(),
+                                      IconButton.filledTonal(
+                                        icon: const Icon(
+                                            Icons.admin_panel_settings),
+                                        tooltip: 'Admin',
+                                        onPressed: () {
+                                          openAdminDialog(_foundUsers[index]);
+                                        },
+                                      ),
+                                    }
                                   ],
                                 ),
                               )
@@ -182,6 +211,29 @@ class _SearchUserState extends State<SearchUser> {
       ),
     );
   }
+
+  Future openAdminDialog(UserPublicData s) => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Client: ${s.name}"),
+          content: const Column(mainAxisSize: MainAxisSize.min, children: [
+            //Text("User added measurements"),
+            SizedBox(height: 10),
+            Text("Set Rol"),
+            Text("CRUD Client"),
+            Text("Add Exp Date"),
+          ]),
+          actions: const [
+            Row(
+              children: [
+                SizedBox(
+                  width: 20,
+                ),
+              ],
+            )
+          ],
+        ),
+      );
 
   Future openDialog(UserPublicData s) => showDialog(
         context: context,
