@@ -30,6 +30,7 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
   late final RoutineData routine;
   List<Widget> buttons = [];
   int amountOfWeeks = 1;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -44,44 +45,27 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
     );
   }
 
-  void addWorkout(Workout workout, String buttonName) {
-    setState(() {
-      routine.workout.add(workout);
-      for(int i in workout.days){
-        weekDays[i] = buttonName;
-      }
-    });
+  void addWorkout(String buttonName) {
+    setState(() {});
   }
 
   void addCollection() {
     setState(() {
-      if (buttons.length < 7) {
-        final buttonName = 'Colección ${buttons.length + 1}';
-        buttons.add(
-          CardBtn(
-            title: buttonName,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CreateWorkout(
-                    buttonName: buttonName,
-                    weekDays: weekDays,
-                    callBack: addWorkout,
-                  ),
-                ),
-              );
-            },
-          ),
+      if (routine.workout.length < 7) {
+        final Workout newWorkout = Workout(
+          exercises: [],
+          days: [],
         );
+        routine.workout.add(newWorkout);
       }
+    _scrollToEnd();
     });
   }
 
   void removeCollection() {
     setState(() {
-      if (buttons.isNotEmpty) {
-        buttons.removeLast();
+      if (routine.workout.isNotEmpty) {
+        routine.workout.removeLast();
       }
     });
   }
@@ -89,6 +73,14 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
   void saveRoutine() {
     bool saveState = true; // firestore service call
     Navigator.pop(context, saveState);
+  }
+
+  void _scrollToEnd() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.fastOutSlowIn,
+    );
   }
 
   @override
@@ -136,7 +128,7 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
             ),
             const ContextSeparator(),
             Visibility(
-                visible: buttons.isEmpty,
+                visible: routine.workout.isEmpty,
                 child: RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(children: [
@@ -158,12 +150,27 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
             Flexible(
               child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: buttons.length + 1,
+                controller: _scrollController,
+                itemCount: routine.workout.length + 1,
                 itemBuilder: (context, index) {
-                  if (index != buttons.length) {
+                  if (index != routine.workout.length) {
+                    final buttonName = 'Colección ${index + 1}';
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: buttons[index],
+                      child: CardBtn(
+                        title: buttonName,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreateWorkout(
+                                  buttonName: buttonName,
+                                  weekDays: weekDays,
+                                  workout: routine.workout[index]),
+                            ),
+                          );
+                        },
+                      ),
                     );
                   }
                   return null;

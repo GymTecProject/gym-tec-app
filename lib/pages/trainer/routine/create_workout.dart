@@ -11,13 +11,14 @@ import 'package:gym_tec/pages/trainer/routine/create_exercise.dart';
 class CreateWorkout extends StatefulWidget {
   final String buttonName;
   final Map<int, String> weekDays;
-  final Function callBack;
+  final Workout workout;
 
-  const CreateWorkout(
-      {super.key,
-      required this.buttonName,
-      required this.weekDays,
-      required this.callBack});
+  const CreateWorkout({
+    super.key,
+    required this.buttonName,
+    required this.weekDays,
+    required this.workout,
+  });
 
   @override
   State<CreateWorkout> createState() => _CreateWorkoutState();
@@ -26,25 +27,22 @@ class CreateWorkout extends StatefulWidget {
 class _CreateWorkoutState extends State<CreateWorkout> {
   List<Exercise> exercises = [];
   List<Widget> buttons = [];
-  Set<int> selectedDates = {};
-  late Workout workout;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    workout = Workout(
-      exercises: [],
-      days: widget.weekDays.keys.toList().where((element) => widget.weekDays[element] == widget.buttonName).toList(),
-    );
   }
 
   void setDays(int day) {
     setState(() {
-      if (workout.days.contains(day)) {
-        workout.days.remove(day);
-        return;
+      if (widget.workout.days.contains(day)) {
+        widget.workout.days.remove(day);
+        widget.weekDays[day] = "";
+      } else {
+        widget.workout.days.add(day);
+        widget.weekDays[day] = widget.buttonName;
       }
-      workout.days.add(day);
     });
   }
 
@@ -65,6 +63,7 @@ class _CreateWorkoutState extends State<CreateWorkout> {
         ),
       );
     });
+    _scrollToEnd();
   }
 
   void removeWorkout() {
@@ -75,9 +74,12 @@ class _CreateWorkoutState extends State<CreateWorkout> {
     });
   }
 
-  void saveWorkout() {
-    widget.callBack(workout, widget.buttonName);
-    Navigator.pop(context);
+  void _scrollToEnd() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 
   @override
@@ -113,8 +115,9 @@ class _CreateWorkoutState extends State<CreateWorkout> {
                           .map((e) => InputChip(
                                 label: Text(e.key.toString()),
                                 showCheckmark: false,
-                                selected:
-                                    (widget.weekDays[e.key] == widget.buttonName || workout.days.contains(e.key)),
+                                selected: (widget.weekDays[e.key] ==
+                                        widget.buttonName ||
+                                    widget.workout.days.contains(e.key)),
                                 onPressed: (widget.weekDays[e.key] !=
                                             widget.buttonName &&
                                         widget.weekDays[e.key] != "")
@@ -149,6 +152,7 @@ class _CreateWorkoutState extends State<CreateWorkout> {
             Flexible(
               child: ListView.builder(
                 shrinkWrap: true,
+                controller: _scrollController,
                 itemCount: buttons.length + 1,
                 itemBuilder: (context, index) {
                   if (index != buttons.length) {
@@ -165,10 +169,6 @@ class _CreateWorkoutState extends State<CreateWorkout> {
         ),
       ),
       floatingActionButton: ExpandableFab(distance: 100, children: [
-        ActionFab(
-          onPressed: saveWorkout,
-          icon: const Icon(Icons.save),
-        ),
         ActionFab(
           onPressed: removeWorkout,
           icon: const Icon(Icons.delete),
