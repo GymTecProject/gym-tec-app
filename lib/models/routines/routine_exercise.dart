@@ -3,16 +3,16 @@ class RoutineExercise {
   String url;
   String category;
   String comment;
-  int series;
-  int repetitions;
+  int sets;
+  int reps;
 
   RoutineExercise({
     required this.name, 
     required this.url, 
     required this.category,
     required this.comment,
-    required this.series,
-    required this.repetitions,
+    required this.sets,
+    required this.reps,
     });
 
   factory RoutineExercise.fromJson(Map<String, dynamic> json) {
@@ -21,8 +21,8 @@ class RoutineExercise {
       url: json['url'],
       category: json['category'],
       comment: json['comment'],
-      series: json['series'],
-      repetitions: json['repetitions'],
+      sets: json['sets'],
+      reps: json['reps'],
     );
   }
 
@@ -31,7 +31,7 @@ class RoutineExercise {
       'url': url,
       'category': category,
       'comment': comment,
-      'series': series,
-      'repetitions': repetitions,
+      'series': sets,
+      'repetitions': reps,
     };
 }

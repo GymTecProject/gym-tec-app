@@ -74,21 +74,22 @@ class _SearchUserState extends State<SearchUser> {
     });
   }
 
-  void _navigateToCreateRoutine() async {
+  void _navigateToCreateRoutine(String clientId) async {
     dynamic state = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const CreateRoutinePage(),
+          builder: (context) => CreateRoutinePage(
+            clientId: clientId,
+          ),
         ));
     if (!mounted) return;
-    if (state == true) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Rutina creada exitosamente /falta integrar/'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-    }
+    ScaffoldMessenger.of(context).showSnackBar(
+       SnackBar(
+        content: Text(state),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+    
   }
 
   @override
@@ -177,7 +178,7 @@ class _SearchUserState extends State<SearchUser> {
                                     IconButton.filledTonal(
                                       icon: const Icon(Icons.fitness_center),
                                       tooltip: 'Crear rutina',
-                                      onPressed: _navigateToCreateRoutine,
+                                      onPressed: () => _navigateToCreateRoutine(_foundUsers[index].id),
                                     ),
                                     if (isAdmin) ...{
                                       const ItemSeparator(),

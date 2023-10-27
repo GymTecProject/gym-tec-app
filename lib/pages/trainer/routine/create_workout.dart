@@ -4,7 +4,7 @@ import 'package:gym_tec/components/ui/buttons/action_fab.dart';
 import 'package:gym_tec/components/ui/buttons/expandable_fab.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
-import 'package:gym_tec/models/excercises/exercise.dart';
+import 'package:gym_tec/models/routines/routine_exercise.dart';
 import 'package:gym_tec/models/routines/routine_workout.dart';
 import 'package:gym_tec/pages/trainer/routine/create_exercise.dart';
 
@@ -25,13 +25,13 @@ class CreateWorkout extends StatefulWidget {
 }
 
 class _CreateWorkoutState extends State<CreateWorkout> {
-  List<Exercise> exercises = [];
   List<Widget> buttons = [];
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    print(widget.workout.toJson());
   }
 
   void setDays(int day) {
@@ -48,38 +48,24 @@ class _CreateWorkoutState extends State<CreateWorkout> {
 
   void addExercise() {
     setState(() {
-      final buttonName = 'Ejercicio ${buttons.length + 1}';
-      buttons.add(
-        CardBtn(
-          title: buttonName,
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const CreateExercisePage(),
-              ),
-            );
-          },
-        ),
+      final RoutineExercise exercise = RoutineExercise(
+        name: 'Ejercicio ${widget.workout.exercises.length + 1}',
+        url: "",
+        category: "",
+        comment: "",
+        sets: 0,
+        reps: 0,
       );
+      widget.workout.exercises.add(exercise);
     });
-    _scrollToEnd();
   }
 
   void removeWorkout() {
     setState(() {
-      if (buttons.isNotEmpty) {
-        buttons.removeLast();
+      if (widget.workout.exercises.isNotEmpty) {
+        widget.workout.exercises.removeLast();
       }
     });
-  }
-
-  void _scrollToEnd() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
   }
 
   @override
@@ -153,12 +139,29 @@ class _CreateWorkoutState extends State<CreateWorkout> {
               child: ListView.builder(
                 shrinkWrap: true,
                 controller: _scrollController,
-                itemCount: buttons.length + 1,
+                itemCount: widget.workout.exercises.length + 1,
                 itemBuilder: (context, index) {
-                  if (index != buttons.length) {
+                  if (index != widget.workout.exercises.length) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: buttons[index],
+                      child: CardBtn(
+                        title: widget.workout.exercises[index].name,
+                        onPressed: () async {
+                          final exercise = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreateExercisePage(
+                                exercise: widget.workout.exercises[index],
+                              ),
+                            ),
+                          );
+                          if (exercise != null) {
+                            setState(() {
+                              widget.workout.exercises[index] = exercise;
+                            });
+                          }
+                        },
+                      ),
                     );
                   }
                   return null;

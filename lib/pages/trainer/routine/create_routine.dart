@@ -6,12 +6,17 @@ import 'package:gym_tec/components/ui/buttons/expandable_fab.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
+import 'package:gym_tec/interfaces/auth_interface.dart';
+import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/routines/routine_data.dart';
 import 'package:gym_tec/models/routines/routine_workout.dart';
 import 'package:gym_tec/pages/trainer/routine/create_workout.dart';
+import 'package:gym_tec/services/dependency_manager.dart';
 
 class CreateRoutinePage extends StatefulWidget {
-  const CreateRoutinePage({super.key});
+  final String clientId;
+
+  const CreateRoutinePage({super.key, required this.clientId});
 
   @override
   State<CreateRoutinePage> createState() => _CreateRoutinePageState();
@@ -31,6 +36,8 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
   List<Widget> buttons = [];
   int amountOfWeeks = 1;
   final ScrollController _scrollController = ScrollController();
+  final DatabaseInterface dbService = DependencyManager.databaseService;
+  final AuthInterface authService = DependencyManager.authService;
 
   @override
   void initState() {
@@ -58,7 +65,7 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
         );
         routine.workout.add(newWorkout);
       }
-    _scrollToEnd();
+      _scrollToEnd();
     });
   }
 
@@ -70,9 +77,27 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
     });
   }
 
-  void saveRoutine() {
-    bool saveState = true; // firestore service call
-    Navigator.pop(context, saveState);
+  void saveRoutine() async {
+    final trainerId = authService.currentUser!.uid;
+    final clientId = widget.clientId;
+    final expirationDate =
+        DateTime.now().add(Duration(days: (amountOfWeeks * 7)));
+
+    final routineData = RoutineData(
+      date: Timestamp.now(),
+      clientId: clientId,
+      trainerId: trainerId,
+      comments: [],
+      workout: routine.workout,
+      expirationDate: Timestamp.fromDate(expirationDate),
+    );
+    try {
+      await dbService.createRoutine(routineData.toJson());
+      if (!mounted) return;
+      Navigator.pop(context, 'Rutina creada con éxito');
+    } catch (e) {
+      Navigator.pop(context, 'Error al crear la rutina');
+    }
   }
 
   void _scrollToEnd() {
