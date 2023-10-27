@@ -5,10 +5,13 @@ import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/excercises/exercise.dart';
+import 'package:gym_tec/models/routines/routine_exercise.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
 class CreateExercisePage extends StatefulWidget {
-  const CreateExercisePage({super.key});
+  final RoutineExercise exercise;
+
+  const CreateExercisePage({super.key, required this.exercise});
 
   @override
   State<CreateExercisePage> createState() => _CreateExercisePageState();
@@ -16,6 +19,18 @@ class CreateExercisePage extends StatefulWidget {
 
 class _CreateExercisePageState extends State<CreateExercisePage> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _repsController = TextEditingController();
+  final TextEditingController _setsController = TextEditingController();
+  final TextEditingController _commentsController = TextEditingController();
+
+  int? _value;
+  String actEntry = '';
+
+  List<Exercise> _allExercises = [];
+  List<Exercise> _foundExcercises = [];
+
+  RoutineExercise? _selectedExercise;
 
   final List<String> _categories = [
     'Tren superior',
@@ -24,11 +39,6 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
     'Cardio',
     'Core'
   ];
-  int? _value;
-  String actEntry = '';
-
-  List<Exercise> _allExercises = [];
-  List<Exercise> _foundExcercises = [];
 
   void _getAllExercises() async {
     try {
@@ -48,6 +58,15 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
   void initState() {
     _foundExcercises = _allExercises;
     super.initState();
+    _setsController.text =
+        widget.exercise.sets != 0 ? widget.exercise.sets.toString() : "";
+    _repsController.text =
+        widget.exercise.reps != 0 ? widget.exercise.reps.toString() : "";
+    _commentsController.text = widget.exercise.comment;
+
+    _selectedExercise = RoutineExercise(
+        name: "", url: "", category: "", comment: "", sets: 0, reps: 0);
+
     _getAllExercises();
   }
 
@@ -78,6 +97,20 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
     });
   }
 
+  // fix name not changing in workout on save
+
+  void _saveExercise() {
+    if (_formKey.currentState!.validate() && _selectedExercise != null) {
+
+      _selectedExercise!.comment = _commentsController.text;
+      _selectedExercise!.sets = int.parse(_setsController.text);
+      _selectedExercise!.reps = int.parse(_repsController.text);
+
+      Navigator.pop(context);
+      Navigator.pop(context, _selectedExercise);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,7 +122,6 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          //backgroundColor:   Colors.transparent, // .of(context).colorScheme.inversePrimary,
         ),
         body: Padding(
             padding: const EdgeInsets.all(10.0),
@@ -151,123 +183,100 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
                         itemBuilder: (context, index) => Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: CardBtn(
-                              title: _foundExcercises[index].name,
-                              subtitle: _foundExcercises[index].category,
-                              onPressed: () => showModalBottomSheet<void>(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return SingleChildScrollView(
-                                    child: Container(
-                                      padding: EdgeInsets.all(24.0),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                            Row(
-                                              children: [
-                                                Flexible(
-                                                  child: TextFormField(
-                                                    decoration: const InputDecoration(
-                                                      prefixIcon: Icon(Icons.repeat_on),
-                                                      labelText: 'Sets',
-                                                      hintText: '4',
-                                                      border: OutlineInputBorder(),
+                                title: _foundExcercises[index].name,
+                                subtitle: _foundExcercises[index].category,
+                                onPressed: () {
+                                  setState(() {
+                                    _selectedExercise!.name = _foundExcercises[index].name;
+                                    _selectedExercise!.url = _foundExcercises[index].url;
+                                    _selectedExercise!.category = _foundExcercises[index].category;
+                                  });
+                                  showModalBottomSheet<void>(
+                                    isScrollControlled: true,
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Padding(
+                                        padding:
+                                            MediaQuery.of(context).viewInsets,
+                                        child: SingleChildScrollView(
+                                          child: Form(
+                                            key: _formKey,
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.all(24.0),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: TextFormField(
+                                                          controller:
+                                                              _setsController,
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            prefixIcon: Icon(
+                                                                Icons
+                                                                    .repeat_on),
+                                                            labelText: 'Sets',
+                                                            hintText: 'Ej: 3',
+                                                            border:
+                                                                OutlineInputBorder(),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const ItemSeparator(),
+                                                      Flexible(
+                                                        child: TextFormField(
+                                                          controller:
+                                                              _repsController,
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            prefixIcon: Icon(Icons
+                                                                .fitness_center),
+                                                            labelText:
+                                                                'Repeticiones',
+                                                            hintText: 'Ej: 12',
+                                                            border:
+                                                                OutlineInputBorder(),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const ContextSeparator(),
+                                                  TextFormField(
+                                                    controller:
+                                                        _commentsController,
+                                                    maxLines:
+                                                        4, // Establece el número de líneas que desees
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      prefixIcon: Icon(
+                                                          Icons.speaker_notes),
+                                                      labelText: 'Comentarios',
+                                                      border:
+                                                          OutlineInputBorder(),
                                                     ),
                                                   ),
-                                                ),
-                                                ItemSeparator(),
-                                                Flexible(
-                                                  child: TextFormField(
-                                                    decoration: const InputDecoration(
-                                                      prefixIcon: Icon(Icons.fitness_center),
-                                                      labelText: 'Repeticiones',
-                                                      hintText: '10',
-                                                      border: OutlineInputBorder(),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ItemSeparator(),
-                                          TextField(
-                                            maxLines: 4, // Establece el número de líneas que desees
-                                            decoration: InputDecoration(
-                                              prefixIcon: Icon(Icons.speaker_notes),
-                                              labelText: 'Comentarios',
-                                              border: OutlineInputBorder(),
+                                                  const ContextSeparator(),
+                                                  ActionBtn(
+                                                      title: "Guardar",
+                                                      onPressed: _saveExercise)
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                          ContextSeparator(),
-                                          ActionBtn(title: "Guardar", onPressed: () => Navigator.pop(context))
-                                        ],
-                                      ),
-                                    ),
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
                               ),
-                            ),
-
                             ))),
               ],
             )));
-
-            /*
-            children: <Widget>[
-              TextFormField(
-                controller: _emailController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese su correo electrónico';
-                  }
-                  if (!_emailRegex.hasMatch(value)) {
-                    return 'Por favor ingrese un correo electrónico válido';
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.email),
-                    labelText: 'Correo electrónico',
-                    hintText: 'example@mail.com',
-                    border: OutlineInputBorder()),
-              ),
-              const ItemSeparator(),
-              TextFormField(
-                controller: _passwordController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese su contraseña';
-                  }
-                  if (value.length < 6) {
-                    return 'La contraseña debe tener al menos 6 caracteres';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.lock),
-                    labelText: 'Contraseña',
-                    hintText: 'Ingrese su contraseña',
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                        onPressed: _hideText,
-                        icon: Icon(_isObscure
-                            ? Icons.visibility
-                            : Icons.visibility_off))),
-                obscureText: _isObscure,
-              ),
-              const ContextSeparator(),
-              ActionBtn(
-                  title: 'Iniciar Sesión',
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _userLoginFormData = UserLoginForm(
-                          email: _emailController.text,
-                          password: _passwordController.text);
-                      submit(_userLoginFormData);
-                    }
-                  },
-                  fontWeight: FontWeight.bold),
-            ],
-            
-            */
   }
 }
