@@ -59,13 +59,18 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
     _foundExcercises = _allExercises;
     super.initState();
     _setsController.text =
-        widget.exercise.sets != 0 ? widget.exercise.sets.toString() : "";
+        widget.exercise.series != 0 ? widget.exercise.series.toString() : "";
     _repsController.text =
-        widget.exercise.reps != 0 ? widget.exercise.reps.toString() : "";
+        widget.exercise.repetitions != 0 ? widget.exercise.repetitions.toString() : "";
     _commentsController.text = widget.exercise.comment;
 
     _selectedExercise = RoutineExercise(
-        name: "", url: "", category: "", comment: "", sets: 0, reps: 0);
+        name: "",
+        url: "",
+        category: "",
+        comment: "",
+        series: 0,
+        repetitions: 0);
 
     _getAllExercises();
   }
@@ -101,10 +106,9 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
 
   void _saveExercise() {
     if (_formKey.currentState!.validate() && _selectedExercise != null) {
-
       _selectedExercise!.comment = _commentsController.text;
-      _selectedExercise!.sets = int.parse(_setsController.text);
-      _selectedExercise!.reps = int.parse(_repsController.text);
+      _selectedExercise!.series = int.parse(_setsController.text);
+      _selectedExercise!.repetitions = int.parse(_repsController.text);
 
       Navigator.pop(context);
       Navigator.pop(context, _selectedExercise);
@@ -187,9 +191,12 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
                                 subtitle: _foundExcercises[index].category,
                                 onPressed: () {
                                   setState(() {
-                                    _selectedExercise!.name = _foundExcercises[index].name;
-                                    _selectedExercise!.url = _foundExcercises[index].url;
-                                    _selectedExercise!.category = _foundExcercises[index].category;
+                                    _selectedExercise!.name =
+                                        _foundExcercises[index].name;
+                                    _selectedExercise!.url =
+                                        _foundExcercises[index].url;
+                                    _selectedExercise!.category =
+                                        _foundExcercises[index].category;
                                   });
                                   showModalBottomSheet<void>(
                                     isScrollControlled: true,

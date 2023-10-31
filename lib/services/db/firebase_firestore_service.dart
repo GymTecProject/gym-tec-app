@@ -193,8 +193,10 @@ class DatabaseFirebase implements DatabaseInterface {
           .limit(1)
           .get();
       if (routine.docs.isNotEmpty) {
+        routine.docs.first.data();
         return RoutineData.fromJson(routine.docs.first.data());
       }
+
       return null;
     } catch (e) {
       return null;
