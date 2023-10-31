@@ -84,12 +84,11 @@ class _SearchUserState extends State<SearchUser> {
         ));
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-       SnackBar(
+      SnackBar(
         content: Text(state),
         duration: const Duration(seconds: 3),
       ),
     );
-    
   }
 
   @override
@@ -178,7 +177,8 @@ class _SearchUserState extends State<SearchUser> {
                                     IconButton.filledTonal(
                                       icon: const Icon(Icons.fitness_center),
                                       tooltip: 'Crear rutina',
-                                      onPressed: () => _navigateToCreateRoutine(_foundUsers[index].id),
+                                      onPressed: () => _navigateToCreateRoutine(
+                                          _foundUsers[index].id),
                                     ),
                                     if (isAdmin) ...{
                                       const ItemSeparator(),
@@ -216,28 +216,161 @@ class _SearchUserState extends State<SearchUser> {
   }
 
 //TO DO: Agua corporal total, Masa Grasa Corporal, Masa de Musculo Esqueletico, Porcentaje de grasa corporal, Nivel de Grasa Viceral
-  Future openAdminDialog(UserPublicData s) => showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Client: ${s.name}"),
-          content: const Column(mainAxisSize: MainAxisSize.min, children: [
-            //Text("User added measurements"),
-            SizedBox(height: 10),
-            Text("Set Rol"),
-            Text("CRUD Client"),
-            Text("Add Exp Date"),
-          ]),
-          actions: const [
-            Row(
-              children: [
-                SizedBox(
-                  width: 20,
+  Future openAdminDialog(UserPublicData s) {
+    String selectedRole = 'Cliente';
+    String selectedDuration = '(No aumentar)';
+
+    TextStyle myTextStyle = const TextStyle(
+      fontSize: 15,
+      //fontWeight: FontWeight.bold,
+      decoration: TextDecoration.underline,
+      //fontStyle: FontStyle.italic,
+    );
+
+    Widget createRoleButton(
+        String role, bool isSelected, Function() onPressed) {
+      return Expanded(
+        child: InkWell(
+          onTap: () {
+            if (!isSelected) {
+              onPressed();
+            }
+          },
+          child: Container(
+            height: 30.0,
+            decoration: BoxDecoration(
+                color: isSelected ? Colors.green : null,
+                borderRadius: BorderRadius.only(
+                  topLeft: role == 'Admin'
+                      ? const Radius.circular(8.0)
+                      : Radius.zero,
+                  bottomLeft: role == 'Admin'
+                      ? const Radius.circular(8.0)
+                      : Radius.zero,
+                  topRight: role == 'Cliente'
+                      ? const Radius.circular(8.0)
+                      : Radius.zero,
+                  bottomRight: role == 'Cliente'
+                      ? const Radius.circular(8.0)
+                      : Radius.zero,
                 ),
-              ],
-            )
-          ],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 1,
+                  ),
+                ]
+                /*
+                border: Border.all(
+                  color: Colors.grey.withOpacity(0.2), // Outline color
+                  width: 1.0, // Outline width
+                )*/
+                ),
+            child: Center(
+              child: Text(role),
+            ),
+          ),
         ),
       );
+    }
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(s.name),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Divider(),
+                  Text(
+                    "Establecer Rol",
+                    style: myTextStyle,
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      createRoleButton('Admin', selectedRole == 'Admin', () {
+                        setState(() {
+                          selectedRole = 'Admin';
+                        });
+                      }),
+                      createRoleButton(
+                          'Entrenador', selectedRole == 'Entrenador', () {
+                        setState(() {
+                          selectedRole = 'Entrenador';
+                        });
+                      }),
+                      createRoleButton('Cliente', selectedRole == 'Cliente',
+                          () {
+                        setState(() {
+                          selectedRole = 'Cliente';
+                        });
+                      }),
+                    ],
+                  ),
+                  const Divider(),
+                  Text(
+                    "CRUD Client",
+                    style: myTextStyle,
+                  ),
+                  const Divider(),
+                  Text(
+                    "Fecha de Expiración",
+                    style: myTextStyle,
+                  ),
+                  const Text(
+                      "YYYY-MM-DD"), //Mostrar fecha de expiracion de la base de datos
+                  Row(
+                    children: [
+                      const Text("Aumentar tiempo de suscripción: "),
+                      DropdownButton<String>(
+                        value: selectedDuration,
+                        items: ['(No aumentar)', '1 mes', '6 meses', '1 año']
+                            .map((String duration) {
+                          return DropdownMenuItem<String>(
+                            value: duration,
+                            child: Text(duration),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              selectedDuration = newValue;
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      // Print the selected duration
+                      print(
+                          "Selected Duration: $selectedDuration"); //Aplicar en la base de datos y actualizar el texto donde se muestra
+                    },
+                    child: const Text("Aplicar suscripción"),
+                  ),
+                ],
+              ),
+              actions: const [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 20,
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
   Future openDialog(UserPublicData s) => showDialog(
         context: context,
