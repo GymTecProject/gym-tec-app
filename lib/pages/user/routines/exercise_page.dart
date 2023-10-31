@@ -3,20 +3,22 @@ import 'package:flutter/material.dart';
 class ExercisePage extends StatelessWidget {
   final String title;
   final String subtitle;
-  final String imgPath;
   final String url;
   final String comment;
   final String category;
+  final int series;
+  final int repetitions;
 
   const ExercisePage({
-    Key? key,
+    super.key,
     required this.title,
     required this.subtitle,
-    required this.imgPath,
     required this.url,
     required this.comment,
     required this.category,
-  }) : super(key: key);
+    required this.series,
+    required this.repetitions,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,34 +32,37 @@ class ExercisePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Title: $title',
+              title,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              'Subtitle: $subtitle',
+              subtitle,
               style: const TextStyle(fontSize: 18),
             ),
-            const SizedBox(height: 20), // Espacio entre los elementos
-            Image.asset(
-              imgPath,
-              width: double.infinity,
-              height: 200,
-              fit: BoxFit.cover,
+            const SizedBox(height: 20), // Espacio entre el texto y la imagen
+            Text(
+              'Series: $series',
+              style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20), // Espacio entre la imagen y el siguiente texto
             Text(
-              'URL: $url',
+              'Repeticiones: $repetitions',
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 20), // Espacio entre la imagen y el siguiente texto
+            Text(
+              url,
               style: const TextStyle(fontSize: 18),
             ),
             Text(
-              'Comment: $comment',
+              comment,
               style: const TextStyle(fontSize: 18),
             ),
             Text(
-              'Category: $category',
+              category,
               style: const TextStyle(fontSize: 18),
             ),
           ],

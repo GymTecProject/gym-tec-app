@@ -53,8 +53,8 @@ class _CreateWorkoutState extends State<CreateWorkout> {
         url: "",
         category: "",
         comment: "",
-        sets: 0,
-        reps: 0,
+        series: 0,
+        repetitions: 0,
       );
       widget.workout.exercises.add(exercise);
     });
