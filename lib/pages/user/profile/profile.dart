@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
+import 'package:gym_tec/pages/user/profile/measurement.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -49,9 +50,9 @@ class _PageBody extends State<PageBody>  {
   @override
   Widget build(BuildContext context) {
 
-    navigateToMeasurement() {
-      Navigator.pushNamed(context, '/measurement');
-    }
+   void navigateToMeasurement(BuildContext context) {
+  Navigator.of(context).push(MaterialPageRoute(builder: (context) => MeasurementPage()));
+}
 
 
     return Scaffold(
@@ -155,7 +156,12 @@ class _PageBody extends State<PageBody>  {
                   ),
                 SizedBox(
                   height: 75,
-                  child: Center(child: FilledButton(onPressed: navigateToMeasurement, child: const Text('Visualizar'))),
+                  child: Center(
+                    child: FilledButton(
+                      onPressed: () => navigateToMeasurement(context),
+                      child: const Text('Visualizar Cambio'),
+                    ),
+                  ),
                 )],
               ),
             ),
