@@ -1,20 +1,104 @@
 import 'package:flutter/material.dart';
 
-class MeasurementPage extends StatefulWidget {
-  const MeasurementPage({super.key});
+
+class Item {
+  Item({required this.id, required this.expandedValue, required this.headerValue});
+  
+  int id;
+  String expandedValue;
+  String headerValue;
+}
+
+List<Item> generateItems(int numberOfItems) {
+  return List<Item>.generate(numberOfItems, (int index) {
+    return Item(
+      id: index,
+      headerValue: 'Panel $index',
+      expandedValue: 'Este es el detalle del panel $index',
+    );
+  });
+}
+
+class MyCollapsibleList extends StatefulWidget {
+  @override
+  _MyCollapsibleListState createState() => _MyCollapsibleListState();
+}
+
+class _MyCollapsibleListState extends State<MyCollapsibleList> {
+  List<Item> _data = generateItems(8);
 
   @override
-  State<MeasurementPage> createState() => _MeasurementPage();
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Container(
+        child: _buildPanel(),
+      ),
+    );
+  }
+
+  Widget _buildPanel() {
+    return ExpansionPanelList.radio(
+      children: _data.map<ExpansionPanelRadio>((Item item) {
+        return ExpansionPanelRadio(
+          value: item.id,
+          headerBuilder: (BuildContext context, bool isExpanded) {
+            return ListTile(
+              title: Text(item.headerValue),
+            );
+          },
+          body: ListTile(
+            title: Text(item.expandedValue),
+            onTap: () {
+              Navigator.pop(context, item.id); 
+            },
+          ),
+        );
+      }).toList(),
+    );
+  }
 }
+
+class MeasurementPage extends StatefulWidget {
+  const MeasurementPage({Key? key}) : super(key: key);
+
+  @override
+  _MeasurementPage createState() => _MeasurementPage();
+}
+
 
 class _MeasurementPage extends State<MeasurementPage> {
  
+  Future<void> _showSelectionModal(BuildContext context) async {
+    int? selectedValue = await showModalBottomSheet<int>(
+      context: context,
+      builder: (BuildContext context) {
+        return MyCollapsibleList(); 
+      },
+    );
+
+    if (selectedValue != null) {
+      print('El valor seleccionado es $selectedValue');
+    }
+  }
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
         title: const Text('Measurements'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => _showSelectionModal(context),
+            child: const Text(
+              'Comparar medidas',
+              style: TextStyle(
+                color: Color.fromARGB(255, 0, 98, 3), // Color del texto del botón
+              ),
+            ),
+          ),
+        ],
       ),
+      
       body: PageBody(),
     );
   }
