@@ -11,6 +11,8 @@ import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../models/users/user_measurements.dart';
+
 class SearchUser extends StatefulWidget {
   const SearchUser({super.key});
 
@@ -168,8 +170,11 @@ class _SearchUserState extends State<SearchUser> {
                                     IconButton.filledTonal(
                                       icon: const Icon(Icons.straighten),
                                       tooltip: 'Ver medidas',
-                                      onPressed: () {
-                                        openDialog(_foundUsers[index]);
+                                      onPressed: () async {
+                                        openDialog(
+                                            _foundUsers[index],
+                                            await dbService.getUserMeasurements(
+                                                _foundUsers[index].id));
                                       },
                                       // child: const Text('Measurements')
                                     ),
@@ -312,6 +317,14 @@ class _SearchUserState extends State<SearchUser> {
                       }),
                     ],
                   ),
+                  TextButton(
+                    onPressed: () {
+                      // Print the selected duration
+                      print(
+                          "Selected rol: $selectedRole"); //Aplicar en la base de datos y actualizar el texto donde se muestra
+                    },
+                    child: const Text("Aplicar rol"),
+                  ),
                   const Divider(),
                   Text(
                     "CRUD Client",
@@ -372,32 +385,35 @@ class _SearchUserState extends State<SearchUser> {
     );
   }
 
-  Future openDialog(UserPublicData s) => showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Client: ${s.name}"),
-          content: const Column(mainAxisSize: MainAxisSize.min, children: [
-            //Text("User added measurements"),
-            SizedBox(height: 10),
-            Text("Height: "),
-            Text("Weight: "),
-            Text("Water: "),
-            Text("Protein: "),
-            Text("Minerals: "),
-            Text("Fat: "),
-            Text("Skeletal Muscle Mass: "),
-            Text("IMC: "),
-            Text("Fat Percentage: "),
-          ]),
-          actions: const [
-            Row(
-              children: [
-                SizedBox(
-                  width: 20,
-                ),
-              ],
-            )
-          ],
-        ),
-      );
+  Future openDialog(UserPublicData s, UserMeasurements? userMeasurements) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Client: ${s.name}"),
+        content: Column(mainAxisSize: MainAxisSize.min, children: [
+          //Text("User added measurements"),
+          const SizedBox(height: 10),
+          Text("Age: ${userMeasurements?.age}"),
+          Text("Height: ${userMeasurements?.height}"),
+          Text("Weight: ${userMeasurements?.weight}"),
+          Text("Water: "),
+          Text("Protein: "),
+          Text("Minerals: "),
+          Text("Fat: ${userMeasurements?.fatMass}"),
+          Text("Skeletal Muscle Mass: ${userMeasurements?.muscleMass}"),
+          Text("IMC: "),
+          Text("Fat Percentage: ${userMeasurements?.fatPercentage}"),
+        ]),
+        actions: const [
+          Row(
+            children: [
+              SizedBox(
+                width: 20,
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
 }
