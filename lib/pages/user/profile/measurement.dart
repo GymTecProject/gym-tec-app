@@ -1,17 +1,9 @@
 import 'package:flutter/material.dart';
+import '/components/profile/measurement_Item.dart';
 
-
-class Item {
-  Item({required this.id, required this.expandedValue, required this.headerValue});
-  
-  int id;
-  String expandedValue;
-  String headerValue;
-}
-
-List<Item> generateItems(int numberOfItems) {
-  return List<Item>.generate(numberOfItems, (int index) {
-    return Item(
+List<MeasurementItem> generateItems(int numberOfItems) {
+  return List<MeasurementItem>.generate(numberOfItems, (int index) {
+    return MeasurementItem(
       id: index,
       headerValue: 'Panel $index',
       expandedValue: 'Este es el detalle del panel $index',
@@ -20,25 +12,18 @@ List<Item> generateItems(int numberOfItems) {
 }
 
 class MyCollapsibleList extends StatefulWidget {
+  const MyCollapsibleList({super.key});
+
   @override
-  _MyCollapsibleListState createState() => _MyCollapsibleListState();
+  State<MyCollapsibleList> createState() => _MyCollapsibleListState();
 }
 
 class _MyCollapsibleListState extends State<MyCollapsibleList> {
-  List<Item> _data = generateItems(8);
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        child: _buildPanel(),
-      ),
-    );
-  }
+  List<MeasurementItem> _data = generateItems(8);
 
   Widget _buildPanel() {
     return ExpansionPanelList.radio(
-      children: _data.map<ExpansionPanelRadio>((Item item) {
+      children: _data.map<ExpansionPanelRadio>((MeasurementItem item) {
         return ExpansionPanelRadio(
           value: item.id,
           headerBuilder: (BuildContext context, bool isExpanded) {
@@ -49,17 +34,25 @@ class _MyCollapsibleListState extends State<MyCollapsibleList> {
           body: ListTile(
             title: Text(item.expandedValue),
             onTap: () {
-              Navigator.pop(context, item.id); 
+              Navigator.pop(context, item.id);
             },
           ),
         );
       }).toList(),
     );
   }
-}
 
+    @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Container(
+        child: _buildPanel(),
+      ),
+    );
+  }
+}
 class MeasurementPage extends StatefulWidget {
-  const MeasurementPage({Key? key}) : super(key: key);
+  const MeasurementPage({super.key});
 
   @override
   _MeasurementPage createState() => _MeasurementPage();
