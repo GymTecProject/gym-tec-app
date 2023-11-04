@@ -12,6 +12,8 @@ import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../models/users/user_measurements.dart';
+import 'dialog/admin_dialog.dart';
+import 'dialog/measurements_dialog.dart';
 
 class SearchUser extends StatefulWidget {
   const SearchUser({super.key});
@@ -171,10 +173,18 @@ class _SearchUserState extends State<SearchUser> {
                                       icon: const Icon(Icons.straighten),
                                       tooltip: 'Ver medidas',
                                       onPressed: () async {
-                                        openDialog(
-                                            _foundUsers[index],
+                                        final userMeasurements =
                                             await dbService.getUserMeasurements(
-                                                _foundUsers[index].id));
+                                                _foundUsers[index].id);
+                                        // ignore: use_build_context_synchronously
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) =>
+                                              MeasurementsDialog(
+                                            name: _foundUsers[index].name,
+                                            m: userMeasurements,
+                                          ),
+                                        );
                                       },
                                       // child: const Text('Measurements')
                                     ),
@@ -188,13 +198,18 @@ class _SearchUserState extends State<SearchUser> {
                                     if (isAdmin) ...{
                                       const ItemSeparator(),
                                       IconButton.filledTonal(
-                                        icon: const Icon(
-                                            Icons.admin_panel_settings),
-                                        tooltip: 'Admin',
-                                        onPressed: () {
-                                          openAdminDialog(_foundUsers[index]);
-                                        },
-                                      ),
+                                          icon: const Icon(
+                                              Icons.admin_panel_settings),
+                                          tooltip: 'Admin',
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AdminDialog(
+                                                    user: _foundUsers[index]);
+                                              },
+                                            );
+                                          }),
                                     }
                                   ],
                                 ),
@@ -216,203 +231,6 @@ class _SearchUserState extends State<SearchUser> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-//TO DO: Agua corporal total, Masa Grasa Corporal, Masa de Musculo Esqueletico, Porcentaje de grasa corporal, Nivel de Grasa Viceral
-  Future openAdminDialog(UserPublicData s) {
-    String selectedRole = 'Cliente';
-    String selectedDuration = '(No aumentar)';
-
-    TextStyle myTextStyle = const TextStyle(
-      fontSize: 15,
-      //fontWeight: FontWeight.bold,
-      decoration: TextDecoration.underline,
-      //fontStyle: FontStyle.italic,
-    );
-
-    Widget createRoleButton(
-        String role, bool isSelected, Function() onPressed) {
-      return Expanded(
-        child: InkWell(
-          onTap: () {
-            if (!isSelected) {
-              onPressed();
-            }
-          },
-          child: Container(
-            height: 30.0,
-            decoration: BoxDecoration(
-                color: isSelected ? Colors.green : null,
-                borderRadius: BorderRadius.only(
-                  topLeft: role == 'Admin'
-                      ? const Radius.circular(8.0)
-                      : Radius.zero,
-                  bottomLeft: role == 'Admin'
-                      ? const Radius.circular(8.0)
-                      : Radius.zero,
-                  topRight: role == 'Cliente'
-                      ? const Radius.circular(8.0)
-                      : Radius.zero,
-                  bottomRight: role == 'Cliente'
-                      ? const Radius.circular(8.0)
-                      : Radius.zero,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    spreadRadius: 1,
-                    blurRadius: 1,
-                  ),
-                ]
-                /*
-                border: Border.all(
-                  color: Colors.grey.withOpacity(0.2), // Outline color
-                  width: 1.0, // Outline width
-                )*/
-                ),
-            child: Center(
-              child: Text(role),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: Text(s.name),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Divider(),
-                  Text(
-                    "Establecer Rol",
-                    style: myTextStyle,
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      createRoleButton('Admin', selectedRole == 'Admin', () {
-                        setState(() {
-                          selectedRole = 'Admin';
-                        });
-                      }),
-                      createRoleButton(
-                          'Entrenador', selectedRole == 'Entrenador', () {
-                        setState(() {
-                          selectedRole = 'Entrenador';
-                        });
-                      }),
-                      createRoleButton('Cliente', selectedRole == 'Cliente',
-                          () {
-                        setState(() {
-                          selectedRole = 'Cliente';
-                        });
-                      }),
-                    ],
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      // Print the selected duration
-                      print(
-                          "Selected rol: $selectedRole"); //Aplicar en la base de datos y actualizar el texto donde se muestra
-                    },
-                    child: const Text("Aplicar rol"),
-                  ),
-                  const Divider(),
-                  Text(
-                    "CRUD Client",
-                    style: myTextStyle,
-                  ),
-                  const Divider(),
-                  Text(
-                    "Fecha de Expiración",
-                    style: myTextStyle,
-                  ),
-                  const Text(
-                      "YYYY-MM-DD"), //Mostrar fecha de expiracion de la base de datos
-                  Row(
-                    children: [
-                      const Text("Aumentar tiempo de suscripción: "),
-                      DropdownButton<String>(
-                        value: selectedDuration,
-                        items: ['(No aumentar)', '1 mes', '6 meses', '1 año']
-                            .map((String duration) {
-                          return DropdownMenuItem<String>(
-                            value: duration,
-                            child: Text(duration),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            setState(() {
-                              selectedDuration = newValue;
-                            });
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      // Print the selected duration
-                      print(
-                          "Selected Duration: $selectedDuration"); //Aplicar en la base de datos y actualizar el texto donde se muestra
-                    },
-                    child: const Text("Aplicar suscripción"),
-                  ),
-                ],
-              ),
-              actions: const [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 20,
-                    ),
-                  ],
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Future openDialog(UserPublicData s, UserMeasurements? userMeasurements) {
-    return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Client: ${s.name}"),
-        content: Column(mainAxisSize: MainAxisSize.min, children: [
-          //Text("User added measurements"),
-          const SizedBox(height: 10),
-          Text("Age: ${userMeasurements?.age}"),
-          Text("Height: ${userMeasurements?.height}"),
-          Text("Weight: ${userMeasurements?.weight}"),
-          Text("Water: "),
-          Text("Protein: "),
-          Text("Minerals: "),
-          Text("Fat: ${userMeasurements?.fatMass}"),
-          Text("Skeletal Muscle Mass: ${userMeasurements?.muscleMass}"),
-          Text("IMC: "),
-          Text("Fat Percentage: ${userMeasurements?.fatPercentage}"),
-        ]),
-        actions: const [
-          Row(
-            children: [
-              SizedBox(
-                width: 20,
-              ),
-            ],
-          )
-        ],
       ),
     );
   }
