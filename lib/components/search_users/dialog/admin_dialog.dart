@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import '../../../interfaces/database_interface.dart';
@@ -52,7 +53,22 @@ class _AdminDialogState extends State<AdminDialog> {
     } catch (e) {
       Navigator.pop(context, 'Error al cambiar el rol del usuario.');
     }
-    //createUserPrivateData(widget.user.id);
+  }
+
+  Timestamp addMonths(Timestamp ts, int months) {
+    DateTime currentDT = ts.toDate();
+    DateTime futureDT =
+        currentDT.add(Duration(days: months * 30)); //Assumes a month is 30 days
+    return Timestamp.fromDate(futureDT);
+  }
+
+  void saveExpirationDate(int months) {
+    Timestamp current = Timestamp.now(); //Get current date <--------- ??
+    Timestamp futureTS = addMonths(current, months); //Add the selectedDuration
+    print(futureTS.toDate());
+    dbService.updateUserExpirationDate(widget.user.id, futureTS); //Save in DB
+
+    //print(dbService.getExpirationDate(widget.user.id));
   }
 
   Widget createRoleButton(String role, bool isSelected, Function() onPressed) {
@@ -151,11 +167,12 @@ class _AdminDialogState extends State<AdminDialog> {
             "Fecha de Expiración",
             style: myTextStyle,
           ),
-          const Text(
-              "YYYY-MM-DD"), //Mostrar fecha de expiracion de la base de datos
+          Text(widget.user.expirationDate
+              .toDate()
+              .toString()), //Mostrar fecha de expiracion de la base de datos
           Row(
             children: [
-              const Text("Aumentar tiempo de suscripción: "),
+              const Text("Agregar a fecha actual: "),
               DropdownButton<String>(
                 value: selectedDuration,
                 items: ['(No aumentar)', '1 mes', '6 meses', '1 año']
@@ -177,9 +194,19 @@ class _AdminDialogState extends State<AdminDialog> {
           ),
           TextButton(
             onPressed: () {
-              // Print the selected duration
-              print(
-                  "Selected Duration: $selectedDuration"); //Aplicar en la base de datos y actualizar el texto donde se muestra
+              int m = 0;
+              switch (selectedDuration) {
+                case '1 mes':
+                  m = 1;
+                  break;
+                case '6 meses':
+                  m = 6;
+                  break;
+                case '1 año':
+                  m = 12;
+                  break;
+              }
+              saveExpirationDate(m);
             },
             child: const Text("Aplicar suscripción"),
           ),
