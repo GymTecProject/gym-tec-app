@@ -4,6 +4,8 @@ import 'package:gym_tec/models/users/user_data_protected.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../models/users/user_data_private.dart';
+
 class ExpansionTileContent extends StatefulWidget {
   final String id;
 
@@ -16,6 +18,9 @@ class ExpansionTileContent extends StatefulWidget {
 class _ExpansionTileContentState extends State<ExpansionTileContent> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
   UserProtectedData? _userProtectedData;
+  UserPrivateData? _userPrivateData;
+  late String accountTypeString;
+  late String firstLetterCapitalized;
 
   void _getUserProtectedData() async {
     UserProtectedData? userProtectedData =
@@ -27,19 +32,43 @@ class _ExpansionTileContentState extends State<ExpansionTileContent> {
     }
   }
 
+  void _getUserPrivateData() async {
+    UserPrivateData? userPrivateData =
+        await dbService.getUserPrivateData(widget.id);
+    if (userPrivateData != null) {
+      setState(() {
+        _userPrivateData = userPrivateData;
+        accountTypeString =
+            _userPrivateData!.accountType.toString().split('.').last;
+        firstLetterCapitalized =
+            accountTypeString[0].toUpperCase() + accountTypeString.substring(1);
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _getUserProtectedData();
+    _getUserPrivateData();
+  }
+
+  void reloadContent() {
+    _getUserProtectedData();
+    _getUserPrivateData();
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Skeletonizer(
-      enabled: _userProtectedData == null,
-      child: _userProtectedData != null
+      enabled: _userProtectedData == null && _userPrivateData == null,
+      child: _userProtectedData != null && _userPrivateData != null
           ? Column(
               children: [
+                ListTile(
+                  title: Text('Tipo de Usuario: $firstLetterCapitalized'),
+                ),
                 ListTile(
                   title: Text('Correo: ${_userProtectedData!.email}'),
                 ),
@@ -53,6 +82,9 @@ class _ExpansionTileContentState extends State<ExpansionTileContent> {
             )
           : const Column(
               children: [
+                ListTile(
+                  title: Text('Tipo de Usuario: Client'),
+                ),
                 ListTile(
                   title: Text('Correo: example@gmail.com'),
                 ),

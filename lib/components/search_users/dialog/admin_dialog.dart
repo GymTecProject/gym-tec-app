@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
-import '../../../../models/users/user_data_public.dart';
+import 'package:gym_tec/models/users/user_data_private.dart';
+import '../../../interfaces/database_interface.dart';
+import '../../../models/users/user_data_public.dart';
+import '../../../services/dependency_manager.dart';
 
 class AdminDialog extends StatefulWidget {
   final UserPublicData user;
+  final Function() onRoleUpdated;
 
-  const AdminDialog({Key? key, required this.user}) : super(key: key);
+  const AdminDialog({Key? key, required this.user, required this.onRoleUpdated})
+      : super(key: key);
 
   @override
   State<AdminDialog> createState() => _AdminDialogState();
 }
 
 class _AdminDialogState extends State<AdminDialog> {
+  final DatabaseInterface dbService = DependencyManager.databaseService;
+
   String selectedRole = 'Cliente';
   String selectedDuration = '(No aumentar)';
 
@@ -20,6 +27,33 @@ class _AdminDialogState extends State<AdminDialog> {
     decoration: TextDecoration.underline,
     //fontStyle: FontStyle.italic,
   );
+
+  void savePrivateData(String str) async {
+    dynamic type;
+    switch (str) {
+      case "Entrenador":
+        type = AccountType.trainer;
+        break;
+      case "Admin":
+        type = AccountType.administrator;
+        break;
+      default:
+        type = AccountType.client;
+        break;
+    }
+
+    final privateData = UserPrivateData(accountType: type);
+    try {
+      await dbService.createUserPrivateData(
+          widget.user.id, privateData.toJson());
+      if (!mounted) return;
+      Navigator.pop(context, 'Rol actualizado con éxito.');
+      widget.onRoleUpdated();
+    } catch (e) {
+      Navigator.pop(context, 'Error al cambiar el rol del usuario.');
+    }
+    //createUserPrivateData(widget.user.id);
+  }
 
   Widget createRoleButton(String role, bool isSelected, Function() onPressed) {
     return Expanded(
@@ -101,6 +135,7 @@ class _AdminDialogState extends State<AdminDialog> {
           TextButton(
             onPressed: () {
               // Print the selected duration
+              savePrivateData(selectedRole);
               print(
                   "Selected rol: $selectedRole"); //Aplicar en la base de datos y actualizar el texto donde se muestra
             },

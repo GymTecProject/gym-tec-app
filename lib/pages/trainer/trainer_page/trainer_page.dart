@@ -4,64 +4,34 @@ import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
-import 'package:gym_tec/interfaces/auth_interface.dart';
-import 'package:gym_tec/interfaces/database_interface.dart';
-import 'package:gym_tec/models/users/user_data_private.dart';
-
 import 'package:gym_tec/pages/trainer/trainer_page/weekly_edit.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/search_user.dart';
-import 'package:gym_tec/services/dependency_manager.dart';
 
 class TrainerPage extends StatefulWidget {
   const TrainerPage({super.key});
   @override
-  _TrainerPageState createState() => _TrainerPageState();
+  State<TrainerPage> createState() => _TrainerPageState();
 }
 
 class _TrainerPageState extends State<TrainerPage> {
   static const cardData = [
     {
-      'title': 'Clients',
-      'subtitle': 'Edit/Update Client\'s routines',
+      'title': 'Clientes',
+      'subtitle': 'Ver y editar rutinas de clientes',
       'imgPath': 'assets/images/h-clients.png',
       'page': SearchUser(),
     },
     {
-      'title': 'Set Weekly Challenges',
+      'title': 'Seleccionar Weekly Challenges',
       'subtitle': 'Edit/Set Weekly Challenges',
       'imgPath': 'assets/images/h1-1.png',
       'page': EditChallenges(),
     },
   ];
 
-  UserPrivateData? _userPrivateData;
-  final DatabaseInterface dbService = DependencyManager.databaseService;
-  final AuthInterface authService = DependencyManager.authService;
-  static String userType = "Trainer";
-
-  void _fetchUserPrivateData() async {
-    final user = authService.currentUser;
-    if (user == null) return;
-    final userPrivateData = await dbService.getUserPrivateData(user.uid);
-    if (userPrivateData == null) return;
-
-    setState(() {
-      _userPrivateData = userPrivateData;
-      switch (_userPrivateData?.accountType) {
-        case AccountType.administrator:
-          userType = 'Admin';
-        case AccountType.trainer:
-          userType = 'Trainer';
-        default:
-          userType = '';
-      }
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    _fetchUserPrivateData();
   }
 
   @override
@@ -71,11 +41,11 @@ class _TrainerPageState extends State<TrainerPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.all(15.0),
+          const Padding(
+            padding: EdgeInsets.all(15.0),
             child: Text(
-              '$userType\'s Tab',
-              style: const TextStyle(
+              'Trainer\'s Tab',
+              style: TextStyle(
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
               ),
