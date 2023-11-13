@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserMeasurements {
   int age;
-  int fatMass;
-  int fatPercentage;
-  int height;
-  int muscleMass;
-  int weight;
+  double fatMass;
+  double fatPercentage;
+  double height;
+  double muscleMass;
+  double weight;
 
   UserMeasurements({
     required this.age,

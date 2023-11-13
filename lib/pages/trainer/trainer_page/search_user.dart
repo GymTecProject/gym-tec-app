@@ -6,6 +6,7 @@ import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
+import 'package:gym_tec/pages/trainer/measures/create_measures.dart';
 import 'package:gym_tec/pages/trainer/routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
@@ -187,6 +188,17 @@ class _SearchUserState extends State<SearchUser> {
                                         );
                                       },
                                       // child: const Text('Measurements')
+                                    ),
+                                    const ItemSeparator(),
+                                    IconButton.filledTonal(
+                                      icon: const Icon(Icons.straighten),
+                                      tooltip: 'Registrar medidas',
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => CreateMeasuresPage()),
+                                        );
+                                      },
                                     ),
                                     const ItemSeparator(),
                                     IconButton.filledTonal(
