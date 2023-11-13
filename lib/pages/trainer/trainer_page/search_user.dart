@@ -96,6 +96,23 @@ class _SearchUserState extends State<SearchUser> {
     );
   }
 
+  void _navigateToRegisterMeasures(String clientId) async {
+    dynamic state = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CreateMeasuresPage(
+            clientId: clientId,
+          ),
+        ));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(state),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Skeletonizer(
@@ -193,12 +210,10 @@ class _SearchUserState extends State<SearchUser> {
                                     IconButton.filledTonal(
                                       icon: const Icon(Icons.straighten),
                                       tooltip: 'Registrar medidas',
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => CreateMeasuresPage()),
-                                        );
-                                      },
+
+                                      onPressed: () => _navigateToRegisterMeasures(
+                                          _foundUsers[index].id),
+                                      
                                     ),
                                     const ItemSeparator(),
                                     IconButton.filledTonal(

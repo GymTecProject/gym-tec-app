@@ -36,12 +36,14 @@ class UserMeasurements {
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() {
+    return {
         'age': age,
         'fatMass': fatMass,
         'fatPercentage': fatPercentage,
         'height': height,
         'muscleMass': muscleMass,
         'weight': weight,
-      };
+    };  
+  }
 }
