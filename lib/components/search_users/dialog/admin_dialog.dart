@@ -1,9 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import '../../../interfaces/database_interface.dart';
 import '../../../models/users/user_data_public.dart';
 import '../../../services/dependency_manager.dart';
+import 'admin_public_data.dart';
+import 'admin_protected_data.dart';
 
 class AdminDialog extends StatefulWidget {
   final UserPublicData user;
@@ -21,13 +22,6 @@ class _AdminDialogState extends State<AdminDialog> {
 
   String selectedRole = 'Cliente';
   String selectedDuration = '(No aumentar)';
-
-  TextStyle myTextStyle = const TextStyle(
-    fontSize: 15,
-    //fontWeight: FontWeight.bold,
-    decoration: TextDecoration.underline,
-    //fontStyle: FontStyle.italic,
-  );
 
   void savePrivateData(String str) async {
     dynamic type;
@@ -53,22 +47,6 @@ class _AdminDialogState extends State<AdminDialog> {
     } catch (e) {
       Navigator.pop(context, 'Error al cambiar el rol del usuario.');
     }
-  }
-
-  Timestamp addMonths(Timestamp ts, int months) {
-    DateTime currentDT = ts.toDate();
-    DateTime futureDT =
-        currentDT.add(Duration(days: months * 30)); //Assumes a month is 30 days
-    return Timestamp.fromDate(futureDT);
-  }
-
-  void saveExpirationDate(int months) {
-    Timestamp current = Timestamp.now(); //Get current date <--------- ??
-    Timestamp futureTS = addMonths(current, months); //Add the selectedDuration
-    print(futureTS.toDate());
-    dbService.updateUserExpirationDate(widget.user.id, futureTS); //Save in DB
-
-    //print(dbService.getExpirationDate(widget.user.id));
   }
 
   Widget createRoleButton(String role, bool isSelected, Function() onPressed) {
@@ -119,96 +97,90 @@ class _AdminDialogState extends State<AdminDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.user.name),
+      title: Center(
+          child: Text(
+        widget.user.name,
+        style: Theme.of(context).textTheme.headlineLarge,
+      )),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Divider(),
-          Text(
-            "Establecer Rol",
-            style: myTextStyle,
-          ),
-          const SizedBox(height: 10),
-          Row(
+          Column(
             children: [
-              createRoleButton('Admin', selectedRole == 'Admin', () {
-                setState(() {
-                  selectedRole = 'Admin';
-                });
-              }),
-              createRoleButton('Entrenador', selectedRole == 'Entrenador', () {
-                setState(() {
-                  selectedRole = 'Entrenador';
-                });
-              }),
-              createRoleButton('Cliente', selectedRole == 'Cliente', () {
-                setState(() {
-                  selectedRole = 'Cliente';
-                });
-              }),
-            ],
-          ),
-          TextButton(
-            onPressed: () {
-              // Print the selected duration
-              savePrivateData(selectedRole);
-              print(
-                  "Selected rol: $selectedRole"); //Aplicar en la base de datos y actualizar el texto donde se muestra
-            },
-            child: const Text("Aplicar rol"),
-          ),
-          const Divider(),
-          Text(
-            "CRUD Client",
-            style: myTextStyle,
-          ),
-          const Divider(),
-          Text(
-            "Fecha de Expiración",
-            style: myTextStyle,
-          ),
-          Text(widget.user.expirationDate
-              .toDate()
-              .toString()), //Mostrar fecha de expiracion de la base de datos
-          Row(
-            children: [
-              const Text("Agregar a fecha actual: "),
-              DropdownButton<String>(
-                value: selectedDuration,
-                items: ['(No aumentar)', '1 mes', '6 meses', '1 año']
-                    .map((String duration) {
-                  return DropdownMenuItem<String>(
-                    value: duration,
-                    child: Text(duration),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
+              Text(
+                "Establecer Rol",
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  createRoleButton('Admin', selectedRole == 'Admin', () {
                     setState(() {
-                      selectedDuration = newValue;
+                      selectedRole = 'Admin';
                     });
-                  }
+                  }),
+                  createRoleButton('Entrenador', selectedRole == 'Entrenador',
+                      () {
+                    setState(() {
+                      selectedRole = 'Entrenador';
+                    });
+                  }),
+                  createRoleButton('Cliente', selectedRole == 'Cliente', () {
+                    setState(() {
+                      selectedRole = 'Cliente';
+                    });
+                  }),
+                ],
+              ),
+              TextButton(
+                onPressed: () {
+                  // Print the selected duration
+                  savePrivateData(selectedRole);
+                  print(
+                      "Selected rol: $selectedRole"); //Aplicar en la base de datos y actualizar el texto donde se muestra
                 },
+                child: const Text("Aplicar rol"),
               ),
             ],
           ),
-          TextButton(
-            onPressed: () {
-              int m = 0;
-              switch (selectedDuration) {
-                case '1 mes':
-                  m = 1;
-                  break;
-                case '6 meses':
-                  m = 6;
-                  break;
-                case '1 año':
-                  m = 12;
-                  break;
-              }
-              saveExpirationDate(m);
-            },
-            child: const Text("Aplicar suscripción"),
+          const Divider(),
+          Column(
+            children: [
+              Text(
+                "Actualizar datos",
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: InputChip(
+                      label: const Text("Datos Públicos"),
+                      showCheckmark: false,
+                      selected: false,
+                      onPressed: () {
+                        Navigator.of(context).push(PageRouteBuilder(
+                            opaque: false,
+                            pageBuilder: (BuildContext context, _, __) =>
+                                AdminPublicData(user: widget.user)));
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: InputChip(
+                      label: const Text("Datos Protegidos"),
+                      showCheckmark: false,
+                      selected: false,
+                      onPressed: () {
+                        Navigator.of(context).push(PageRouteBuilder(
+                            opaque: false,
+                            pageBuilder: (BuildContext context, _, __) =>
+                                AdminProtectedData(uid: widget.user.id)));
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),
