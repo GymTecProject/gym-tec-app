@@ -13,11 +13,11 @@ abstract class DatabaseInterface {
   Future<UserProtectedData?> getUserProtectedData(String uid);
   Future<UserPrivateData?> getUserPrivateData(String uid);
   Future<String?> createUserPublicData(String uid, Map<String, dynamic> data);
-  Future<String?> createUserProtectedData(
-      String uid, Map<String, dynamic> data);
+  Future<String?> createUserProtectedData(String uid, Map<String, dynamic> data);
   Future<String?> createUserPrivateData(String uid, Map<String, dynamic> data);
   Future<RoutineData?> getUserRoutine(String uid);
   Future<List<UserMeasurements>?>  getUserMeasurements(String uid);
+  Future<UserMeasurements?>  getUserLatestMeasurement(String uid);
   Future<String?> createMeasurement(String uid, Map<String, dynamic> data);
   Future<List<Exercise>> getExercises();
   Future<RoutineData?> getUserLastestRoutine(String uid);

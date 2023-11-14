@@ -116,6 +116,24 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
+  Future<UserMeasurements?> getUserLatestMeasurement(String uid) async {
+    try {
+      var userMeasurement = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('measurements')
+          .orderBy('date', descending: true)
+          .limit(1)
+          .get();
+      if (userMeasurement.docs.isNotEmpty) {
+        return UserMeasurements.fromJson(userMeasurement.docs.first.data());
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
   Future<List<UserMeasurements>?> getUserMeasurements(String uid) async {
     try {
       var userMeasurements = await FirebaseFirestore.instance
@@ -124,13 +142,11 @@ class DatabaseFirebase implements DatabaseInterface {
           .collection('measurements')
           .get();
       if (userMeasurements.docs.isNotEmpty) {
-
         return userMeasurements.docs.map((doc) {
           final data = doc.data();
           data.addAll({'uid': doc.id});
           return UserMeasurements.fromJson(data);
         }).toList();
-
       }
       return null;
     } on FirebaseException {
