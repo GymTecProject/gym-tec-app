@@ -187,7 +187,7 @@ class _SearchUserState extends State<SearchUser> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
-                                    IconButton.filledTonal(
+                                    /*IconButton.filledTonal(
                                       icon: const Icon(Icons.straighten),
                                       tooltip: 'Ver medidas',
                                       onPressed: () async {
@@ -205,7 +205,7 @@ class _SearchUserState extends State<SearchUser> {
                                         );
                                       },
                                       // child: const Text('Measurements')
-                                    ),
+                                    ),*/ //This will be implemented different better later.
                                     const ItemSeparator(),
                                     IconButton.filledTonal(
                                       icon: const Icon(Icons.straighten),

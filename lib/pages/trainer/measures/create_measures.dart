@@ -37,6 +37,7 @@ class _CreateMeasuresPageState extends State<CreateMeasuresPage> {
     final clientId = widget.clientId;
 
     final measurementData = UserMeasurements(
+      date: Timestamp.now(),
       age: 0,
       fatMass: fatMass,
       fatPercentage: fatPercentage,
@@ -45,7 +46,7 @@ class _CreateMeasuresPageState extends State<CreateMeasuresPage> {
       weight: weight,
     );
     try {
-      await dbService.createUserMeasurements(clientId, measurementData.toJson());
+      await dbService.createMeasurement(clientId, measurementData.toJson());
       if (!mounted) return;
       Navigator.pop(context, 'Rutina creada con éxito');
     } catch (e) {
