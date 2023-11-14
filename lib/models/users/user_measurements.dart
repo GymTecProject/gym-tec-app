@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserMeasurements {
+  Timestamp? date;
   int age;
   double fatMass;
   double fatPercentage;
@@ -9,6 +10,7 @@ class UserMeasurements {
   double weight;
 
   UserMeasurements({
+    required this.date,
     required this.age,
     required this.fatMass,
     required this.fatPercentage,
@@ -17,7 +19,7 @@ class UserMeasurements {
     required this.weight,
   });
 
-  factory UserMeasurements.fromMap(Map<String, dynamic> map) {
+  factory UserMeasurements.fromJson(Map<String, dynamic> map) {
     final Timestamp a = map['age'] as Timestamp;
     final DateTime birthdate =
         DateTime.fromMicrosecondsSinceEpoch(a.microsecondsSinceEpoch);
@@ -27,6 +29,7 @@ class UserMeasurements {
     final int ageInYears = (period.inDays / 365).floor();
 
     return UserMeasurements(
+      date: map['date'],
       age: ageInYears,
       fatMass: map['fatMass'],
       fatPercentage: map['fatPercentage'],
@@ -36,8 +39,8 @@ class UserMeasurements {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
+        'date': date,
         'age': age,
         'fatMass': fatMass,
         'fatPercentage': fatPercentage,
@@ -46,4 +49,4 @@ class UserMeasurements {
         'weight': weight,
     };  
   }
-}
+
