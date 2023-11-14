@@ -10,16 +10,17 @@ import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../components/search_users/dialog/admin_dialog.dart';
 import '../../../components/search_users/dialog/measurements_dialog.dart';
 
-class SearchUser extends StatefulWidget {
-  const SearchUser({super.key});
+class AdminSearchUser extends StatefulWidget {
+  const AdminSearchUser({super.key});
 
   @override
-  State<SearchUser> createState() => _SearchUserState();
+  State<AdminSearchUser> createState() => _AdminSearchUserState();
 }
 
-class _SearchUserState extends State<SearchUser> {
+class _AdminSearchUserState extends State<AdminSearchUser> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
   final AuthInterface authService = DependencyManager.authService;
 
@@ -27,7 +28,7 @@ class _SearchUserState extends State<SearchUser> {
   late List<UserPublicData> _allUsers = [];
 
   void _getAllUsers() async {
-    List<UserPublicData>? users = await dbService.getActiveUsers();
+    List<UserPublicData>? users = await dbService.getAllUsers();
     if (users != null) {
       setState(() {
         _allUsers = users;
@@ -175,6 +176,24 @@ class _SearchUserState extends State<SearchUser> {
                                       onPressed: () => _navigateToCreateRoutine(
                                           _foundUsers[index].id),
                                     ),
+                                    const ItemSeparator(),
+                                    IconButton.filledTonal(
+                                        icon: const Icon(
+                                            Icons.admin_panel_settings),
+                                        tooltip: 'Admin',
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AdminDialog(
+                                                user: _foundUsers[index],
+                                                onRoleUpdated: () {
+                                                  _getAllUsers();
+                                                },
+                                              );
+                                            },
+                                          );
+                                        }),
                                   ],
                                 ),
                               )

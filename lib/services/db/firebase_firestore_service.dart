@@ -249,5 +249,18 @@ class DatabaseFirebase implements DatabaseInterface {
     }
   }
 
+  @override
+  Future<String?> updateUserExpirationDate(
+      String uid, Timestamp newExpirationDate) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'expirationDate': newExpirationDate,
+      });
+      return uid;
+    } on FirebaseException {
+      return null;
+    }
+  }
+
   DatabaseFirebase();
 }
