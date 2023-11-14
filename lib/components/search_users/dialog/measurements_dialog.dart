@@ -4,7 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 class MeasurementsDialog extends StatefulWidget {
   final String name;
-  final UserMeasurements? m;
+  final List<UserMeasurements>? m;
 
   const MeasurementsDialog({super.key, required this.name, required this.m});
 
@@ -26,12 +26,12 @@ class _MeasurementsDialog extends State<MeasurementsDialog> {
           children: [
             // Text("User added measurements"),
             const SizedBox(height: 10),
-            Text("Edad: ${widget.m?.age}"),
-            Text("Estatura: ${widget.m?.height} cm"),
-            Text("Peso: ${widget.m?.weight} kg"),
-            Text("Masa Muscular: ${widget.m?.muscleMass} kg"),
-            Text("Masa Grasa: ${widget.m?.fatMass} kg"),
-            Text("Porcentaje de Grasa: ${widget.m?.fatPercentage}%"),
+            Text("Edad: ${widget.m?.last.age}"),
+            Text("Estatura: ${widget.m?.last.height} cm"),
+            Text("Peso: ${widget.m?.last.weight} kg"),
+            Text("Masa Muscular: ${widget.m?.last.muscleMass} kg"),
+            Text("Masa Grasa: ${widget.m?.last.fatMass} kg"),
+            Text("Porcentaje de Grasa: ${widget.m?.last.fatPercentage}%"),
             // Water, IMC, Proteins, Minerals missing
           ],
         ),

@@ -17,13 +17,13 @@ class _AdminPageState extends State<AdminPage> {
   static const cardData = [
     {
       'title': 'Clientes',
-      'subtitle': 'Ver y editar rutinas, permisos, información de clientes',
+      'subtitle': 'Rutinas, permisos, e información',
       'imgPath': 'assets/images/h-clients.png',
       'page': AdminSearchUser(),
     },
     {
-      'title': 'Seleccionar Weekly Challenges',
-      'subtitle': 'Edit/Set Weekly Challenges',
+      'title': 'Seleccionar Retos Semanales',
+      'subtitle': 'Editar/Establecer',
       'imgPath': 'assets/images/h1-1.png',
       'page': EditChallenges(),
     },
@@ -44,7 +44,7 @@ class _AdminPageState extends State<AdminPage> {
           const Padding(
             padding: EdgeInsets.all(15.0),
             child: Text(
-              'Admin\'s Tab',
+              'Panel de Admins',
               style: TextStyle(
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
