@@ -17,7 +17,8 @@ abstract class DatabaseInterface {
       String uid, Map<String, dynamic> data);
   Future<String?> createUserPrivateData(String uid, Map<String, dynamic> data);
   Future<RoutineData?> getUserRoutine(String uid);
-  Future<UserMeasurements?> getUserMeasurements(String uid);
+  Future<List<UserMeasurements>?>  getUserMeasurements(String uid);
+  Future<String?> createMeasurement(String uid, Map<String, dynamic> data);
   Future<List<Exercise>> getExercises();
   Future<RoutineData?> getUserLastestRoutine(String uid);
   Future<String?> createRoutine(Map<String, dynamic> data);
