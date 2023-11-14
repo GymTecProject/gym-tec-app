@@ -278,5 +278,43 @@ class DatabaseFirebase implements DatabaseInterface {
     }
   }
 
+  @override
+  Stream<UserProtectedData> getUserProtectedDataStream(String uid) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('protected')
+        .doc('data')
+        .snapshots()
+        .map((snapshot) {
+          if (snapshot.exists) {
+            var data = snapshot.data()!;
+            data.addAll({'uid': snapshot.id});
+            return UserProtectedData.fromMap(data);
+          }
+          return null;
+        })
+        .where((data) => data != null)
+        .cast<UserProtectedData>();
+  }
+
+  @override
+  Stream<UserPrivateData> getUserPrivateDataStream(String uid) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('private')
+        .doc('data')
+        .snapshots()
+        .map((snapshot) {
+          if (snapshot.exists) {
+            return UserPrivateData.fromMap(snapshot.data()!);
+          }
+          return null;
+        })
+        .where((data) => data != null)
+        .cast<UserPrivateData>();
+  }
+
   DatabaseFirebase();
 }
