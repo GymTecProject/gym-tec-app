@@ -693,6 +693,7 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+<<<<<<< refs/remotes/origin/main
   source_map_stack_trace:
     dependency: transitive
     description:
@@ -709,6 +710,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.10.12"
+=======
+>>>>>>> Visualization of weekly challenges and PinPut added
   smart_auth:
     dependency: transitive
     description:
