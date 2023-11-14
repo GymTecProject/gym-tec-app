@@ -23,6 +23,7 @@ abstract class DatabaseInterface {
   Future<List<Exercise>> getExercises();
   Future<RoutineData?> getUserLastestRoutine(String uid);
   Future<String?> createRoutine(Map<String, dynamic> data);
+  Future<String?> createUserMeasurements(String uid, Map<String, dynamic> data);
   Future<String?> updateUserExpirationDate(
       String uid, Timestamp newExpirationDate);
 }

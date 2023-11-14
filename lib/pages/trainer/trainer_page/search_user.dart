@@ -5,6 +5,7 @@ import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
+import 'package:gym_tec/pages/trainer/measures/create_measures.dart';
 import 'package:gym_tec/pages/trainer/routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
@@ -63,6 +64,23 @@ class _SearchUserState extends State<SearchUser> {
         context,
         MaterialPageRoute(
           builder: (context) => CreateRoutinePage(
+            clientId: clientId,
+          ),
+        ));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(state),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void _navigateToRegisterMeasures(String clientId) async {
+    dynamic state = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CreateMeasuresPage(
             clientId: clientId,
           ),
         ));
@@ -149,7 +167,7 @@ class _SearchUserState extends State<SearchUser> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
-                                    IconButton.filledTonal(
+                                    /*IconButton.filledTonal(
                                       icon: const Icon(Icons.straighten),
                                       tooltip: 'Ver medidas',
                                       onPressed: () async {
@@ -167,6 +185,15 @@ class _SearchUserState extends State<SearchUser> {
                                         );
                                       },
                                       // child: const Text('Measurements')
+                                    ),*/ //This will be implemented different better later.
+                                    const ItemSeparator(),
+                                    IconButton.filledTonal(
+                                      icon: const Icon(Icons.straighten),
+                                      tooltip: 'Registrar medidas',
+
+                                      onPressed: () => _navigateToRegisterMeasures(
+                                          _foundUsers[index].id),
+                                      
                                     ),
                                     const ItemSeparator(),
                                     IconButton.filledTonal(
