@@ -101,16 +101,36 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
-  Future<UserMeasurements?> getUserMeasurements(String uid) async {
+  Future<String?> createMeasurement(
+      String uid, Map<String, dynamic> data) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('measurements')
+          .add(data);
+      return uid;
+    } on FirebaseException {
+      return null;
+    }
+  }
+
+  @override
+  Future<List<UserMeasurements>?> getUserMeasurements(String uid) async {
     try {
       var userMeasurements = await FirebaseFirestore.instance
           .collection('users')
           .doc(uid)
           .collection('measurements')
-          .doc('data')
           .get();
-      if (userMeasurements.exists) {
-        return UserMeasurements.fromMap(userMeasurements.data()!);
+      if (userMeasurements.docs.isNotEmpty) {
+
+        return userMeasurements.docs.map((doc) {
+          final data = doc.data();
+          data.addAll({'uid': doc.id});
+          return UserMeasurements.fromJson(data);
+        }).toList();
+
       }
       return null;
     } on FirebaseException {
