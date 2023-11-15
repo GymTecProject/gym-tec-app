@@ -152,10 +152,7 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                       showDialog(
                                         context: context,
                                         builder: (context) {
-                                          return AdminDialog(
-                                            user: user,
-                                            onRoleUpdated: () {},
-                                          );
+                                          return AdminDialog(user: user);
                                         },
                                       );
                                     }),

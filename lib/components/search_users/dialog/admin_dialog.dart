@@ -8,10 +8,8 @@ import 'admin_protected_data.dart';
 
 class AdminDialog extends StatefulWidget {
   final UserPublicData user;
-  final Function() onRoleUpdated;
 
-  const AdminDialog({Key? key, required this.user, required this.onRoleUpdated})
-      : super(key: key);
+  const AdminDialog({Key? key, required this.user}) : super(key: key);
 
   @override
   State<AdminDialog> createState() => _AdminDialogState();
@@ -43,7 +41,6 @@ class _AdminDialogState extends State<AdminDialog> {
           widget.user.id, privateData.toJson());
       if (!mounted) return;
       Navigator.pop(context, 'Rol actualizado con éxito.');
-      widget.onRoleUpdated();
     } catch (e) {
       Navigator.pop(context, 'Error al cambiar el rol del usuario.');
     }

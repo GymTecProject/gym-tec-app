@@ -79,6 +79,7 @@ class _AdminProtectedDataState extends State<AdminProtectedData> {
                   onPressed: () {
                     updateProtectedData(); // Save button pressed
                     Navigator.pop(context);
+                    Navigator.pop(context);
                   },
                 ),
                 IconButton.filledTonal(
