@@ -29,7 +29,7 @@ class UserPrivateData {
       case AccountType.trainer:
         return 'Entrenador';
       case AccountType.administrator:
-        return 'Administrador';
+        return 'Admin';
       default:
         return 'Desconocido';
     }

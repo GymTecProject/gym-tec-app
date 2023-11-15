@@ -18,8 +18,24 @@ class AdminDialog extends StatefulWidget {
 class _AdminDialogState extends State<AdminDialog> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
 
+  late Future<String> _roleFuture;
   String selectedRole = 'Cliente';
-  String selectedDuration = '(No aumentar)';
+
+  Future<String> _getUserPrivateData() async {
+    UserPrivateData? userPrivateData =
+        await dbService.getUserPrivateData(widget.user.id);
+    if (userPrivateData != null) {
+      selectedRole = userPrivateData.getAccountTypeString();
+      return selectedRole;
+    }
+    return 'Cliente'; // Default value if no data is found
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _roleFuture = _getUserPrivateData();
+  }
 
   void savePrivateData(String str) async {
     dynamic type;
@@ -76,13 +92,7 @@ class _AdminDialogState extends State<AdminDialog> {
                   spreadRadius: 1,
                   blurRadius: 1,
                 ),
-              ]
-              /*
-                border: Border.all(
-                  color: Colors.grey.withOpacity(0.2), // Outline color
-                  width: 1.0, // Outline width
-                )*/
-              ),
+              ]),
           child: Center(
             child: Text(role),
           ),
@@ -99,88 +109,99 @@ class _AdminDialogState extends State<AdminDialog> {
         widget.user.name,
         style: Theme.of(context).textTheme.headlineLarge,
       )),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Column(
-            children: [
-              Text(
-                "Establecer Rol",
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  createRoleButton('Admin', selectedRole == 'Admin', () {
-                    setState(() {
-                      selectedRole = 'Admin';
-                    });
-                  }),
-                  createRoleButton('Entrenador', selectedRole == 'Entrenador',
-                      () {
-                    setState(() {
-                      selectedRole = 'Entrenador';
-                    });
-                  }),
-                  createRoleButton('Cliente', selectedRole == 'Cliente', () {
-                    setState(() {
-                      selectedRole = 'Cliente';
-                    });
-                  }),
-                ],
-              ),
-              TextButton(
-                onPressed: () {
-                  // Print the selected duration
-                  savePrivateData(selectedRole);
-                  print(
-                      "Selected rol: $selectedRole"); //Aplicar en la base de datos y actualizar el texto donde se muestra
-                },
-                child: const Text("Aplicar rol"),
-              ),
-            ],
-          ),
-          const Divider(),
-          Column(
-            children: [
-              Text(
-                "Actualizar datos",
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: InputChip(
-                      label: const Text("Datos Públicos"),
-                      showCheckmark: false,
-                      selected: false,
-                      onPressed: () {
-                        Navigator.of(context).push(PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (BuildContext context, _, __) =>
-                                AdminPublicData(user: widget.user)));
-                      },
+      content: FutureBuilder<String>(
+          future: _roleFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            //String selectedRole = snapshot.data ?? 'Cliente';
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      "Establecer Rol",
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
-                  ),
-                  Expanded(
-                    child: InputChip(
-                      label: const Text("Datos Protegidos"),
-                      showCheckmark: false,
-                      selected: false,
-                      onPressed: () {
-                        Navigator.of(context).push(PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (BuildContext context, _, __) =>
-                                AdminProtectedData(uid: widget.user.id)));
-                      },
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        createRoleButton('Admin', selectedRole == 'Admin', () {
+                          setState(() {
+                            selectedRole = 'Admin';
+                          });
+                        }),
+                        createRoleButton(
+                            'Entrenador', selectedRole == 'Entrenador', () {
+                          setState(() {
+                            selectedRole = 'Entrenador';
+                          });
+                        }),
+                        createRoleButton('Cliente', selectedRole == 'Cliente',
+                            () {
+                          setState(() {
+                            selectedRole = 'Cliente';
+                          });
+                        }),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
+                    TextButton(
+                      onPressed: () {
+                        // Print the selected duration
+                        savePrivateData(selectedRole);
+                        //print("Selected rol: $selectedRole"); //Aplicar en la base de datos y actualizar el texto donde se muestra
+                      },
+                      child: const Text("Aplicar rol"),
+                    ),
+                  ],
+                ),
+                const Divider(),
+                Column(
+                  children: [
+                    Text(
+                      "Actualizar datos",
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: InputChip(
+                            label: const Text("Datos Públicos"),
+                            showCheckmark: false,
+                            selected: false,
+                            onPressed: () {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                  opaque: false,
+                                  pageBuilder: (BuildContext context, _, __) =>
+                                      AdminPublicData(user: widget.user)));
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: InputChip(
+                            label: const Text("Datos Protegidos"),
+                            showCheckmark: false,
+                            selected: false,
+                            onPressed: () {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                  opaque: false,
+                                  pageBuilder: (BuildContext context, _, __) =>
+                                      AdminProtectedData(uid: widget.user.id)));
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            );
+          }),
       actions: const [
         Row(
           children: [
