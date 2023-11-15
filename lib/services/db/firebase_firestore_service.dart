@@ -5,6 +5,7 @@ import 'package:gym_tec/models/excercises/exercise.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_protected.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
+import 'package:gym_tec/models/weekly_challeges/weekly_challenge.dart';
 
 import '../../models/users/user_measurements.dart';
 
@@ -131,6 +132,7 @@ class DatabaseFirebase implements DatabaseInterface {
     } catch (e) {
       return null;
     }
+    return null;
   }
 
   @override
@@ -241,6 +243,37 @@ class DatabaseFirebase implements DatabaseInterface {
   Future<String?> createRoutine(Map<String, dynamic> data) async {
     try {
       await FirebaseFirestore.instance.collection('routines').add(data);
+      return 'success';
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Weekly challenges =========================
+
+  @override
+  Future<WeeklyChallenge?> getLatestWeeklyChallenge() async {
+    try {
+      var weeklyChallenge = await FirebaseFirestore.instance
+          .collection('weeklyChallenges')
+          .orderBy('date', descending: true)
+          .limit(1)
+          .get();
+      if (weeklyChallenge.docs.isNotEmpty) {
+        return WeeklyChallenge.fromJson(weeklyChallenge.docs.first.data());
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<String?> createWeeklyChallenge(Map<String, dynamic> data) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('weeklyChallenges')
+          .add(data);
       return 'success';
     } catch (e) {
       return null;
