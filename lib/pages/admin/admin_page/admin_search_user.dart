@@ -5,22 +5,22 @@ import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
-import 'package:gym_tec/pages/trainer/measures/create_measures.dart';
 import 'package:gym_tec/pages/trainer/routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../components/search_users/dialog/admin_dialog.dart';
 import '../../../components/search_users/dialog/measurements_dialog.dart';
 
-class SearchUser extends StatefulWidget {
-  const SearchUser({super.key});
+class AdminSearchUser extends StatefulWidget {
+  const AdminSearchUser({super.key});
 
   @override
-  State<SearchUser> createState() => _SearchUserState();
+  State<AdminSearchUser> createState() => _AdminSearchUserState();
 }
 
-class _SearchUserState extends State<SearchUser> {
+class _AdminSearchUserState extends State<AdminSearchUser> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
   final AuthInterface authService = DependencyManager.authService;
 
@@ -28,7 +28,7 @@ class _SearchUserState extends State<SearchUser> {
   late List<UserPublicData> _allUsers = [];
 
   void _getAllUsers() async {
-    List<UserPublicData>? users = await dbService.getActiveUsers();
+    List<UserPublicData>? users = await dbService.getAllUsers();
     if (users != null) {
       setState(() {
         _allUsers = users;
@@ -64,23 +64,6 @@ class _SearchUserState extends State<SearchUser> {
         context,
         MaterialPageRoute(
           builder: (context) => CreateRoutinePage(
-            clientId: clientId,
-          ),
-        ));
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(state),
-        duration: const Duration(seconds: 3),
-      ),
-    );
-  }
-
-  void _navigateToRegisterMeasures(String clientId) async {
-    dynamic state = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CreateMeasuresPage(
             clientId: clientId,
           ),
         ));
@@ -167,7 +150,7 @@ class _SearchUserState extends State<SearchUser> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
-                                    /*IconButton.filledTonal(
+                                    IconButton.filledTonal(
                                       icon: const Icon(Icons.straighten),
                                       tooltip: 'Ver medidas',
                                       onPressed: () async {
@@ -185,15 +168,6 @@ class _SearchUserState extends State<SearchUser> {
                                         );
                                       },
                                       // child: const Text('Measurements')
-                                    ),*/ //This will be implemented different better later.
-                                    const ItemSeparator(),
-                                    IconButton.filledTonal(
-                                      icon: const Icon(Icons.straighten),
-                                      tooltip: 'Registrar medidas',
-
-                                      onPressed: () => _navigateToRegisterMeasures(
-                                          _foundUsers[index].id),
-                                      
                                     ),
                                     const ItemSeparator(),
                                     IconButton.filledTonal(
@@ -202,6 +176,24 @@ class _SearchUserState extends State<SearchUser> {
                                       onPressed: () => _navigateToCreateRoutine(
                                           _foundUsers[index].id),
                                     ),
+                                    const ItemSeparator(),
+                                    IconButton.filledTonal(
+                                        icon: const Icon(
+                                            Icons.admin_panel_settings),
+                                        tooltip: 'Admin',
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AdminDialog(
+                                                user: _foundUsers[index],
+                                                onRoleUpdated: () {
+                                                  _getAllUsers();
+                                                },
+                                              );
+                                            },
+                                          );
+                                        }),
                                   ],
                                 ),
                               )

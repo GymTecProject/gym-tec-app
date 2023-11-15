@@ -100,6 +100,20 @@ class DatabaseFirebase implements DatabaseInterface {
       return null;
     }
   }
+  
+  @override
+  Future<String?> updateUserExpirationDate(
+      String uid, Timestamp newExpirationDate) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'expirationDate': newExpirationDate,
+      });
+      return uid;
+    } on FirebaseException {
+
+      return null;
+    }
+  }
 
   @override
   Future<String?> createMeasurement(
@@ -151,6 +165,22 @@ class DatabaseFirebase implements DatabaseInterface {
         }).toList();
       }
       return null;
+    } on FirebaseException {
+      return null;
+    }
+  }
+
+  @override
+  Future<String?> createUserMeasurements(
+      String uid, Map<String, dynamic> data) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('measurements')
+          .doc('data')
+          .set(data);
+      return uid;
     } on FirebaseException {
       return null;
     }
@@ -231,8 +261,10 @@ class DatabaseFirebase implements DatabaseInterface {
           .limit(1)
           .get();
       if (routine.docs.isNotEmpty) {
+        routine.docs.first.data();
         return RoutineData.fromJson(routine.docs.first.data());
       }
+
       return null;
     } catch (e) {
       return null;
@@ -248,6 +280,7 @@ class DatabaseFirebase implements DatabaseInterface {
       return null;
     }
   }
+
 
   // Weekly challenges =========================
 
@@ -276,9 +309,8 @@ class DatabaseFirebase implements DatabaseInterface {
           .add(data);
       return 'success';
     } catch (e) {
-      return null;
-    }
-  }
+
+
 
   DatabaseFirebase();
 }

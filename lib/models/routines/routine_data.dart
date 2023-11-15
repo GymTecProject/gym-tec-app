@@ -23,7 +23,7 @@ class RoutineData {
       date: map['date'],
       clientId: map['clientId'],
       trainerId: map['trainerId'],
-      comments: map['comments'],
+      comments: (map['comments'] as List).map((item) => item.toString()).toList(),
       workout: (map['workout'] as List)
           .map((item) => Workout.fromJson(item))
           .toList(),

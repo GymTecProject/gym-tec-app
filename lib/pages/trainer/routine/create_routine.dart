@@ -6,12 +6,17 @@ import 'package:gym_tec/components/ui/buttons/expandable_fab.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
+import 'package:gym_tec/interfaces/auth_interface.dart';
+import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/routines/routine_data.dart';
 import 'package:gym_tec/models/routines/routine_workout.dart';
 import 'package:gym_tec/pages/trainer/routine/create_workout.dart';
+import 'package:gym_tec/services/dependency_manager.dart';
 
 class CreateRoutinePage extends StatefulWidget {
-  const CreateRoutinePage({super.key});
+  final String clientId;
+
+  const CreateRoutinePage({super.key, required this.clientId});
 
   @override
   State<CreateRoutinePage> createState() => _CreateRoutinePageState();
@@ -30,6 +35,9 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
   late final RoutineData routine;
   List<Widget> buttons = [];
   int amountOfWeeks = 1;
+  final ScrollController _scrollController = ScrollController();
+  final DatabaseInterface dbService = DependencyManager.databaseService;
+  final AuthInterface authService = DependencyManager.authService;
 
   @override
   void initState() {
@@ -44,51 +52,60 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
     );
   }
 
-  void addWorkout(Workout workout, String buttonName) {
-    setState(() {
-      routine.workout.add(workout);
-      for(int i in workout.days){
-        weekDays[i] = buttonName;
-      }
-    });
+  void addWorkout(String buttonName) {
+    setState(() {});
   }
 
   void addCollection() {
     setState(() {
-      if (buttons.length < 7) {
-        final buttonName = 'Colección ${buttons.length + 1}';
-        buttons.add(
-          CardBtn(
-            title: buttonName,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CreateWorkout(
-                    buttonName: buttonName,
-                    weekDays: weekDays,
-                    callBack: addWorkout,
-                  ),
-                ),
-              );
-            },
-          ),
+      if (routine.workout.length < 7) {
+        final Workout newWorkout = Workout(
+          exercises: [],
+          days: [],
         );
+        routine.workout.add(newWorkout);
       }
+      _scrollToEnd();
     });
   }
 
   void removeCollection() {
     setState(() {
-      if (buttons.isNotEmpty) {
-        buttons.removeLast();
+      if (routine.workout.isNotEmpty) {
+        routine.workout.removeLast();
       }
     });
   }
 
-  void saveRoutine() {
-    bool saveState = true; // firestore service call
-    Navigator.pop(context, saveState);
+  void saveRoutine() async {
+    final trainerId = authService.currentUser!.uid;
+    final clientId = widget.clientId;
+    final expirationDate =
+        DateTime.now().add(Duration(days: (amountOfWeeks * 7)));
+
+    final routineData = RoutineData(
+      date: Timestamp.now(),
+      clientId: clientId,
+      trainerId: trainerId,
+      comments: [],
+      workout: routine.workout,
+      expirationDate: Timestamp.fromDate(expirationDate),
+    );
+    try {
+      await dbService.createRoutine(routineData.toJson());
+      if (!mounted) return;
+      Navigator.pop(context, 'Rutina creada con éxito');
+    } catch (e) {
+      Navigator.pop(context, 'Error al crear la rutina');
+    }
+  }
+
+  void _scrollToEnd() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.fastOutSlowIn,
+    );
   }
 
   @override
@@ -136,7 +153,7 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
             ),
             const ContextSeparator(),
             Visibility(
-                visible: buttons.isEmpty,
+                visible: routine.workout.isEmpty,
                 child: RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(children: [
@@ -158,12 +175,27 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
             Flexible(
               child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: buttons.length + 1,
+                controller: _scrollController,
+                itemCount: routine.workout.length + 1,
                 itemBuilder: (context, index) {
-                  if (index != buttons.length) {
+                  if (index != routine.workout.length) {
+                    final buttonName = 'Colección ${index + 1}';
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: buttons[index],
+                      child: CardBtn(
+                        title: buttonName,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreateWorkout(
+                                  buttonName: buttonName,
+                                  weekDays: weekDays,
+                                  workout: routine.workout[index]),
+                            ),
+                          );
+                        },
+                      ),
                     );
                   }
                   return null;

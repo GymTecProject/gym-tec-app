@@ -4,7 +4,7 @@ import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
-import 'package:gym_tec/pages/user/routines/routine_data.dart';
+import 'package:gym_tec/models/routines/routine_workout.dart';
 import 'package:gym_tec/pages/user/routines/routine_day.dart';
 
 import '../../../services/dependency_manager.dart';
@@ -17,15 +17,40 @@ class RoutinePage extends StatefulWidget {
 }
 
 class _RoutinePageState extends State<RoutinePage> {
-
   final DatabaseInterface dbService = DependencyManager.databaseService;
   final AuthInterface authService = DependencyManager.authService;
 
+  List<Workout> workout = [];
 
   void _fetchRoutineData() async {
     final user = authService.currentUser;
+
     if (user == null) return;
-    setState(() {});
+    final routineData = await dbService.getUserLastestRoutine(user.uid);
+    if (routineData == null) {
+      workout = [];
+    }
+    setState(() {
+      workout = routineData!.workout;
+    });
+  }
+
+  String _getDaysTitle(List<int> days) {
+    String title = '';
+    if (days.length > 1) {
+      title = 'Días: ';
+    } else {
+      title = 'Día: ';
+    }
+    for (int i = 0; i < days.length; i++) {
+      if (i == days.length - 1) {
+        if(days.length > 1) title = title.replaceRange(title.length - 2, null, ' y ');
+        title += days[i].toString();
+      } else {
+        title += '${days[i]}, ';
+      }
+    }
+    return title;
   }
 
   @override
@@ -33,27 +58,6 @@ class _RoutinePageState extends State<RoutinePage> {
     super.initState();
     _fetchRoutineData();
   }
-  
-  final List<RoutineData> routines = [
-    RoutineData(
-      title: 'Rutina 1',
-      subtitle: 'Rutina de principiante',
-      imgPath: 'assets/images/h2-1.png',
-    ),
-    RoutineData(
-      title: 'Rutina 2',
-      subtitle: 'Rutina de intermedio',
-      imgPath: 'assets/images/h2-1.png',
-    ),
-    RoutineData(
-      title: 'Rutina 3',
-      subtitle: 'Rutina de avanzado',
-      imgPath: 'assets/images/h2-1.png',
-    ),
-  ];
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -70,21 +74,22 @@ class _RoutinePageState extends State<RoutinePage> {
                 child: Column(
                   children: [
                     ListView.separated(
-                      itemCount: routines.length,
+                      itemCount: workout.length,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       separatorBuilder: (context, index) =>
                           const ContextSeparator(),
                       itemBuilder: (BuildContext context, int index) {
                         return CardBtn(
-                          title: routines[index].title,
-                          subtitle: routines[index].subtitle,
-                          imgPath: routines[index].imgPath,
+                          title: _getDaysTitle(workout[index].days),
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (BuildContext context) {
-                                  return RoutineDay();
+                                  return RoutineDay(
+                                    title: _getDaysTitle(workout[index].days),
+                                    exercises: workout[index].exercises,
+                                  );
                                 },
                               ),
                             );

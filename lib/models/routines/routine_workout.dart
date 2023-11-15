@@ -10,7 +10,7 @@ class Workout {
 
   factory Workout.fromJson(Map<String, dynamic> json) {
     return Workout(
-      days: json['days'],
+      days: (json['days'] as List).map((e) => e as int).toList(),
       exercises: (json['exercises'] as List)
           .map((item) => RoutineExercise.fromJson(item))
           .toList(),
