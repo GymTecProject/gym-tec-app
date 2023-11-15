@@ -73,8 +73,6 @@ class _AdminPublicDataState extends State<AdminPublicData> {
                   onPressed: () {
                     updatePublicData(); // Save button pressed
                     Navigator.pop(context);
-                    Navigator.pop(context);
-                    Navigator.pop(context); //Close all the tabs
                   },
                 ),
                 IconButton.filledTonal(

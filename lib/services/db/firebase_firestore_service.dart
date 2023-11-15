@@ -316,5 +316,19 @@ class DatabaseFirebase implements DatabaseInterface {
         .cast<UserPrivateData>();
   }
 
+  @override
+  Stream<List<UserPublicData>> getAllUsersStream() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data.addAll({'uid': doc.id});
+        return UserPublicData.fromJson(data);
+      }).toList();
+    });
+  }
+
   DatabaseFirebase();
 }

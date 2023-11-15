@@ -29,4 +29,5 @@ abstract class DatabaseInterface {
       String uid, Timestamp newExpirationDate);
   Stream<UserPrivateData> getUserPrivateDataStream(String uid);
   Stream<UserProtectedData> getUserProtectedDataStream(String uid);
+  Stream<List<UserPublicData>> getAllUsersStream();
 }
