@@ -1,4 +1,3 @@
-import 'package:gym_tec/models/excercises/exercise.dart';
 
 class RoutineExercise {
   String name;

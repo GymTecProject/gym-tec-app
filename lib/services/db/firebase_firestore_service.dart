@@ -100,7 +100,7 @@ class DatabaseFirebase implements DatabaseInterface {
       return null;
     }
   }
-  
+
   @override
   Future<String?> updateUserExpirationDate(
       String uid, Timestamp newExpirationDate) async {
@@ -110,13 +110,12 @@ class DatabaseFirebase implements DatabaseInterface {
       });
       return uid;
     } on FirebaseException {
-
       return null;
     }
   }
 
   @override
-  Future<String?> createMeasurement(
+  Future<String?> createUserMeasurement(
       String uid, Map<String, dynamic> data) async {
     try {
       await FirebaseFirestore.instance
@@ -171,22 +170,6 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
-  Future<String?> createUserMeasurements(
-      String uid, Map<String, dynamic> data) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('measurements')
-          .doc('data')
-          .set(data);
-      return uid;
-    } on FirebaseException {
-      return null;
-    }
-  }
-
-  @override
   Future<String?> createUserPublicData(
       String uid, Map<String, dynamic> data) async {
     try {
@@ -231,6 +214,7 @@ class DatabaseFirebase implements DatabaseInterface {
 
   @override
   Future<RoutineData?> getUserRoutine(String uid) async {
+    //TODO: implement getUserRoutine
     return null;
   }
 
@@ -281,7 +265,6 @@ class DatabaseFirebase implements DatabaseInterface {
     }
   }
 
-
   // Weekly challenges =========================
 
   @override
@@ -304,13 +287,12 @@ class DatabaseFirebase implements DatabaseInterface {
   @override
   Future<String?> createWeeklyChallenge(Map<String, dynamic> data) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('weeklyChallenges')
-          .add(data);
+      await FirebaseFirestore.instance.collection('weeklyChallenges').add(data);
       return 'success';
     } catch (e) {
-
-
+      return null;
+    }
+  }
 
   DatabaseFirebase();
 }

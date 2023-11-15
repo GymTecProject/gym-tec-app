@@ -163,7 +163,7 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                           builder: (context) =>
                                               MeasurementsDialog(
                                             name: _foundUsers[index].name,
-                                            m: userMeasurements,
+                                            m: userMeasurements?[0],
                                           ),
                                         );
                                       },

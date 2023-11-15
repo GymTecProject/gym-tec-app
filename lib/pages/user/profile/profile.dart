@@ -51,7 +51,7 @@ class _PageBody extends State<PageBody>  {
   Widget build(BuildContext context) {
 
    void navigateToMeasurement(BuildContext context) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => MeasurementPage()));
+  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MeasurementPage()));
 }
 
 

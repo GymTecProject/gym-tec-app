@@ -11,7 +11,6 @@ import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../components/search_users/dialog/measurements_dialog.dart';
 
 class SearchUser extends StatefulWidget {
   const SearchUser({super.key});

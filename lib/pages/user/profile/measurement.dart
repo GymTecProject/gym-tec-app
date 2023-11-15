@@ -19,7 +19,7 @@ class MyCollapsibleList extends StatefulWidget {
 }
 
 class _MyCollapsibleListState extends State<MyCollapsibleList> {
-  List<MeasurementItem> _data = generateItems(8);
+  final List<MeasurementItem> _data = generateItems(8);
 
   Widget _buildPanel() {
     return ExpansionPanelList.radio(
@@ -65,7 +65,7 @@ class _MeasurementPage extends State<MeasurementPage> {
     int? selectedValue = await showModalBottomSheet<int>(
       context: context,
       builder: (BuildContext context) {
-        return MyCollapsibleList(); 
+        return const MyCollapsibleList(); 
       },
     );
 
@@ -123,7 +123,7 @@ class PageBody extends StatelessWidget  {
   //mainAxisSpacing: 10,
   crossAxisCount: 4,
   childAspectRatio: (2),
-  children: <Widget>[
+  children: const <Widget>[
   ],
 );
   }
