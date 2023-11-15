@@ -5,6 +5,7 @@ import 'package:gym_tec/models/excercises/exercise.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_protected.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
+import 'package:gym_tec/models/weekly_challeges/weekly_challenge.dart';
 
 import '../../models/users/user_measurements.dart';
 
@@ -99,6 +100,20 @@ class DatabaseFirebase implements DatabaseInterface {
       return null;
     }
   }
+  
+  @override
+  Future<String?> updateUserExpirationDate(
+      String uid, Timestamp newExpirationDate) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'expirationDate': newExpirationDate,
+      });
+      return uid;
+    } on FirebaseException {
+
+      return null;
+    }
+  }
 
   @override
   Future<String?> createMeasurement(
@@ -131,6 +146,7 @@ class DatabaseFirebase implements DatabaseInterface {
     } catch (e) {
       return null;
     }
+    return null;
   }
 
   @override
@@ -265,18 +281,36 @@ class DatabaseFirebase implements DatabaseInterface {
     }
   }
 
+
+  // Weekly challenges =========================
+
   @override
-  Future<String?> updateUserExpirationDate(
-      String uid, Timestamp newExpirationDate) async {
+  Future<WeeklyChallenge?> getLatestWeeklyChallenge() async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(uid).update({
-        'expirationDate': newExpirationDate,
-      });
-      return uid;
-    } on FirebaseException {
+      var weeklyChallenge = await FirebaseFirestore.instance
+          .collection('weeklyChallenges')
+          .orderBy('date', descending: true)
+          .limit(1)
+          .get();
+      if (weeklyChallenge.docs.isNotEmpty) {
+        return WeeklyChallenge.fromJson(weeklyChallenge.docs.first.data());
+      }
+      return null;
+    } catch (e) {
       return null;
     }
   }
+
+  @override
+  Future<String?> createWeeklyChallenge(Map<String, dynamic> data) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('weeklyChallenges')
+          .add(data);
+      return 'success';
+    } catch (e) {
+
+
 
   DatabaseFirebase();
 }
