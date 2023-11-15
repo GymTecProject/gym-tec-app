@@ -4,13 +4,24 @@ import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:pinput/pinput.dart';
 
 class pinInput extends StatefulWidget {
-  const pinInput({super.key});
+  final String pin;
+
+  const pinInput({super.key,
+    required this.pin});
 
   @override
   State<pinInput> createState() => _pinInput();
 }
 
 class _pinInput extends State<pinInput> {
+  final TextEditingController _pinController = TextEditingController();
+
+  @override
+  void dispose() {
+    _pinController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
@@ -55,6 +66,7 @@ class _pinInput extends State<pinInput> {
             ),
             ContextSeparator(),
             Pinput(
+              controller: _pinController,
               length: 4,
               defaultPinTheme: defaultPinTheme,
               focusedPinTheme: defaultPinTheme.copyWith(
@@ -70,9 +82,19 @@ class _pinInput extends State<pinInput> {
               pinAnimationType: PinAnimationType.fade,
               // onCompleted: (pin) => print(pin), // Descomenta esto si necesitas el valor del pin
             ),
-            ContextSeparator(),
-            ContextSeparator(),
-            ActionBtn(title: "Validar Reto", onPressed: ()=>{}, fontSize: 24,)
+            const ContextSeparator(),
+            const ContextSeparator(),
+            ActionBtn(title: "Validar Reto", onPressed: (){
+              String pinValue = _pinController.text;
+                // Aquí puedes hacer lo que necesites con el valor del PIN
+              print(pinValue); // Por ejemplo, imprimirlo en la consola
+              if (widget.pin == pinValue){
+                Navigator.pop(context, 'Reto validado exitosamente');
+              }
+              else{
+                Navigator.pop(context, 'El PIN suministrado es incorrecto');
+              }
+            }, fontSize: 24,)
           ],
         ),
       ),
