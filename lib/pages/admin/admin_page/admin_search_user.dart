@@ -127,7 +127,7 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                       context: context,
                                       builder: (context) => MeasurementsDialog(
                                         name: user.name,
-                                        m: userMeasurements?.last,
+                                        m: userMeasurements?.first,
                                       ),
                                     );
                                   },
