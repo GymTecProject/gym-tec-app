@@ -30,7 +30,7 @@ class _EditChallengesState extends State<EditChallenges> {
     weeklyChallenge =  weeklyChallenge = WeeklyChallenge(
       date: Timestamp.now(),
       pin: generatePIN(),
-      exercises: [],
+      exercises: [], successfulUsers: [],
     );
     _getWeeklyChallenge();
     super.initState();
@@ -172,7 +172,7 @@ class _EditChallengesState extends State<EditChallenges> {
                       weeklyChallenge = WeeklyChallenge(
                         date: Timestamp.now(),
                         pin: generatePIN(),
-                        exercises: [],
+                        exercises: [], successfulUsers: [],
                       );
                     });
 

@@ -26,7 +26,7 @@ class _WeeklyRoutinesState extends State<WeeklyRoutines> {
     weeklyChallenge =  weeklyChallenge = WeeklyChallenge(
       date: Timestamp.now(),
       pin: "0000",
-      exercises: [],
+      exercises: [], successfulUsers: [],
     );
     _getWeeklyChallenge();
     super.initState();
