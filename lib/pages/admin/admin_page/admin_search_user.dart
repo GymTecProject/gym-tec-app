@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
-import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
@@ -8,7 +7,6 @@ import 'package:gym_tec/models/users/user_data_public.dart';
 import 'package:gym_tec/pages/trainer/routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../components/search_users/dialog/admin_dialog.dart';
 import '../../../components/search_users/dialog/measurements_dialog.dart';
@@ -90,7 +88,6 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
             child: StreamBuilder<List<UserPublicData>>(
               stream: _usersStream,
               builder: (context, snapshot) {
-                // Handle connection states, errors as before...
                 List<UserPublicData> users =
                     snapshot.hasData ? snapshot.data! : [];
                 List<UserPublicData> filteredUsers =
@@ -130,7 +127,7 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                       context: context,
                                       builder: (context) => MeasurementsDialog(
                                         name: user.name,
-                                        m: userMeasurements,
+                                        m: userMeasurements?.last,
                                       ),
                                     );
                                   },

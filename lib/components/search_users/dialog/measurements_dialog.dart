@@ -24,16 +24,15 @@ class _MeasurementsDialog extends State<MeasurementsDialog> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Text("User added measurements"),
             const SizedBox(height: 10),
-
-            Text("Edad: ${widget.m?.birthdate}"),
+            Text("Edad: ${widget.m?.age} años"),
             Text("Estatura: ${widget.m?.height} cm"),
             Text("Peso: ${widget.m?.weight} kg"),
             Text("Masa Muscular: ${widget.m?.muscleMass} kg"),
             Text("Porcentaje de Grasa: ${widget.m?.fatPercentage}%"),
-
-            // Water, IMC, Proteins, Minerals missing
+            Text("Agua: ${widget.m?.water}%"),
+            Text("Músculo esquelético: ${widget.m?.skeletalMuscle} kg"),
+            Text("Nivel de grasa visceral: ${widget.m?.viceralFatLevel}"),
           ],
         ),
         actions: const [
@@ -60,6 +59,9 @@ class _MeasurementsDialog extends State<MeasurementsDialog> {
             Text("Masa Muscular: xx kg"),
             Text("Masa Grasa: xx kg"),
             Text("Porcentaje de Grasa: xx%"),
+            Text("Agua: xx%"),
+            Text("Músculo esquelético: xx kg"),
+            Text("Nivel de grasa visceral: xx"),
             // Water, IMC, Proteins, Minerals missing
           ],
         ),
