@@ -26,8 +26,13 @@ class _EditChallengesState extends State<EditChallenges> {
 
   @override
   void initState(){
-    super.initState();
+    weeklyChallenge =  weeklyChallenge = WeeklyChallenge(
+      date: Timestamp.now(),
+      pin: generatePIN(),
+      exercises: [],
+    );
     _getWeeklyChallenge();
+    super.initState();
   }
 
   void _getWeeklyChallenge() async {
@@ -35,15 +40,6 @@ class _EditChallengesState extends State<EditChallenges> {
     if (lastWeeklyChallenge != null) {
       setState(() {
         weeklyChallenge = lastWeeklyChallenge;
-      });
-    }
-    else{
-      setState(() {
-        weeklyChallenge = WeeklyChallenge(
-        date: Timestamp.now(),
-        pin: generatePIN(),
-        exercises: [],
-      );
       });
     }
   }

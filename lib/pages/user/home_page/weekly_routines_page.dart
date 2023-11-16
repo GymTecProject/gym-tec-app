@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/buttons/action_btn.dart';
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
@@ -16,13 +17,18 @@ class WeeklyRoutines extends StatefulWidget {
 }
 
 class _WeeklyRoutinesState extends State<WeeklyRoutines> {
-  late final WeeklyChallenge weeklyChallenge;
+  late WeeklyChallenge weeklyChallenge;
   final DatabaseInterface dbService = DependencyManager.databaseService;
 
   @override
   void initState(){
-    super.initState();
+    weeklyChallenge =  weeklyChallenge = WeeklyChallenge(
+      date: Timestamp.now(),
+      pin: "0000",
+      exercises: [],
+    );
     _getWeeklyChallenge();
+    super.initState();
   }
 
   void _getWeeklyChallenge() async {
@@ -65,11 +71,22 @@ class _WeeklyRoutinesState extends State<WeeklyRoutines> {
       child:ContentPadding(
         child:Column(
           children: [
+            Visibility(
+                visible: weeklyChallenge.exercises.isEmpty,
+                child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(children: [
+                    TextSpan(
+                      text: 'No hay retos actualmente.',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      )),
+                    ]))),
             ListView.separated(
-              itemCount: 3,
+              itemCount: weeklyChallenge.exercises.length,
               shrinkWrap: true,
               separatorBuilder: (context, index) =>
-                const ContextSeparator(),
+              const ContextSeparator(),
               itemBuilder: (context, index) => CardBtn(
                 title: weeklyChallenge.exercises[index].name.toString(), 
                 onPressed: ()=>{

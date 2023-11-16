@@ -28,6 +28,7 @@ class AddWeeklyChallenges extends StatefulWidget {
 
 class _AddWeeklyChallenges extends State<AddWeeklyChallenges> {
   List<Widget> buttons = [];
+  List<bool> challengesCreated = [false, false, false];
   final ScrollController _scrollController = ScrollController();
   final DatabaseInterface dbService = DependencyManager.databaseService;
 
@@ -65,6 +66,7 @@ class _AddWeeklyChallenges extends State<AddWeeklyChallenges> {
     setState(() {
       if (widget.weeklyChallenge.exercises.isNotEmpty) {
         widget.weeklyChallenge.exercises.removeLast();
+        challengesCreated[widget.weeklyChallenge.exercises.length] = false;
       }
     });
   }
@@ -138,6 +140,7 @@ class _AddWeeklyChallenges extends State<AddWeeklyChallenges> {
                           if (exercise != null) {
                             setState(() {
                               widget.weeklyChallenge.exercises[index] = exercise;
+                              challengesCreated[index] = true;
                             });
                           }
                         },
@@ -152,12 +155,9 @@ class _AddWeeklyChallenges extends State<AddWeeklyChallenges> {
         ),
       ),
       floatingActionButton: ExpandableFab(distance: 100, children: [
-        Visibility(
-          visible: widget.weeklyChallenge.exercises.length == 3,
-          child: ActionFab(
-          onPressed: saveWeeklyChallenges,
+        ActionFab(
+          onPressed: (widget.weeklyChallenge.exercises.length == 3 && challengesCreated[0] && challengesCreated[1] && challengesCreated[2]) ? saveWeeklyChallenges : null,
           icon: const Icon(Icons.save),
-          ),
         ),
         ActionFab(
           onPressed: removeWorkout,
