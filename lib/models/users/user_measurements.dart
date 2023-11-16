@@ -1,26 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class UserMeasurements {
-  Timestamp? date;
-  int age;
-  double fatMass;
-  double fatPercentage;
-  double height;
-  double muscleMass;
-  double weight;
+class UserMeasurement {
+  Timestamp date;
+  Timestamp birthdate;
+  num age;
+  num water;
+  num fatPercentage;
+  num skeletalMuscle;
+  num muscleMass;
+  num height;
+  num weight;
+  num viceralFatLevel;
 
-  UserMeasurements({
+  UserMeasurement({
     required this.date,
+    required this.birthdate,
     required this.age,
-    required this.fatMass,
+    required this.water,
     required this.fatPercentage,
-    required this.height,
+    required this.skeletalMuscle,
     required this.muscleMass,
+    required this.height,
     required this.weight,
+    required this.viceralFatLevel,
   });
 
-  factory UserMeasurements.fromJson(Map<String, dynamic> map) {
-    final Timestamp a = map['age'] as Timestamp;
+  factory UserMeasurement.fromJson(Map<String, dynamic> map) {
+
+    final Timestamp a = map['birthdate'];
     final DateTime birthdate =
         DateTime.fromMicrosecondsSinceEpoch(a.microsecondsSinceEpoch);
 
@@ -28,25 +35,31 @@ class UserMeasurements {
     final Duration period = now.difference(birthdate);
     final int ageInYears = (period.inDays / 365).floor();
 
-    return UserMeasurements(
+
+    return UserMeasurement(
       date: map['date'],
+      birthdate: map['birthdate'],
       age: ageInYears,
-      fatMass: map['fatMass'],
+      water: map['water'],
       fatPercentage: map['fatPercentage'],
-      height: map['height'],
+      skeletalMuscle: map['skeletalMuscle'],
       muscleMass: map['muscleMass'],
+      height: map['height'],
       weight: map['weight'],
+      viceralFatLevel: map['viceralFatLevel'],
     );
   }
 
   Map<String, dynamic> toJson() => {
         'date': date,
+        'birthdate': birthdate,
         'age': age,
-        'fatMass': fatMass,
+        'water': water,
         'fatPercentage': fatPercentage,
-        'height': height,
+        'skeletalMuscle': skeletalMuscle,
         'muscleMass': muscleMass,
+        'height': height,
         'weight': weight,
-    };  
-  }
-
+        'viceralFatLevel': viceralFatLevel,
+      };
+}

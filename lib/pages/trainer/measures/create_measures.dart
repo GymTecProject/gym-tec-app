@@ -10,7 +10,7 @@ class CreateMeasuresPage extends StatefulWidget {
   final String clientId;
 
   const CreateMeasuresPage({super.key, required this.clientId});
-  
+
   @override
   State<CreateMeasuresPage> createState() => _CreateMeasuresPageState();
 }
@@ -32,21 +32,24 @@ class _CreateMeasuresPageState extends State<CreateMeasuresPage> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
   final AuthInterface authService = DependencyManager.authService;
 
-  
-  void saveMeasure(age, fatMass, fatPercentage, height, muscleMass, weight ) async {
+  void saveMeasure(
+      age, fatMass, fatPercentage, height, muscleMass, weight) async {
     final clientId = widget.clientId;
 
-    final measurementData = UserMeasurements(
+    final measurementData = UserMeasurement(
       date: Timestamp.now(),
-      age: 0,
-      fatMass: fatMass,
+      birthdate: Timestamp.fromDate(DateTime.utc(1999, 12, 31)),
       fatPercentage: fatPercentage,
       height: height,
       muscleMass: muscleMass,
       weight: weight,
+      water: 0,
+      age: 0,
+      viceralFatLevel: 0,
+      skeletalMuscle: 0
     );
     try {
-      await dbService.createMeasurement(clientId, measurementData.toJson());
+      await dbService.createUserMeasurement(clientId, measurementData.toJson());
       if (!mounted) return;
       Navigator.pop(context, 'Rutina creada con éxito');
     } catch (e) {
@@ -58,24 +61,34 @@ class _CreateMeasuresPageState extends State<CreateMeasuresPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registrar Medidas'),
+        title: const Text('Registrar Medidas'),
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           children: <Widget>[
-            _buildNumberField('Masa corporal', (value) => setState(() => fatMass = double.tryParse(value!))),
-            _buildNumberField('Porcentaje de grasa corporal', (value) => setState(() => fatPercentage = double.tryParse(value!))),
-            _buildNumberField('Altura', (value) => setState(() => height = double.tryParse(value!))),
-            _buildNumberField('Masa muscular', (value) => setState(() => muscleMass = double.tryParse(value!))),
-            _buildNumberField('Peso', (value) => setState(() => weight = double.tryParse(value!))),
+            _buildNumberField('Masa corporal',
+                (value) => setState(() => fatMass = double.tryParse(value!))),
+            _buildNumberField(
+                'Porcentaje de grasa corporal',
+                (value) =>
+                    setState(() => fatPercentage = double.tryParse(value!))),
+            _buildNumberField('Altura',
+                (value) => setState(() => height = double.tryParse(value!))),
+            _buildNumberField(
+                'Masa muscular',
+                (value) =>
+                    setState(() => muscleMass = double.tryParse(value!))),
+            _buildNumberField('Peso',
+                (value) => setState(() => weight = double.tryParse(value!))),
             ElevatedButton(
-              child: Text('Registrar nuevas medidas'),
+              child: const Text('Registrar nuevas medidas'),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  saveMeasure(age, fatMass, fatPercentage, height, muscleMass, weight);
+                  saveMeasure(
+                      age, fatMass, fatPercentage, height, muscleMass, weight);
                   print("guardaos pescaos");
                 }
               },
