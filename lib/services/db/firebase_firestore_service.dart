@@ -10,10 +10,12 @@ import 'package:gym_tec/models/weekly_challeges/weekly_challenge.dart';
 import '../../models/users/user_measurements.dart';
 
 class DatabaseFirebase implements DatabaseInterface {
+  late FirebaseFirestore firebaseInstance;
+
   @override
   Future<List<UserPublicData>?> getAllUsers() async {
     try {
-      var users = await FirebaseFirestore.instance.collection('users').get();
+      var users = await firebaseInstance.collection('users').get();
       if (users.docs.isNotEmpty) {
         return users.docs.map((doc) {
           final data = doc.data();
@@ -30,7 +32,7 @@ class DatabaseFirebase implements DatabaseInterface {
   @override
   Future<List<UserPublicData>?> getActiveUsers() async {
     try {
-      var users = await FirebaseFirestore.instance
+      var users = await firebaseInstance
           .collection('users')
           .where('expirationDate', isGreaterThan: Timestamp.now())
           .get();
@@ -51,7 +53,7 @@ class DatabaseFirebase implements DatabaseInterface {
   Future<UserPublicData?> getUserPublicData(String uid) async {
     try {
       var userPublicData =
-          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+          await firebaseInstance.collection('users').doc(uid).get();
       if (userPublicData.exists) {
         final data = userPublicData.data()!;
         data.addAll({'uid': userPublicData.id});
@@ -66,7 +68,7 @@ class DatabaseFirebase implements DatabaseInterface {
   @override
   Future<UserProtectedData?> getUserProtectedData(String uid) async {
     try {
-      var userProtectedData = await FirebaseFirestore.instance
+      var userProtectedData = await firebaseInstance
           .collection('users')
           .doc(uid)
           .collection('protected')
@@ -86,7 +88,7 @@ class DatabaseFirebase implements DatabaseInterface {
   @override
   Future<UserPrivateData?> getUserPrivateData(String uid) async {
     try {
-      var userPrivateData = await FirebaseFirestore.instance
+      var userPrivateData = await firebaseInstance
           .collection('users')
           .doc(uid)
           .collection('private')
@@ -105,7 +107,7 @@ class DatabaseFirebase implements DatabaseInterface {
   Future<String?> updateUserExpirationDate(
       String uid, Timestamp newExpirationDate) async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+      await firebaseInstance.collection('users').doc(uid).update({
         'expirationDate': newExpirationDate,
       });
       return uid;
@@ -118,7 +120,7 @@ class DatabaseFirebase implements DatabaseInterface {
   Future<String?> createUserMeasurement(
       String uid, Map<String, dynamic> data) async {
     try {
-      await FirebaseFirestore.instance
+      await firebaseInstance
           .collection('users')
           .doc(uid)
           .collection('measurements')
@@ -130,9 +132,9 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
-  Future<UserMeasurements?> getUserLatestMeasurement(String uid) async {
+  Future<UserMeasurement?> getUserLatestMeasurement(String uid) async {
     try {
-      var userMeasurement = await FirebaseFirestore.instance
+      var userMeasurement = await firebaseInstance
           .collection('users')
           .doc(uid)
           .collection('measurements')
@@ -140,7 +142,7 @@ class DatabaseFirebase implements DatabaseInterface {
           .limit(1)
           .get();
       if (userMeasurement.docs.isNotEmpty) {
-        return UserMeasurements.fromJson(userMeasurement.docs.first.data());
+        return UserMeasurement.fromJson(userMeasurement.docs.first.data());
       }
     } catch (e) {
       return null;
@@ -149,9 +151,9 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
-  Future<List<UserMeasurements>?> getUserMeasurements(String uid) async {
+  Future<List<UserMeasurement>?> getUserMeasurements(String uid) async {
     try {
-      var userMeasurements = await FirebaseFirestore.instance
+      var userMeasurements = await firebaseInstance
           .collection('users')
           .doc(uid)
           .collection('measurements')
@@ -160,7 +162,7 @@ class DatabaseFirebase implements DatabaseInterface {
         return userMeasurements.docs.map((doc) {
           final data = doc.data();
           data.addAll({'uid': doc.id});
-          return UserMeasurements.fromJson(data);
+          return UserMeasurement.fromJson(data);
         }).toList();
       }
       return null;
@@ -173,7 +175,7 @@ class DatabaseFirebase implements DatabaseInterface {
   Future<String?> createUserPublicData(
       String uid, Map<String, dynamic> data) async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(uid).set(data);
+      await firebaseInstance.collection('users').doc(uid).set(data);
       return uid;
     } on FirebaseException {
       return null;
@@ -184,7 +186,7 @@ class DatabaseFirebase implements DatabaseInterface {
   Future<String?> createUserProtectedData(
       String uid, Map<String, dynamic> data) async {
     try {
-      await FirebaseFirestore.instance
+      await firebaseInstance
           .collection('users')
           .doc(uid)
           .collection('protected')
@@ -200,7 +202,7 @@ class DatabaseFirebase implements DatabaseInterface {
   Future<String?> createUserPrivateData(
       String uid, Map<String, dynamic> data) async {
     try {
-      await FirebaseFirestore.instance
+      await firebaseInstance
           .collection('users')
           .doc(uid)
           .collection('private')
@@ -221,8 +223,7 @@ class DatabaseFirebase implements DatabaseInterface {
   @override
   Future<List<Exercise>> getExercises() async {
     try {
-      var exercises =
-          await FirebaseFirestore.instance.collection('exercises').get();
+      var exercises = await firebaseInstance.collection('exercises').get();
       if (exercises.docs.isNotEmpty) {
         return exercises.docs.map((doc) {
           final data = doc.data();
@@ -238,7 +239,7 @@ class DatabaseFirebase implements DatabaseInterface {
   @override
   Future<RoutineData?> getUserLastestRoutine(String uid) async {
     try {
-      var routine = await FirebaseFirestore.instance
+      var routine = await firebaseInstance
           .collection('routines')
           .where('clientId', isEqualTo: uid)
           .orderBy('date', descending: true)
@@ -258,7 +259,7 @@ class DatabaseFirebase implements DatabaseInterface {
   @override
   Future<String?> createRoutine(Map<String, dynamic> data) async {
     try {
-      await FirebaseFirestore.instance.collection('routines').add(data);
+      await firebaseInstance.collection('routines').add(data);
       return 'success';
     } catch (e) {
       return null;
@@ -270,7 +271,7 @@ class DatabaseFirebase implements DatabaseInterface {
   @override
   Future<WeeklyChallenge?> getLatestWeeklyChallenge() async {
     try {
-      var weeklyChallenge = await FirebaseFirestore.instance
+      var weeklyChallenge = await firebaseInstance
           .collection('weeklyChallenges')
           .orderBy('date', descending: true)
           .limit(1)
@@ -287,12 +288,14 @@ class DatabaseFirebase implements DatabaseInterface {
   @override
   Future<String?> createWeeklyChallenge(Map<String, dynamic> data) async {
     try {
-      await FirebaseFirestore.instance.collection('weeklyChallenges').add(data);
+      await firebaseInstance.collection('weeklyChallenges').add(data);
       return 'success';
     } catch (e) {
       return null;
     }
   }
 
-  DatabaseFirebase();
+  DatabaseFirebase({
+    required this.firebaseInstance,
+  });
 }

@@ -5,25 +5,24 @@ class UserRegisterForm {
   String name;
   String phoneNumber;
   String email;
-  Timestamp birthDay;
+  Timestamp birthdate;
   Sex sex;
   String password;
   Timestamp expirationDate = Timestamp.now();
 
-  UserRegisterForm({
-    required this.name,
-    required this.phoneNumber, 
-    required this.email,
-    required this.birthDay,
-    required this.sex, 
-    required this.password
-    });
+  UserRegisterForm(
+      {required this.name,
+      required this.phoneNumber,
+      required this.email,
+      required this.birthdate,
+      required this.sex,
+      required this.password});
 
   Map<String, dynamic> toJson() => {
         'name': name,
         'phoneNumber': phoneNumber,
         'email': email,
-        'birthDay': birthDay,
+        'birthdate': birthdate,
         'sex': sex.name,
         'password': password,
         'expirationDate': expirationDate,
