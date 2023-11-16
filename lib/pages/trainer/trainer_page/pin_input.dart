@@ -94,7 +94,7 @@ class _pinInput extends State<pinInput> {
               else{
                 Navigator.pop(context, 'El PIN suministrado es incorrecto');
               }
-            }, fontSize: 24,)
+            }, fontWeight: FontWeight.bold,)
           ],
         ),
       ),

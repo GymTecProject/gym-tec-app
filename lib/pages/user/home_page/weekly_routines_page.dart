@@ -8,6 +8,7 @@ import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/weekly_challeges/weekly_challenge.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/pin_input.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class WeeklyRoutines extends StatefulWidget {
   const WeeklyRoutines({super.key});
@@ -67,91 +68,97 @@ class _WeeklyRoutinesState extends State<WeeklyRoutines> {
         )
         
       ),
-    body: Center(
+    body: Skeletonizer(
+      enabled: weeklyChallenge.exercises.isEmpty,
+      child: Center(
       child:ContentPadding(
         child:Column(
           children: [
-            Visibility(
-                visible: weeklyChallenge.exercises.isEmpty,
-                child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(children: [
-                    TextSpan(
-                      text: 'No hay retos actualmente.',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      )),
-                    ]))),
-            ListView.separated(
-              itemCount: weeklyChallenge.exercises.length,
-              shrinkWrap: true,
-              separatorBuilder: (context, index) =>
-              const ContextSeparator(),
-              itemBuilder: (context, index) => CardBtn(
-                title: weeklyChallenge.exercises[index].name.toString(), 
-                onPressed: ()=>{
-                  showModalBottomSheet<void>(
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Padding(
-                        padding:
-                            MediaQuery.of(context).viewInsets,
-                        child: SingleChildScrollView(
-                          child: Form(
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.all(24.0),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  const Row(
-                                    children: [
-                                      Flexible(
-                                        child: Card(
-                                          child: Text(
-                                            '¿Qué hay que hacer?',
-                                          style: TextStyle(
+            Expanded(
+              child: weeklyChallenge.exercises.isNotEmpty ?
+              ListView.separated(
+                itemCount: weeklyChallenge.exercises.length,
+                shrinkWrap: true,
+                separatorBuilder: (context, index) =>
+                const ContextSeparator(),
+                itemBuilder: (context, index) => CardBtn(
+                  title: weeklyChallenge.exercises[index].name.toString(), 
+                  onPressed: ()=>{
+                    showModalBottomSheet<void>(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Padding(
+                          padding:
+                              MediaQuery.of(context).viewInsets,
+                          child: SingleChildScrollView(
+                            child: Form(
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.all(24.0),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    const Row(
+                                      children: [
+                                        Flexible(
+                                          child: Card(
+                                            child: Text(
+                                              '¿Qué hay que hacer?',
+                                            style: TextStyle(
+                                              fontWeight:
+                                                FontWeight.bold,
+                                                fontSize: 20,
+                                            ),
+                                          )),
+                                        ),
+                                      ],
+                                        ),
+                                        const ContextSeparator(),
+                                        Text(
+                                          'Debe realizar ${weeklyChallenge.exercises[index].series} ${weeklyChallenge.exercises[index].series == 1 ? "serie" : "series"} de ${weeklyChallenge.exercises[index].repetitions} ${weeklyChallenge.exercises[index].repetitions == 1 ? "repetición" : "repeticiones"} de este ejercicio.\n\nAlgunos comentarios son: ${weeklyChallenge.exercises[index].comment.isNotEmpty ? weeklyChallenge.exercises[index].comment : "Ninguno"}',
+                                          style: const TextStyle(
                                             fontWeight:
                                               FontWeight.bold,
-                                              fontSize: 20,
+                                              fontSize: 14,
                                           ),
-                                        )),
-                                      ),
-                                    ],
-                                      ),
-                                      const ContextSeparator(),
-                                      Text(
-                                        'Debe realizar ${weeklyChallenge.exercises[index].series} ${weeklyChallenge.exercises[index].series == 1 ? "serie" : "series"} de ${weeklyChallenge.exercises[index].repetitions} ${weeklyChallenge.exercises[index].repetitions == 1 ? "repetición" : "repeticiones"} de este ejercicio.\n\nAlgunos comentarios son: ${weeklyChallenge.exercises[index].comment.isNotEmpty ? weeklyChallenge.exercises[index].comment : "Ninguno"}',
-                                        style: const TextStyle(
-                                          fontWeight:
-                                            FontWeight.bold,
-                                            fontSize: 14,
                                         ),
-                                      ),
-                                      const ContextSeparator(),
-                                      ActionBtn(title: "Marcar como completado", onPressed: () {
-                                        _navigateToPinInput();
-                                      }),
-                                ],
+                                        const ContextSeparator(),
+                                        ActionBtn(title: "Marcar como completado", onPressed: () {
+                                          _navigateToPinInput();
+                                        }),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  )
-
-
-                }
+                        );
+                      },
+                    )
+                  }
+                ),
+              )
+              : ListView.builder(
+                itemCount: 3,
+                itemBuilder: (context, index) => Column(
+                  children: [
+                    CardBtn(
+                      title: "Nombre de ejemplo",
+                      onPressed: () => {},
+                    ),
+                    const ContextSeparator(),
+                  ],
+                )
+                
               ),
-            )
+            ),
           ]
         )
       )
     )
+  )
   );
   }
 }

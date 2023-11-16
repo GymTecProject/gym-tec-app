@@ -10,6 +10,7 @@ import 'package:gym_tec/pages/trainer/trainer_page/add_weekly_challenges.dart';
 import 'dart:math';
 
 import 'package:gym_tec/services/dependency_manager.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 
 class EditChallenges extends StatefulWidget {
@@ -85,91 +86,107 @@ class _EditChallengesState extends State<EditChallenges> {
         
       ),
     body: Center(
-      child:ContentPadding(
-        child:Column(
+      child: ContentPadding(
+        child: Column(
           children: [
-            ListView.separated(
-              itemCount: weeklyChallenge.exercises.length,
-              shrinkWrap: true,
-              separatorBuilder: (context, index) =>
-                const ContextSeparator(),
-              itemBuilder: (context, index) => CardBtn(
-                title: "Reto ${index+1}: ${weeklyChallenge.exercises[index].name}", 
-                onPressed: ()=>{
-                  showModalBottomSheet<void>(
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Padding(
-                        padding:
-                            MediaQuery.of(context).viewInsets,
-                        child: SingleChildScrollView(
-                          child: Form(
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.all(24.0),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  const Row(
-                                    children: [
-                                      Flexible(
-                                        child: Card(
-                                          elevation: 0, // Esto elimina la sombra
-                                          color: Colors.transparent, // Esto hace que el fondo sea transparenteto asegura que no haya un borde visible
-                                          child: Text(
-                                            'El PIN del reto es:',
-                                          style: TextStyle(
-                                            fontWeight:
-                                              FontWeight.bold,
-                                              fontSize: 20,
+            Expanded(
+              child: Skeletonizer(
+                enabled: weeklyChallenge.exercises.isEmpty,
+                child: weeklyChallenge.exercises.isNotEmpty
+                    ? ListView.separated(
+                        itemCount: weeklyChallenge.exercises.length,
+                        shrinkWrap: true,
+                        separatorBuilder: (context, index) =>
+                            const ContextSeparator(),
+                        itemBuilder: (context, index) => CardBtn(
+                          title: "Reto ${index + 1}: ${weeklyChallenge.exercises[index].name}",
+                    onPressed: ()=>{
+                      showModalBottomSheet<void>(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Padding(
+                            padding:
+                                MediaQuery.of(context).viewInsets,
+                            child: SingleChildScrollView(
+                              child: Form(
+                                child: Container(
+                                  padding:
+                                      const EdgeInsets.all(24.0),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      const Row(
+                                        children: [
+                                          Flexible(
+                                            child: Card(
+                                              elevation: 0, // Esto elimina la sombra
+                                              color: Colors.transparent, // Esto hace que el fondo sea transparenteto asegura que no haya un borde visible
+                                              child: Text(
+                                                'El PIN del reto es:',
+                                              style: TextStyle(
+                                                fontWeight:
+                                                  FontWeight.bold,
+                                                  fontSize: 20,
+                                              ),
+                                            )),
                                           ),
-                                        )),
-                                      ),
+                                        ],
+                                    ),
+                                    const ContextSeparator(),
+                                    Text(weeklyChallenge.pin, style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    )),
+                                    const ContextSeparator(),
                                     ],
+                                  ),
                                 ),
-                                const ContextSeparator(),
-                                Text(weeklyChallenge.pin, style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                )),
-                                const ContextSeparator(),
-                                ],
                               ),
                             ),
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                }
+                          );
+                        },
+                      )
+                    }
+                  ),
+                )
+                : ListView.builder(
+                itemCount: 3,
+                itemBuilder: (context, index) => Column(
+                  children: [
+                    CardBtn(
+                      title: "Nombre de ejemplo",
+                      onPressed: () => {},
+                    ),
+                    const ContextSeparator(),
+                  ],
+                ),
               ),
-            ),
-            const ContextSeparator(),
-            ActionBtn(title: "Actualizar retos semanales", onPressed: () {
-              try {
-                // Actualiza el reto semanal.
-                setState(() {
-                  weeklyChallenge = WeeklyChallenge(
-                    date: Timestamp.now(),
-                    pin: generatePIN(),
-                    exercises: [],
-                  );
-                });
+              )),
+                ActionBtn(title: "Actualizar", fontWeight:FontWeight.bold, onPressed: () {
+                  try {
+                    // Actualiza el reto semanal.
+                    setState(() {
+                      weeklyChallenge = WeeklyChallenge(
+                        date: Timestamp.now(),
+                        pin: generatePIN(),
+                        exercises: [],
+                      );
+                    });
 
-                // Navega a la siguiente página.
-                _navigateToAddWeeklyChallenge();
-              } catch (e) {
-                // Si ocurre una excepción, imprímela en la consola.
-                print('Ocurrió un error: $e');
-              }
-            }),
-          ]
+                    // Navega a la siguiente página.
+                    _navigateToAddWeeklyChallenge();
+                  } catch (e) {
+                    // Si ocurre una excepción, imprímela en la consola.
+                    print('Ocurrió un error: $e');
+                  }
+                }),
+            ]
+          )
         )
       )
-    )
-  );
+    );
   }         
 }
