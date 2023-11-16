@@ -27,7 +27,7 @@ class _pinInput extends State<pinInput> {
     final defaultPinTheme = PinTheme(
       width: 70,
       height: 70,
-      textStyle: TextStyle(fontSize: 30, color: Color.fromRGBO(30, 60, 87, 1), fontWeight: FontWeight.w600),
+      textStyle: TextStyle(fontSize: 30, color: Color(0xFF456800), fontWeight: FontWeight.w600),
       decoration: BoxDecoration(
         border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
         borderRadius: BorderRadius.circular(20),
@@ -71,7 +71,7 @@ class _pinInput extends State<pinInput> {
               defaultPinTheme: defaultPinTheme,
               focusedPinTheme: defaultPinTheme.copyWith(
                 decoration: defaultPinTheme.decoration!.copyWith(
-                  border: Border.all(color: Color.fromRGBO(114, 178, 242, 1)),
+                  border: Border.all(color: Color(0xFF456800)),
                 ),
               ),
               submittedPinTheme: defaultPinTheme.copyWith(

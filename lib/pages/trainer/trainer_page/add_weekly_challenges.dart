@@ -6,7 +6,6 @@ import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/routines/routine_exercise.dart';
-import 'package:gym_tec/models/routines/routine_workout.dart';
 import 'package:gym_tec/models/weekly_challeges/weekly_challenge.dart';
 import 'package:gym_tec/pages/trainer/routine/create_exercise.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
