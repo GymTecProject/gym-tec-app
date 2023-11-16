@@ -29,9 +29,10 @@ class _RoutinePageState extends State<RoutinePage> {
     final routineData = await dbService.getUserLastestRoutine(user.uid);
     if (routineData == null) {
       workout = [];
+      return;
     }
     setState(() {
-      workout = routineData!.workout;
+      workout = routineData.workout;
     });
   }
 

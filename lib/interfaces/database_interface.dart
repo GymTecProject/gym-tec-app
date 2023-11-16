@@ -31,8 +31,8 @@ abstract class DatabaseInterface {
   Future<String?> createRoutine(Map<String, dynamic> data);
 
   // Measurements
-  Future<List<UserMeasurements>?> getUserMeasurements(String uid);
-  Future<UserMeasurements?> getUserLatestMeasurement(String uid);
+  Future<List<UserMeasurement>?> getUserMeasurements(String uid);
+  Future<UserMeasurement?> getUserLatestMeasurement(String uid);
   Future<String?> createUserMeasurement(String uid, Map<String, dynamic> data);
   //FIXME
 

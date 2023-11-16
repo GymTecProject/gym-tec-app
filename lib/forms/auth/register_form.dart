@@ -70,7 +70,7 @@ class _RegisterFormState extends State<RegisterForm> {
         name: "",
         phoneNumber: "",
         email: "",
-        birthDay: Timestamp.now(),
+        birthdate: Timestamp.now(),
         sex: Sex.other,
         password: "");
   }
@@ -122,7 +122,7 @@ class _RegisterFormState extends State<RegisterForm> {
           _nameController.text.trim().toLowerCase().toTitleCase();
       _userRegisterForm.phoneNumber = _phoneController.text;
       _userRegisterForm.email = _emailController.text;
-      _userRegisterForm.birthDay =
+      _userRegisterForm.birthdate =
           Timestamp.fromDate(DateTime.parse(validBirthDate));
       _userRegisterForm.sex = _selectedSex;
       _userRegisterForm.password = _passwordController.text;
@@ -278,7 +278,8 @@ class _RegisterFormState extends State<RegisterForm> {
                                   width: 75,
                                   height: 75,
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
                                     children: [
                                       const Text('Hombre'),
                                       Icon(Icons.male,
@@ -298,8 +299,8 @@ class _RegisterFormState extends State<RegisterForm> {
                                 width: 75,
                                 height: 75,
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
                                     const Text('Mujer'),
                                     Icon(Icons.female,

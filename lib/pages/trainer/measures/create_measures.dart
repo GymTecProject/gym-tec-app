@@ -36,14 +36,17 @@ class _CreateMeasuresPageState extends State<CreateMeasuresPage> {
       age, fatMass, fatPercentage, height, muscleMass, weight) async {
     final clientId = widget.clientId;
 
-    final measurementData = UserMeasurements(
+    final measurementData = UserMeasurement(
       date: Timestamp.now(),
-      age: 0,
-      fatMass: fatMass,
+      birthdate: Timestamp.fromDate(DateTime.utc(1999, 12, 31)),
       fatPercentage: fatPercentage,
       height: height,
       muscleMass: muscleMass,
       weight: weight,
+      water: 0,
+      age: 0,
+      viceralFatLevel: 0,
+      skeletalMuscle: 0
     );
     try {
       await dbService.createUserMeasurement(clientId, measurementData.toJson());

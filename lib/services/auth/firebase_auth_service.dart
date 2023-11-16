@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_protected.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
+import 'package:gym_tec/models/users/user_measurements.dart';
 import 'package:gym_tec/models/users/user_register_form.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
@@ -55,6 +57,17 @@ class AuthFirebase implements AuthInterface {
       final userPublicData = UserPublicData.fromJson(jsonUser).toJson();
       final userProtectedData = UserProtectedData.fromMap(jsonUser).toJson();
       final userPrivateData = {'accountType': 'client'};
+      final measurementData = UserMeasurement.fromJson({
+        'date': Timestamp.now(),
+        'birthdate': jsonUser['birthdate'],
+        'water': 0.0,
+        'fatPercentage': 0.0,
+        'muscleMass': 0.0,
+        'weight': 0.0,
+        'height': 0.0,
+        'skeletalMuscle': 0.0,
+        'viceralFatLevel': 0,
+      });
 
       final public = await dbService.createUserPublicData(
           credential.user!.uid, userPublicData);
@@ -65,7 +78,13 @@ class AuthFirebase implements AuthInterface {
       final private = await dbService.createUserPrivateData(
           credential.user!.uid, userPrivateData);
 
-      return (public != null && protected != null && private != null)
+      final measures = await dbService.createUserMeasurement(
+          credential.user!.uid, measurementData.toJson());
+
+      return (public != null &&
+              protected != null &&
+              private != null &&
+              measures != null)
           ? credential.user!.uid
           : null;
     } on FirebaseAuthException catch (error) {
