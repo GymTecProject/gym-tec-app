@@ -5,11 +5,13 @@ class WeeklyChallenge {
   Timestamp date;
   String pin;
   List<RoutineExercise> exercises;
+  List<String> successfulUsers;
 
   WeeklyChallenge({
     required this.date,
     required this.pin,
     required this.exercises,
+    required this.successfulUsers,
   });
 
   factory WeeklyChallenge.fromJson(Map<String, dynamic> json) {
@@ -19,6 +21,7 @@ class WeeklyChallenge {
       exercises: (json['exercises'] as List)
           .map((e) => RoutineExercise.fromJson(e))
           .toList(),
+      successfulUsers: (json['successfulUsers'] as List).map((e) => e.toString()).toList(),
     );
   }
 
@@ -27,6 +30,7 @@ class WeeklyChallenge {
       'date': date,
       'pin': pin,
       'exercises': exercises.map((e) => e.toJson()).toList(),
+      'successfulUsers': successfulUsers,
     };
   }
 }
