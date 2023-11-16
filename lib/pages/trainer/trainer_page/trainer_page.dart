@@ -17,13 +17,13 @@ class _TrainerPageState extends State<TrainerPage> {
   static const cardData = [
     {
       'title': 'Clientes',
-      'subtitle': 'Ver y editar rutinas de clientes',
+      'subtitle': 'Rutinas, permisos, e información',
       'imgPath': 'assets/images/h-clients.png',
       'page': SearchUser(),
     },
     {
-      'title': 'Seleccionar Weekly Challenges',
-      'subtitle': 'Edit/Set Weekly Challenges',
+      'title': 'Seleccionar Retos Semanales',
+      'subtitle': 'Editar/Establecer',
       'imgPath': 'assets/images/h1-1.png',
       'page': EditChallenges(),
     },
@@ -44,7 +44,7 @@ class _TrainerPageState extends State<TrainerPage> {
           const Padding(
             padding: EdgeInsets.all(15.0),
             child: Text(
-              'Trainer\'s Tab',
+              'Panel de Entrenador',
               style: TextStyle(
                 fontSize: 50,
                 fontWeight: FontWeight.bold,

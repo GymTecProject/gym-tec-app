@@ -13,6 +13,58 @@ class DatabaseFirebase implements DatabaseInterface {
   late FirebaseFirestore firebaseInstance;
 
   @override
+  Stream<UserProtectedData> getUserProtectedDataStream(String uid) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('protected')
+        .doc('data')
+        .snapshots()
+        .map((snapshot) {
+          if (snapshot.exists) {
+            var data = snapshot.data()!;
+            data.addAll({'uid': snapshot.id});
+            return UserProtectedData.fromMap(data);
+          }
+          return null;
+        })
+        .where((data) => data != null)
+        .cast<UserProtectedData>();
+  }
+
+  @override
+  Stream<UserPrivateData> getUserPrivateDataStream(String uid) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('private')
+        .doc('data')
+        .snapshots()
+        .map((snapshot) {
+          if (snapshot.exists) {
+            return UserPrivateData.fromMap(snapshot.data()!);
+          }
+          return null;
+        })
+        .where((data) => data != null)
+        .cast<UserPrivateData>();
+  }
+
+  @override
+  Stream<List<UserPublicData>> getAllUsersStream() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data.addAll({'uid': doc.id});
+        return UserPublicData.fromJson(data);
+      }).toList();
+    });
+  }
+  
+  @override
   Future<List<UserPublicData>?> getAllUsers() async {
     try {
       var users = await firebaseInstance.collection('users').get();
@@ -295,7 +347,9 @@ class DatabaseFirebase implements DatabaseInterface {
     }
   }
 
+
   DatabaseFirebase({
     required this.firebaseInstance,
   });
+
 }

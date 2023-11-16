@@ -21,4 +21,17 @@ class UserPrivateData {
   Map<String, dynamic> toJson() => {
         'accountType': accountType.name,
       };
+
+  String getAccountTypeString() {
+    switch (accountType) {
+      case AccountType.client:
+        return 'Cliente';
+      case AccountType.trainer:
+        return 'Entrenador';
+      case AccountType.administrator:
+        return 'Admin';
+      default:
+        return 'Desconocido';
+    }
+  }
 }

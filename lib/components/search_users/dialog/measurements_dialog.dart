@@ -26,11 +26,13 @@ class _MeasurementsDialog extends State<MeasurementsDialog> {
           children: [
             // Text("User added measurements"),
             const SizedBox(height: 10),
+
             Text("Edad: ${widget.m?.birthdate}"),
             Text("Estatura: ${widget.m?.height} cm"),
             Text("Peso: ${widget.m?.weight} kg"),
             Text("Masa Muscular: ${widget.m?.muscleMass} kg"),
             Text("Porcentaje de Grasa: ${widget.m?.fatPercentage}%"),
+
             // Water, IMC, Proteins, Minerals missing
           ],
         ),

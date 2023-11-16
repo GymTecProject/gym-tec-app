@@ -24,39 +24,31 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
   final AuthInterface authService = DependencyManager.authService;
 
-  late List<UserPublicData> _foundUsers = [];
-  late List<UserPublicData> _allUsers = [];
-
-  void _getAllUsers() async {
-    List<UserPublicData>? users = await dbService.getAllUsers();
-    if (users != null) {
-      setState(() {
-        _allUsers = users;
-        _foundUsers = _allUsers;
-      });
-    }
-  }
+  late Stream<List<UserPublicData>> _usersStream;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    _getAllUsers();
+    _usersStream = dbService.getAllUsersStream();
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text;
+      });
+    });
   }
 
-  void _runFilter(String entered) {
-    List<UserPublicData> results = [];
-    if (entered.isEmpty) {
-      results = _allUsers;
-    } else {
-      results = _allUsers
-          .where(
-              (user) => user.name.toLowerCase().contains(entered.toLowerCase()))
-          .toList();
-    }
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
-    setState(() {
-      _foundUsers = results;
-    });
+  List<UserPublicData> _filterUsers(List<UserPublicData> users, String query) {
+    return users
+        .where((user) => user.name.toLowerCase().contains(query.toLowerCase()))
+        .toList();
   }
 
   void _navigateToCreateRoutine(String clientId) async {
@@ -78,142 +70,104 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
 
   @override
   Widget build(BuildContext context) {
-    return Skeletonizer(
-      enabled: _allUsers.isEmpty,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Clientes',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Clientes'),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _searchController,
+              decoration: const InputDecoration(
+                labelText: 'Search',
+                suffixIcon: Icon(Icons.search),
+              ),
             ),
           ),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 10,
-              ),
-              SearchAnchor(
-                builder: (context, controller) => SearchBar(
-                  hintText: 'Buscar Clientes',
-                  padding: const MaterialStatePropertyAll<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 16.0)),
-                  onChanged: ((value) => _runFilter(value)),
-                  trailing: const <Widget>[Icon(Icons.search)],
-                ),
-                suggestionsBuilder:
-                    (BuildContext context, SearchController controller) {
-                  return List<ListTile>.generate(5, (index) {
-                    final String item = 'item $index';
-                    return ListTile(
-                      title: Text(item),
-                      onTap: () {
-                        setState(() {
-                          controller.closeView(item);
-                        });
-                      },
-                    );
-                  });
-                },
-              ),
-              const ContextSeparator(),
-              Expanded(
-                child: _allUsers.isNotEmpty
-                    ? ListView.builder(
-                        itemCount: _foundUsers.length,
-                        itemBuilder: (context, index) => Card(
-                          clipBehavior: Clip.antiAlias,
-                          child: ExpansionTile(
-                            key: ValueKey(_foundUsers[index].id),
-                            title: Text(_foundUsers[index].name),
-                            subtitle: Text(_foundUsers[index]
-                                .expirationDate
-                                .toDate()
-                                .toString()),
-                            shape: const Border(),
-                            // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  children: [
-                                    ExpansionTileContent(
-                                        id: _foundUsers[index].id),
-                                  ],
-                                ),
-                              ),
-                              ContentPadding(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    IconButton.filledTonal(
-                                      icon: const Icon(Icons.straighten),
-                                      tooltip: 'Ver medidas',
-                                      onPressed: () async {
-                                        final userMeasurements =
-                                            await dbService.getUserMeasurements(
-                                                _foundUsers[index].id);
-                                        // ignore: use_build_context_synchronously
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) =>
-                                              MeasurementsDialog(
-                                            name: _foundUsers[index].name,
-                                            m: userMeasurements?[0],
-                                          ),
-                                        );
-                                      },
-                                      // child: const Text('Measurements')
-                                    ),
-                                    const ItemSeparator(),
-                                    IconButton.filledTonal(
-                                      icon: const Icon(Icons.fitness_center),
-                                      tooltip: 'Crear rutina',
-                                      onPressed: () => _navigateToCreateRoutine(
-                                          _foundUsers[index].id),
-                                    ),
-                                    const ItemSeparator(),
-                                    IconButton.filledTonal(
-                                        icon: const Icon(
-                                            Icons.admin_panel_settings),
-                                        tooltip: 'Admin',
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AdminDialog(
-                                                user: _foundUsers[index],
-                                                onRoleUpdated: () {
-                                                  _getAllUsers();
-                                                },
-                                              );
-                                            },
-                                          );
-                                        }),
-                                  ],
-                                ),
-                              )
-                            ],
+          Expanded(
+            child: StreamBuilder<List<UserPublicData>>(
+              stream: _usersStream,
+              builder: (context, snapshot) {
+                // Handle connection states, errors as before...
+                List<UserPublicData> users =
+                    snapshot.hasData ? snapshot.data! : [];
+                List<UserPublicData> filteredUsers =
+                    _filterUsers(users, _searchQuery);
+
+                return ListView.builder(
+                  itemCount: filteredUsers.length,
+                  itemBuilder: (context, index) {
+                    UserPublicData user = filteredUsers[index];
+                    return Card(
+                      clipBehavior: Clip.antiAlias,
+                      child: ExpansionTile(
+                        key: ValueKey(user.id),
+                        title: Text(user.name),
+                        subtitle: Text(user.expirationDate.toDate().toString()),
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              children: [
+                                ExpansionTileContent(id: user.id),
+                              ],
+                            ),
                           ),
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: 15,
-                        itemBuilder: (context, index) => const Card(
-                            clipBehavior: Clip.antiAlias,
-                            child: ExpansionTile(
-                              title: Text("Nombre de ejemplo"),
-                              subtitle: Text("Fecha de expiracion: xx/xx/xxxx"),
-                            )),
+                          ContentPadding(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                IconButton.filledTonal(
+                                  icon: const Icon(Icons.straighten),
+                                  tooltip: 'Ver medidas',
+                                  onPressed: () async {
+                                    final userMeasurements = await dbService
+                                        .getUserMeasurements(user.id);
+                                    // ignore: use_build_context_synchronously
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => MeasurementsDialog(
+                                        name: user.name,
+                                        m: userMeasurements,
+                                      ),
+                                    );
+                                  },
+                                  // child: const Text('Measurements')
+                                ),
+                                const ItemSeparator(),
+                                IconButton.filledTonal(
+                                  icon: const Icon(Icons.fitness_center),
+                                  tooltip: 'Crear rutina',
+                                  onPressed: () =>
+                                      _navigateToCreateRoutine(user.id),
+                                ),
+                                const ItemSeparator(),
+                                IconButton.filledTonal(
+                                    icon:
+                                        const Icon(Icons.admin_panel_settings),
+                                    tooltip: 'Admin',
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AdminDialog(user: user);
+                                        },
+                                      );
+                                    }),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
-              ),
-            ],
+                    );
+                  },
+                );
+              },
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
