@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   cloud_firestore
   firebase_auth
   firebase_core
+  smart_auth
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
