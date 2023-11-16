@@ -8,6 +8,7 @@ import 'package:gym_tec/models/users/user_data_public.dart';
 import 'package:gym_tec/pages/trainer/measures/create_measures.dart';
 import 'package:gym_tec/pages/trainer/routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
+import 'package:gym_tec/pages/trainer/trainer_page/view_measures_page.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -63,6 +64,23 @@ class _SearchUserState extends State<SearchUser> {
         context,
         MaterialPageRoute(
           builder: (context) => CreateRoutinePage(
+            clientId: clientId,
+          ),
+        ));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(state),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void _navigateToSeeMeasures(String clientId) async {
+    dynamic state = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ViewMeasures(
             clientId: clientId,
           ),
         ));
@@ -166,25 +184,14 @@ class _SearchUserState extends State<SearchUser> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
-                                    /*IconButton.filledTonal(
+                                    IconButton.filledTonal(
                                       icon: const Icon(Icons.straighten),
-                                      tooltip: 'Ver medidas',
-                                      onPressed: () async {
-                                        final userMeasurements =
-                                            await dbService.getUserMeasurements(
-                                                _foundUsers[index].id);
-                                        // ignore: use_build_context_synchronously
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) =>
-                                              MeasurementsDialog(
-                                            name: _foundUsers[index].name,
-                                            m: userMeasurements,
-                                          ),
-                                        );
-                                      },
-                                      // child: const Text('Measurements')
-                                    ),*/ //This will be implemented different better later.
+                                      tooltip: 'Visualizar medidas',
+
+                                      onPressed: () => _navigateToSeeMeasures(
+                                          _foundUsers[index].id),
+                                      
+                                    ),
                                     const ItemSeparator(),
                                     IconButton.filledTonal(
                                       icon: const Icon(Icons.straighten),
