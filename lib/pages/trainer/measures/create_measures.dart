@@ -47,15 +47,15 @@ class _CreateMeasuresPageState extends State<CreateMeasuresPage> {
       height: height,
       muscleMass: muscleMass,
       weight: weight,
-      water: 0,
-      age: 0,
-      viceralFatLevel: 0,
-      skeletalMuscle: 0  
+      water: water,
+      age: age,
+      viceralFatLevel: viceralFatLevel,
+      skeletalMuscle: skeletalMuscle  
     );
     try {
       await dbService.createUserMeasurement(clientId, measurementData.toJson());
       if (!mounted) return;
-      Navigator.pop(context, 'Medidas registradas con éxito');
+      Navigator.pop(context, 'Rutina creada con éxito');
     } catch (e) {
       Navigator.pop(context, 'Error al crear la rutina');
     }
