@@ -4,40 +4,38 @@ import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/users/user_measurements.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
-
 class ViewMeasures extends StatefulWidget {
-  final String clientId;
+  final List<UserMeasurement>? m;
 
-  const ViewMeasures({super.key, required this.clientId});
+  const ViewMeasures({super.key, required this.m});
 
   @override
-  _ViewMeasuresState createState() => _ViewMeasuresState();
+  State<ViewMeasures> createState() => _ViewMeasuresState();
 }
 
 class _ViewMeasuresState extends State<ViewMeasures> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
   final AuthInterface authService = DependencyManager.authService;
 
-  
   List<UserMeasurement> _UserMeasurement = [];
+
   @override
   void initState() {
     super.initState();
     _fetchMeasuresData();
   }
-  void _fetchMeasuresData() async {
 
-    final UserMeasurement = await dbService.getUserMeasurements(widget.clientId);
-    print("USER IS VALID");
+  void _fetchMeasuresData() async {
     if (UserMeasurement == null) {
-      print("USErMEASUREMENT IS NULL");
+      print("USERMEASUREMENT IS NULL");
       _UserMeasurement = [];
       return;
-    }else{
-      print(_UserMeasurement.last);
+    } else {
+      print("UserMeasurements len: ${widget.m?.length}");
+      print("Last User's age: ${widget.m?.last.age}");
     }
     setState(() {
-      _UserMeasurement = UserMeasurement;
+      _UserMeasurement = widget.m!;
     });
   }
 

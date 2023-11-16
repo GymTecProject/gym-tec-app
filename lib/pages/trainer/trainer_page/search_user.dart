@@ -5,13 +5,13 @@ import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
+import 'package:gym_tec/models/users/user_measurements.dart';
 import 'package:gym_tec/pages/trainer/measures/create_measures.dart';
 import 'package:gym_tec/pages/trainer/routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/view_measures_page.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
 
 class SearchUser extends StatefulWidget {
   const SearchUser({super.key});
@@ -76,12 +76,12 @@ class _SearchUserState extends State<SearchUser> {
     );
   }
 
-  void _navigateToSeeMeasures(String clientId) async {
+  void _navigateToSeeMeasures(List<UserMeasurement>? m) async {
     dynamic state = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ViewMeasures(
-            clientId: clientId,
+            m: m,
           ),
         ));
     if (!mounted) return;
@@ -185,21 +185,23 @@ class _SearchUserState extends State<SearchUser> {
                                       MainAxisAlignment.spaceAround,
                                   children: [
                                     IconButton.filledTonal(
-                                      icon: const Icon(Icons.straighten),
-                                      tooltip: 'Visualizar medidas',
-
-                                      onPressed: () => _navigateToSeeMeasures(
-                                          _foundUsers[index].id),
-                                      
-                                    ),
+                                        icon: const Icon(Icons.remove_red_eye),
+                                        tooltip: 'Visualizar medidas',
+                                        onPressed: () async {
+                                          final userMeasurements =
+                                              await dbService
+                                                  .getUserMeasurements(
+                                                      _foundUsers[index].id);
+                                          _navigateToSeeMeasures(
+                                              userMeasurements);
+                                        }),
                                     const ItemSeparator(),
                                     IconButton.filledTonal(
                                       icon: const Icon(Icons.straighten),
                                       tooltip: 'Registrar medidas',
-
-                                      onPressed: () => _navigateToRegisterMeasures(
-                                          _foundUsers[index].id),
-                                      
+                                      onPressed: () =>
+                                          _navigateToRegisterMeasures(
+                                              _foundUsers[index].id),
                                     ),
                                     const ItemSeparator(),
                                     IconButton.filledTonal(
