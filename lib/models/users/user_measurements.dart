@@ -3,14 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserMeasurement {
   Timestamp date;
   Timestamp birthdate;
-  int age;
-  double water;
-  double fatPercentage;
-  double skeletalMuscle;
-  double muscleMass;
-  double height;
-  double weight;
-  int viceralFatLevel;
+  num age;
+  num water;
+  num fatPercentage;
+  num skeletalMuscle;
+  num muscleMass;
+  num height;
+  num weight;
+  num viceralFatLevel;
 
   UserMeasurement({
     required this.date,
