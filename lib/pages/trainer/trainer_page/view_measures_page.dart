@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gym_tec/components/ui/buttons/view_measurement_comparison_card.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/users/user_measurements.dart';
+import 'package:gym_tec/components/ui/buttons/view_single_measurement_card.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
 class ViewMeasures extends StatefulWidget {
@@ -50,13 +52,17 @@ class _ViewMeasuresState extends State<ViewMeasures> {
         return ListView.builder(
           itemCount: _userMeasurement.length,
           itemBuilder: (context, index) {
-            DateTime date = _userMeasurement[index]
-                .date
-                .toDate(); // Asume que date es un Timestamp
+            DateTime date = _userMeasurement[index].date.toDate(); // Asume que date es un Timestamp
             String formattedDate = "${date.day}/${date.month}/${date.year}";
 
             return ListTile(
-              title: Text(formattedDate),
+              title: Text(
+                formattedDate,
+                textAlign: TextAlign.center, // Centra el texto
+                style: TextStyle(
+                  fontWeight: FontWeight.bold, // Hace el texto en negrita
+                ),
+              ),
               onTap: () {
                 Navigator.pop(context);
                 setState(() {
@@ -105,15 +111,15 @@ class _ViewMeasuresState extends State<ViewMeasures> {
         padding: const EdgeInsets.symmetric(horizontal: 8.0), // Relleno solo horizontal
         child: ListView(
           children: [
-              _showSingleMeasurement('Masa Grasa', lastMeasurement.fatPercentage, 'kg.'),
-              _showSingleMeasurement('Altura', lastMeasurement.height, 'm.'),
-              _showSingleMeasurement('Masa muscular', lastMeasurement.muscleMass, 'kg.'),
-              _showSingleMeasurement('Peso', lastMeasurement.weight, 'kg.'),
-              _showSingleMeasurement('Porcentaje de agua', lastMeasurement.water, '%'),
-              _showSingleMeasurement('Porcentaje de grasa corporal', lastMeasurement.fatPercentage, '%'),
-              _showSingleMeasurement('Grasa visceral', lastMeasurement.viceralFatLevel, '%'),
-              _showSingleMeasurement('Masa osea', lastMeasurement.skeletalMuscle, 'kg.')
-            ],
+              SingleMeasurementCard(title: 'Masa grasa', currentValue: lastMeasurement.fatPercentage, parameter: 'kg.'),
+              SingleMeasurementCard(title: 'Altura', currentValue: lastMeasurement.height , parameter: 'm.'),
+              SingleMeasurementCard(title: 'Masa muscular', currentValue: lastMeasurement.muscleMass , parameter: 'kg.'),
+              SingleMeasurementCard(title: 'Peso', currentValue: lastMeasurement.weight , parameter: 'kg.'),
+              SingleMeasurementCard(title: 'Porcentaje de agua', currentValue: lastMeasurement.water , parameter: 'kg.'),
+              SingleMeasurementCard(title: 'Porcentaje de grasa corporal', currentValue: lastMeasurement.fatPercentage , parameter: 'kg.'),
+              SingleMeasurementCard(title: 'Porcentaje de Grasa visceral', currentValue: lastMeasurement.viceralFatLevel , parameter: 'kg.'),
+              SingleMeasurementCard(title: 'Masa ósea', currentValue: lastMeasurement.skeletalMuscle , parameter: 'kg.')
+          ],
         ),
       )
     );
@@ -142,44 +148,19 @@ class _ViewMeasuresState extends State<ViewMeasures> {
       ),
       body: ListView(
         children: [
-          _createComparisonCard('Masa Grasa', previousMeasurement.fatPercentage,lastMeasurement.fatPercentage, 'kg.'),
-          _createComparisonCard('Altura', previousMeasurement.height, lastMeasurement.height, 'm.'),
-          _createComparisonCard('Masa muscular', previousMeasurement.muscleMass,lastMeasurement.muscleMass, 'kg.'),
-          _createComparisonCard('Peso', previousMeasurement.weight, lastMeasurement.weight, 'kg'),
-          _createComparisonCard('Porcentaje de grasa corporal', previousMeasurement.fatPercentage, lastMeasurement.fatPercentage, '%'),
-          _createComparisonCard('Porcentaje de agua', previousMeasurement.water, lastMeasurement.water, '%'),
-          _createComparisonCard('Grasa visceral',previousMeasurement.viceralFatLevel,lastMeasurement.viceralFatLevel, '%'),
-          _createComparisonCard('Masa osea', previousMeasurement.skeletalMuscle,lastMeasurement.skeletalMuscle, 'kg.')
+
+          MeasurementComparisonCard(title: 'Masa Grasa', previousValue: previousMeasurement.fatPercentage , currentValue: lastMeasurement.fatPercentage , parameter: 'kg.'),
+          MeasurementComparisonCard(title: 'Altura', previousValue: previousMeasurement.height , currentValue: lastMeasurement.height , parameter: 'm.'),
+          MeasurementComparisonCard(title: 'Masa muscular', previousValue: previousMeasurement.muscleMass , currentValue: lastMeasurement.muscleMass , parameter: 'kg.'),
+          MeasurementComparisonCard(title: 'Peso', previousValue: previousMeasurement.weight , currentValue: lastMeasurement.weight , parameter: 'kg.'),
+          MeasurementComparisonCard(title: 'Porcentaje de grasa corporal', previousValue: previousMeasurement.fatPercentage , currentValue: lastMeasurement.fatPercentage , parameter: '%'),
+          MeasurementComparisonCard(title: 'Porcentaje de agua', previousValue: previousMeasurement.water , currentValue: lastMeasurement.water , parameter: '%'),
+          MeasurementComparisonCard(title: 'Porcentaje de Grasa visceral', previousValue: previousMeasurement.viceralFatLevel , currentValue: lastMeasurement.viceralFatLevel , parameter: '%'),
+          MeasurementComparisonCard(title: 'Masa ósea', previousValue: previousMeasurement.skeletalMuscle , currentValue: lastMeasurement.skeletalMuscle , parameter: 'kg.')
         ],
       ),
     );
   }
-
-Widget _showSingleMeasurement(String title, num? currentValue, String parameter) {
-  return Card(
-    child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center, // Ajustado para centrar el título
-        children: [
-          Text(
-            title,
-            textAlign: TextAlign.center, // Ajustado para centrar el texto
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '$currentValue $parameter',
-            style: const TextStyle(fontSize: 16),
-          ),
-        ],
-      ),
-    ),
-  );
-}
 
 Widget _createComparisonCard(String title, num? previousValue, num? currentValue, String parameter) {
   final difference = currentValue != null && previousValue != null
