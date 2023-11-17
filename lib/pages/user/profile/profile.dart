@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
+import 'package:gym_tec/interfaces/auth_interface.dart';
+import 'package:gym_tec/interfaces/database_interface.dart';
+import 'package:gym_tec/models/users/user_measurements.dart';
+import 'package:gym_tec/pages/trainer/measures/create_measures.dart';
+import 'package:gym_tec/pages/trainer/trainer_page/view_measures_page.dart';
 import 'package:gym_tec/pages/user/profile/measurement.dart';
+import 'package:gym_tec/services/dependency_manager.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -35,18 +41,25 @@ class _PageBody extends State<PageBody>  {
   final String _edad = '21';
   final String _correo = 'danielarayasambucci@gmail.com';
 
-  //Parámetros biométricos
-  /*String _altura = 
-  String _peso
-  String _porcentajeGrasa
-  String _mMuscular
-  String _mOsea
-  String _gastoCalorico
-  String _grasaVisceral
-  String _IMC 
+  final DatabaseInterface dbService = DependencyManager.databaseService;
+  final AuthInterface authService = DependencyManager.authService;
 
-  //Mediciones
-*/
+    void _navigateToSeeMeasures(List<UserMeasurement>? m) async {
+    dynamic state = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ViewMeasures(
+            m: m,
+          ),
+        ));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(state),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -158,7 +171,14 @@ class _PageBody extends State<PageBody>  {
                   height: 75,
                   child: Center(
                     child: FilledButton(
-                      onPressed: () => navigateToMeasurement(context),
+                      onPressed: () async {
+                                          final userMeasurements =
+                                              await dbService
+                                                  .getUserMeasurements(
+                                                      authService.currentUser!.uid);
+                                          _navigateToSeeMeasures(
+                                              userMeasurements);
+                                              },
                       child: const Text('Visualizar Cambio'),
                     ),
                   ),
