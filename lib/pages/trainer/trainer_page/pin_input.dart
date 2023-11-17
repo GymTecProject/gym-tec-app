@@ -3,19 +3,19 @@ import 'package:gym_tec/components/ui/buttons/action_btn.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:pinput/pinput.dart';
 
-class pinInput extends StatefulWidget {
+class PinInput extends StatefulWidget {
   final String pin;
 
-  const pinInput({super.key,
-    required this.pin});
+  const PinInput({super.key,
+    required this.pin,});
 
   @override
-  State<pinInput> createState() => _pinInput();
+  State<PinInput> createState() => _PinInput();
 }
 
-class _pinInput extends State<pinInput> {
+class _PinInput extends State<PinInput> {
   final TextEditingController _pinController = TextEditingController();
-
+  
   @override
   void dispose() {
     _pinController.dispose();
@@ -27,7 +27,7 @@ class _pinInput extends State<pinInput> {
     final defaultPinTheme = PinTheme(
       width: 70,
       height: 70,
-      textStyle: TextStyle(fontSize: 30, color: Color.fromRGBO(30, 60, 87, 1), fontWeight: FontWeight.w600),
+      textStyle: TextStyle(fontSize: 30, color: Color(0xFF456800), fontWeight: FontWeight.w600),
       decoration: BoxDecoration(
         border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
         borderRadius: BorderRadius.circular(20),
@@ -71,7 +71,7 @@ class _pinInput extends State<pinInput> {
               defaultPinTheme: defaultPinTheme,
               focusedPinTheme: defaultPinTheme.copyWith(
                 decoration: defaultPinTheme.decoration!.copyWith(
-                  border: Border.all(color: Color.fromRGBO(114, 178, 242, 1)),
+                  border: Border.all(color: Color(0xFF456800)),
                 ),
               ),
               submittedPinTheme: defaultPinTheme.copyWith(
