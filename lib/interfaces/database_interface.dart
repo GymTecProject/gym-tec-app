@@ -26,7 +26,7 @@ abstract class DatabaseInterface {
       String uid, Timestamp newExpirationDate);
 
   // Routines
-  Future<RoutineData?> getUserRoutine(String uid);
+  Future<List<RoutineData>?> getUserRoutines(String uid, int limit);
   Future<RoutineData?> getUserLastestRoutine(String uid);
   Future<String?> createRoutine(Map<String, dynamic> data);
 

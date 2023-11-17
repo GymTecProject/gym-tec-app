@@ -215,9 +215,26 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
-  Future<RoutineData?> getUserRoutine(String uid) async {
-    //TODO: implement getUserRoutine
-    return null;
+  Future<List<RoutineData>?> getUserRoutines(String uid, int limit) async {
+    try{
+      final userRoutines = await firebaseInstance
+          .collection('routines')
+          .where('clientId', isEqualTo: uid)
+          .orderBy('date', descending: true)
+          .limit(limit)
+          .get();
+      if (userRoutines.docs.isNotEmpty) {
+        return userRoutines.docs.map((doc) {
+          final data = doc.data();
+          data.addAll({'uid': doc.id});
+          return RoutineData.fromJson(data);
+        }).toList();
+      }
+      return null;
+    }
+    catch(e){
+      return null;
+    }
   }
 
   @override

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:gym_tec/components/routines/routine_history.dart';
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
+import 'package:gym_tec/models/routines/routine_data.dart';
 import 'package:gym_tec/models/routines/routine_workout.dart';
 import 'package:gym_tec/pages/user/routines/routine_day.dart';
+import 'package:intl/intl.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../services/dependency_manager.dart';
 
@@ -20,6 +24,7 @@ class _RoutinePageState extends State<RoutinePage> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
   final AuthInterface authService = DependencyManager.authService;
 
+  RoutineData? routine;
   List<Workout> workout = [];
 
   void _fetchRoutineData() async {
@@ -32,6 +37,7 @@ class _RoutinePageState extends State<RoutinePage> {
       return;
     }
     setState(() {
+      routine = routineData;
       workout = routineData.workout;
     });
   }
@@ -45,13 +51,30 @@ class _RoutinePageState extends State<RoutinePage> {
     }
     for (int i = 0; i < days.length; i++) {
       if (i == days.length - 1) {
-        if(days.length > 1) title = title.replaceRange(title.length - 2, null, ' y ');
+        if (days.length > 1) {
+          title = title.replaceRange(title.length - 2, null, ' y ');
+        }
         title += days[i].toString();
       } else {
         title += '${days[i]}, ';
       }
     }
     return title;
+  }
+
+  void _openHistroyDialog() async {
+    final routineSelection = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return RoutineHistoryDialog(uid: authService.currentUser!.uid);
+      },
+    );
+    if (routineSelection != null) {
+      setState(() {
+        routine = routineSelection;
+        workout = routineSelection.workout;
+      });
+    }
   }
 
   @override
@@ -66,43 +89,81 @@ class _RoutinePageState extends State<RoutinePage> {
       appBar: AppBar(
         title: const Text('Rutina'),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(
-              child: ContentPadding(
-                child: Column(
-                  children: [
-                    ListView.separated(
-                      itemCount: workout.length,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      separatorBuilder: (context, index) =>
-                          const ContextSeparator(),
-                      itemBuilder: (BuildContext context, int index) {
-                        return CardBtn(
-                          title: _getDaysTitle(workout[index].days),
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) {
-                                  return RoutineDay(
-                                    title: _getDaysTitle(workout[index].days),
-                                    exercises: workout[index].exercises,
-                                  );
-                                },
+      body: Skeletonizer(
+        enabled: routine == null,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: ContentPadding(
+                  child: Column(
+                    children: [
+                      Visibility(
+                        visible: workout.isEmpty,
+                        child: const Text('No una hay rutina asignada'),
+                      ),
+                      routine != null
+                          ? Column(
+                              children: [
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 26),
+                                          'Fecha: ${DateFormat('dd/MM/yyyy').format(routine!.date.toDate())}'),
+                                      IconButton(
+                                          onPressed: _openHistroyDialog,
+                                          icon: const Icon(Icons.event_repeat)),
+                                    ]),
+                                const ContextSeparator(),
+                                ListView.separated(
+                                  itemCount: workout.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  separatorBuilder: (context, index) =>
+                                      const ContextSeparator(),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return CardBtn(
+                                      title: _getDaysTitle(workout[index].days),
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              return RoutineDay(
+                                                title: _getDaysTitle(
+                                                    workout[index].days),
+                                                exercises:
+                                                    workout[index].exercises,
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
+                            )
+                          : ListView.separated(
+                              itemCount: 7,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) => const Card(
+                                child: Text('No hay rutina asignada'),
                               ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ],
+                              separatorBuilder: (context, index) =>
+                                  const ContextSeparator(),
+                            )
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
