@@ -5,7 +5,7 @@ import 'package:gym_tec/components/ui/buttons/card_btn.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
-import 'package:gym_tec/models/weekly_challeges/weekly_challenge.dart';
+import 'package:gym_tec/models/weekly_challeges/challenge_data.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/add_weekly_challenges.dart';
 import 'dart:math';
 
@@ -22,22 +22,22 @@ class EditChallenges extends StatefulWidget {
 
 class _EditChallengesState extends State<EditChallenges> {
   
-  late WeeklyChallenge weeklyChallenge;
+  late WeeklyChallengeData weeklyChallenge;
   final DatabaseInterface dbService = DependencyManager.databaseService;
 
   @override
   void initState(){
-    weeklyChallenge =  weeklyChallenge = WeeklyChallenge(
+    weeklyChallenge  = WeeklyChallengeData(
       date: Timestamp.now(),
       pin: generatePIN(),
-      exercises: [], successfulUsers: [],
+      exercises: [],
     );
     _getWeeklyChallenge();
     super.initState();
   }
 
   void _getWeeklyChallenge() async {
-    WeeklyChallenge? lastWeeklyChallenge = await dbService.getLatestWeeklyChallenge();
+    WeeklyChallengeData? lastWeeklyChallenge = await dbService.getLatestWeeklyChallenge();
     if (lastWeeklyChallenge != null) {
       setState(() {
         weeklyChallenge = lastWeeklyChallenge;
@@ -82,8 +82,31 @@ class _EditChallengesState extends State<EditChallenges> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
-        )
-        
+        ),
+      actions: <Widget>[
+        IconButton(
+          icon: const Icon(Icons.pin),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text("PIN:"),
+                  content: Text(weeklyChallenge.pin),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text("Cerrar"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        ),
+      ],
       ),
     body: Center(
       child: ContentPadding(
@@ -99,7 +122,7 @@ class _EditChallengesState extends State<EditChallenges> {
                         separatorBuilder: (context, index) =>
                             const ContextSeparator(),
                         itemBuilder: (context, index) => CardBtn(
-                          title: "Reto ${index + 1}: ${weeklyChallenge.exercises[index].name}",
+                          title: "Reto ${index + 1}: ${weeklyChallenge.exercises[index].exercise.name}",
                     onPressed: ()=>{
                       showModalBottomSheet<void>(
                         isScrollControlled: true,
@@ -118,25 +141,25 @@ class _EditChallengesState extends State<EditChallenges> {
                                         MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      const Row(
-                                        children: [
-                                          Flexible(
-                                            child: Card(
-                                              elevation: 0, // Esto elimina la sombra
-                                              color: Colors.transparent, // Esto hace que el fondo sea transparenteto asegura que no haya un borde visible
-                                              child: Text(
-                                                'El PIN del reto es:',
-                                              style: TextStyle(
-                                                fontWeight:
-                                                  FontWeight.bold,
-                                                  fontSize: 20,
-                                              ),
-                                            )),
-                                          ),
-                                        ],
+                                    const Row(
+                                      children: [
+                                        Flexible(
+                                          child: Card(
+                                            elevation: 0, 
+                                            color: Colors.transparent,
+                                            child: Text(
+                                              'Cantidad de usuarios que han cumplido el reto:',
+                                            style: TextStyle(
+                                              fontWeight:
+                                                FontWeight.bold,
+                                                fontSize: 20,
+                                            ),
+                                          )),
+                                        ),
+                                      ],
                                     ),
                                     const ContextSeparator(),
-                                    Text(weeklyChallenge.pin, style: const TextStyle(
+                                    Text(weeklyChallenge.exercises[index].successfulUsers.length.toString(), style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
                                     )),
@@ -167,20 +190,16 @@ class _EditChallengesState extends State<EditChallenges> {
               )),
                 ActionBtn(title: "Actualizar", fontWeight:FontWeight.bold, onPressed: () {
                   try {
-                    // Actualiza el reto semanal.
                     setState(() {
-                      weeklyChallenge = WeeklyChallenge(
+                      weeklyChallenge = WeeklyChallengeData(
                         date: Timestamp.now(),
                         pin: generatePIN(),
-                        exercises: [], successfulUsers: [],
+                        exercises: [],
                       );
                     });
 
-                    // Navega a la siguiente página.
                     _navigateToAddWeeklyChallenge();
                   } catch (e) {
-                    // Si ocurre una excepción, imprímela en la consola.
-                    print('Ocurrió un error: $e');
                   }
                 }),
             ]

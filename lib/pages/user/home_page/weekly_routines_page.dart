@@ -6,7 +6,7 @@ import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
-import 'package:gym_tec/models/weekly_challeges/weekly_challenge.dart';
+import 'package:gym_tec/models/weekly_challeges/challenge_data.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/pin_input.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -19,30 +19,28 @@ class WeeklyRoutines extends StatefulWidget {
 }
 
 class _WeeklyRoutinesState extends State<WeeklyRoutines> {
-  late WeeklyChallenge weeklyChallenge;
+  late WeeklyChallengeData weeklyChallenge;
   final DatabaseInterface dbService = DependencyManager.databaseService;
   final AuthInterface authService = DependencyManager.authService;
   dynamic userId;
-  int? validatingIndex;
 
   @override
   void initState(){
     final user = authService.currentUser;
     if (user == null) return;
     userId = user.uid;
-    weeklyChallenge =  weeklyChallenge = WeeklyChallenge(
+    weeklyChallenge =  weeklyChallenge = WeeklyChallengeData(
       date: Timestamp.now(),
       pin: "",
       exercises: [],
-      successfulUsers: [],
     );
     _getWeeklyChallenge();
     super.initState();
   }
 
   void _getWeeklyChallenge() async {
-    WeeklyChallenge? lastWeeklyChallenge = await dbService.getLatestWeeklyChallenge();
-    if (lastWeeklyChallenge != null) {
+    WeeklyChallengeData? lastWeeklyChallenge = await dbService.getLatestWeeklyChallenge();
+    if (lastWeeklyChallenge != null && mounted) {
       setState(() {
         weeklyChallenge = lastWeeklyChallenge;
       });
@@ -55,17 +53,15 @@ class _WeeklyRoutinesState extends State<WeeklyRoutines> {
     dynamic state = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => pinInput(pin: weeklyChallenge.pin
+          builder: (context) => PinInput(pin: weeklyChallenge.pin,
           ),
         ));
     if (state == 'Reto validado exitosamente' && mounted){
-      setState(() {
-        validatingIndex = index;
-        if (!weeklyChallenge.successfulUsers.contains(userId)) {
-        weeklyChallenge.successfulUsers.add(userId);
-      }
-      });
+    if (!weeklyChallenge.exercises[index].successfulUsers.contains(userId)) {
+      await dbService.addSuccessfulUserToChallenge(userId, index);
+      _getWeeklyChallenge(); 
     }
+  }
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -111,7 +107,7 @@ class _WeeklyRoutinesState extends State<WeeklyRoutines> {
                         ),
                         const ContextSeparator(),
                         Text(
-                          'Debe realizar ${weeklyChallenge.exercises[index].series} ${weeklyChallenge.exercises[index].series == 1 ? "serie" : "series"} de ${weeklyChallenge.exercises[index].repetitions} ${weeklyChallenge.exercises[index].repetitions == 1 ? "repetición" : "repeticiones"} de este ejercicio.\n\nAlgunos comentarios son: ${weeklyChallenge.exercises[index].comment.isNotEmpty ? weeklyChallenge.exercises[index].comment : "Ninguno"}',
+                          'Debe realizar ${weeklyChallenge.exercises[index].exercise.series} ${weeklyChallenge.exercises[index].exercise.series == 1 ? "serie" : "series"} de ${weeklyChallenge.exercises[index].exercise.repetitions} ${weeklyChallenge.exercises[index].exercise.repetitions == 1 ? "repetición" : "repeticiones"} de este ejercicio.\n\nAlgunos comentarios son: ${weeklyChallenge.exercises[index].exercise.comment.isNotEmpty ? weeklyChallenge.exercises[index].exercise.comment : "Ninguno"}',
                           style: const TextStyle(
                             fontWeight:
                               FontWeight.bold,
@@ -158,23 +154,20 @@ class _WeeklyRoutinesState extends State<WeeklyRoutines> {
                 separatorBuilder: (context, index) =>
                 const ContextSeparator(),
                 itemBuilder: (context, index) {
-                  bool isChallengeCompleted = validatingIndex == index && weeklyChallenge.successfulUsers.contains(userId);
+                  bool isChallengeCompleted = weeklyChallenge.exercises[index].successfulUsers.contains(userId);
                   // bool isChallengeCompleted = userId != null && weeklyChallenge.successfulUsers[index].contains(userId);
-                  // String titleText = isChallengeCompleted
-                  //   ? '${weeklyChallenge.exercises[index].name} ✓' // Agrega la marca de verificación si el reto está completado
-                  //   : weeklyChallenge.exercises[index].name;
                   return CardBtn(
-                    title: weeklyChallenge.exercises[index].name.toString(),
+                    title: weeklyChallenge.exercises[index].exercise.name.toString(),
                     onPressed: isChallengeCompleted ? () {} : () => _showBottomSheet(index),
                     imgPath: isChallengeCompleted ? 'assets/images/check.png': null,
                     style:  isChallengeCompleted ? ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF0A0A0A), // Fondo del botón con el código de color #282828
-                      foregroundColor: Colors.white, // Color del texto blanco
+                      backgroundColor: Color(0xFF0A0A0A),
+                      foregroundColor: Colors.white, 
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0), // Bordes redondeados
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
-                      fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 150), // Tamaño fijo del botón
-                      padding: const EdgeInsets.only(top: 16.0, left: 16.0), // Padding del botón
+                      fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 150),
+                      padding: const EdgeInsets.only(top: 16.0, left: 16.0),
                     ): null,
                   );
                   },

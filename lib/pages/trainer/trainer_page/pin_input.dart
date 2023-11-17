@@ -3,19 +3,19 @@ import 'package:gym_tec/components/ui/buttons/action_btn.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:pinput/pinput.dart';
 
-class pinInput extends StatefulWidget {
+class PinInput extends StatefulWidget {
   final String pin;
 
-  const pinInput({super.key,
-    required this.pin});
+  const PinInput({super.key,
+    required this.pin,});
 
   @override
-  State<pinInput> createState() => _pinInput();
+  State<PinInput> createState() => _PinInput();
 }
 
-class _pinInput extends State<pinInput> {
+class _PinInput extends State<PinInput> {
   final TextEditingController _pinController = TextEditingController();
-
+  
   @override
   void dispose() {
     _pinController.dispose();
