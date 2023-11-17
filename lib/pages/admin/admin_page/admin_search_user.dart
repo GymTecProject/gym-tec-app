@@ -121,13 +121,13 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                   tooltip: 'Ver medidas',
                                   onPressed: () async {
                                     final userMeasurements = await dbService
-                                        .getUserMeasurements(user.id);
+                                        .getUserLatestMeasurement(user.id);
                                     // ignore: use_build_context_synchronously
                                     showDialog(
                                       context: context,
                                       builder: (context) => MeasurementsDialog(
                                         name: user.name,
-                                        m: userMeasurements?.first,
+                                        m: userMeasurements,
                                       ),
                                     );
                                   },
