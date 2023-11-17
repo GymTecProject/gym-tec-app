@@ -4,68 +4,82 @@ import 'package:gym_tec/components/ui/buttons/action_fab.dart';
 import 'package:gym_tec/components/ui/buttons/expandable_fab.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
+import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/routines/routine_exercise.dart';
 import 'package:gym_tec/models/routines/routine_workout.dart';
+import 'package:gym_tec/models/weekly_challeges/weekly_challenge.dart';
 import 'package:gym_tec/pages/trainer/routine/create_exercise.dart';
+import 'package:gym_tec/services/dependency_manager.dart';
 
-class CreateWorkout extends StatefulWidget {
-  final String buttonName;
-  final Map<int, String> weekDays;
-  final Workout workout;
+class AddWeeklyChallenges extends StatefulWidget {
+  // final String buttonName;
+  // final Map<int, String> weekDays;
+  // final Workout workout;  
+  final WeeklyChallenge weeklyChallenge;
 
-  const CreateWorkout({
+  const AddWeeklyChallenges({
     super.key,
-    required this.buttonName,
-    required this.weekDays,
-    required this.workout,
-  });
+    required this.weeklyChallenge,
+    });
 
   @override
-  State<CreateWorkout> createState() => _CreateWorkoutState();
+  State<AddWeeklyChallenges> createState() => _AddWeeklyChallenges();
 }
 
-class _CreateWorkoutState extends State<CreateWorkout> {
+class _AddWeeklyChallenges extends State<AddWeeklyChallenges> {
   List<Widget> buttons = [];
+  List<bool> challengesCreated = [false, false, false];
   final ScrollController _scrollController = ScrollController();
+  final DatabaseInterface dbService = DependencyManager.databaseService;
 
-  @override
-  void initState() {
-    super.initState();
-    print(widget.workout.toJson());
-  }
-
-  void setDays(int day) {
-    setState(() {
-      if (widget.workout.days.contains(day)) {
-        widget.workout.days.remove(day);
-        widget.weekDays[day] = "";
-      } else {
-        widget.workout.days.add(day);
-        widget.weekDays[day] = widget.buttonName;
-      }
-    });
+  void saveWeeklyChallenges() async {
+    try{
+      await dbService.createWeeklyChallenge(widget.weeklyChallenge.toJson());
+      if (!mounted) return;
+      Navigator.pop(context, 'Retos creados con éxito');
+    } catch (e) {
+      Navigator.pop(context, 'Error al crear los retos');
+    }
   }
 
   void addExercise() {
-    setState(() {
+    if (widget.weeklyChallenge.exercises.length < 3){
+      setState(() {
       final RoutineExercise exercise = RoutineExercise(
-        name: 'Ejercicio ${widget.workout.exercises.length + 1}',
+        name: "",
         url: "",
         category: "",
         comment: "",
         series: 0,
         repetitions: 0,
       );
-      widget.workout.exercises.add(exercise);
-    });
+      widget.weeklyChallenge.exercises.add(exercise);
+      });
+    }
+    else{
+      showAddingChallengeError();
+    }
+    
   }
 
   void removeWorkout() {
     setState(() {
-      if (widget.workout.exercises.isNotEmpty) {
-        widget.workout.exercises.removeLast();
+      if (widget.weeklyChallenge.exercises.isNotEmpty) {
+        widget.weeklyChallenge.exercises.removeLast();
+        challengesCreated[widget.weeklyChallenge.exercises.length] = false;
       }
     });
+  }
+
+  void showAddingChallengeError() {
+    final challengeErrorSnackBar = SnackBar(
+      content: Text(
+        'No puedes agregar más de 3 retos por semana',
+        style: TextStyle(color: Theme.of(context).colorScheme.error),
+      ),
+      duration: const Duration(seconds: 3),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(challengeErrorSnackBar);
   }
 
   @override
@@ -73,7 +87,7 @@ class _CreateWorkoutState extends State<CreateWorkout> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Modificar colección',
+          'Añadir retos de la semana',
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -82,46 +96,14 @@ class _CreateWorkoutState extends State<CreateWorkout> {
       body: ContentPadding(
         child: Column(
           children: [
-            Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                side: BorderSide(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
-                borderRadius: const BorderRadius.all(Radius.circular(12)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(children: [
-                  const Text("Días"),
-                  const ItemSeparator(),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: widget.weekDays.entries
-                          .map((e) => InputChip(
-                                label: Text(e.key.toString()),
-                                showCheckmark: false,
-                                selected: (widget.weekDays[e.key] ==
-                                        widget.buttonName ||
-                                    widget.workout.days.contains(e.key)),
-                                onPressed: (widget.weekDays[e.key] !=
-                                            widget.buttonName &&
-                                        widget.weekDays[e.key] != "")
-                                    ? null
-                                    : () => setDays(e.key),
-                              ))
-                          .toList()),
-                ]),
-              ),
-            ),
             const ItemSeparator(),
             Visibility(
-                visible: widget.workout.exercises.isEmpty,
+                visible: widget.weeklyChallenge.exercises.isEmpty,
                 child: RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(children: [
                       TextSpan(
-                          text: 'No hay ejercicios creados, presiona ',
+                          text: 'No hay retos creados, presiona ',
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onSurface,
                           )),
@@ -139,25 +121,26 @@ class _CreateWorkoutState extends State<CreateWorkout> {
               child: ListView.builder(
                 shrinkWrap: true,
                 controller: _scrollController,
-                itemCount: widget.workout.exercises.length + 1,
+                itemCount: widget.weeklyChallenge.exercises.length + 1,
                 itemBuilder: (context, index) {
-                  if (index != widget.workout.exercises.length) {
+                  if (index != widget.weeklyChallenge.exercises.length) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: CardBtn(
-                        title: widget.workout.exercises[index].name,
+                        title: "Reto ${index + 1}: ${widget.weeklyChallenge.exercises[index].name}",
                         onPressed: () async {
                           final exercise = await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => CreateExercisePage(
-                                exercise: widget.workout.exercises[index],
+                                exercise: widget.weeklyChallenge.exercises[index],
                               ),
                             ),
                           );
                           if (exercise != null) {
                             setState(() {
-                              widget.workout.exercises[index] = exercise;
+                              widget.weeklyChallenge.exercises[index] = exercise;
+                              challengesCreated[index] = true;
                             });
                           }
                         },
@@ -172,6 +155,10 @@ class _CreateWorkoutState extends State<CreateWorkout> {
         ),
       ),
       floatingActionButton: ExpandableFab(distance: 100, children: [
+        ActionFab(
+          onPressed: (widget.weeklyChallenge.exercises.length == 3 && challengesCreated[0] && challengesCreated[1] && challengesCreated[2]) ? saveWeeklyChallenges : null,
+          icon: const Icon(Icons.save),
+        ),
         ActionFab(
           onPressed: removeWorkout,
           icon: const Icon(Icons.delete),

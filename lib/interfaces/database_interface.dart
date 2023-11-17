@@ -24,6 +24,9 @@ abstract class DatabaseInterface {
   Future<String?> createUserPrivateData(String uid, Map<String, dynamic> data);
   Future<String?> updateUserExpirationDate(
       String uid, Timestamp newExpirationDate);
+  Stream<UserPrivateData> getUserPrivateDataStream(String uid);
+  Stream<UserProtectedData> getUserProtectedDataStream(String uid);
+  Stream<List<UserPublicData>> getAllUsersStream();
 
   // Routines
   Future<List<RoutineData>?> getUserRoutines(String uid, int limit);
@@ -40,4 +43,5 @@ abstract class DatabaseInterface {
   Future<WeeklyChallengeData?> getLatestWeeklyChallenge();
   Future<String?> createWeeklyChallenge(Map<String, dynamic> data);
   Future<String?> addSuccessfulUserToChallenge(String uid, int challengeIndex);
+
 }
