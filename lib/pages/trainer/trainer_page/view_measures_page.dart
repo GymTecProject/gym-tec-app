@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gym_tec/components/ui/buttons/card_btn.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/users/user_measurements.dart';
@@ -18,7 +17,7 @@ class _ViewMeasuresState extends State<ViewMeasures> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
   final AuthInterface authService = DependencyManager.authService;
 
-  List<UserMeasurement> _UserMeasurement = [];
+  List<UserMeasurement> _userMeasurement = [];
   UserMeasurement? previousMeasurement;
 
   @override
@@ -30,7 +29,7 @@ class _ViewMeasuresState extends State<ViewMeasures> {
   void _fetchMeasuresData() async {
     if (widget.m == null) {
       print("USERMEASUREMENT IS NULL");
-      _UserMeasurement = [];
+      _userMeasurement = [];
       return;
     } else {
       print("UserMeasurements len: ${widget.m?.length}");
@@ -40,7 +39,7 @@ class _ViewMeasuresState extends State<ViewMeasures> {
       }
     }
     setState(() {
-      _UserMeasurement = widget.m!;
+      _userMeasurement = widget.m!;
     });
   }
 
@@ -49,9 +48,9 @@ class _ViewMeasuresState extends State<ViewMeasures> {
       context: context,
       builder: (BuildContext context) {
         return ListView.builder(
-          itemCount: _UserMeasurement.length,
+          itemCount: _userMeasurement.length,
           itemBuilder: (context, index) {
-            DateTime date = _UserMeasurement[index]
+            DateTime date = _userMeasurement[index]
                 .date
                 .toDate(); // Asume que date es un Timestamp
             String formattedDate = "${date.day}/${date.month}/${date.year}";
@@ -61,7 +60,7 @@ class _ViewMeasuresState extends State<ViewMeasures> {
               onTap: () {
                 Navigator.pop(context);
                 setState(() {
-                  previousMeasurement = _UserMeasurement[index];
+                  previousMeasurement = _userMeasurement[index];
                 });
               },
             );
@@ -73,7 +72,7 @@ class _ViewMeasuresState extends State<ViewMeasures> {
 
   @override
   Widget build(BuildContext context) {
-    if (_UserMeasurement.isEmpty) {
+    if (_userMeasurement.isEmpty) {
       return Scaffold(
         appBar: AppBar(
           title: const Text('View Measures'),
@@ -84,8 +83,8 @@ class _ViewMeasuresState extends State<ViewMeasures> {
       );
     }
 
-    final lastMeasurement = _UserMeasurement.first;
-    if (_UserMeasurement.length < 2) {
+    final lastMeasurement = _userMeasurement.first;
+    if (_userMeasurement.length < 2) {
       return Scaffold(
         appBar: AppBar(
           title: const Text('View Measures'),
@@ -105,7 +104,7 @@ class _ViewMeasuresState extends State<ViewMeasures> {
       );
     }
 
-    final previousMeasurement = _UserMeasurement[1];
+    final previousMeasurement = _userMeasurement[1];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Medidas de'),

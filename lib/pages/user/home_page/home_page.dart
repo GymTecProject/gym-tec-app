@@ -12,6 +12,8 @@ import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:intl/intl.dart';
 
 import '../../../interfaces/auth_interface.dart';
+import '../../../models/users/user_measurements.dart';
+import '../../trainer/trainer_page/view_measures_page.dart';
 
 class HomePage extends StatefulWidget {
   //Variables needed
@@ -47,8 +49,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<HomePage>{
-
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin<HomePage> {
   @override
   bool get wantKeepAlive => true;
 
@@ -57,7 +59,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<
   UserPublicData? _userPublicData;
 
   void _fetchUserPublicData() async {
-
     final user = authService.currentUser;
     if (user == null) return;
     final userPublicData = await dbService.getUserPublicData(user.uid);
@@ -66,6 +67,23 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<
     setState(() {
       _userPublicData = userPublicData;
     });
+  }
+
+  void _navigateToSeeMeasures(List<UserMeasurement>? m) async {
+    dynamic state = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ViewMeasures(
+            m: m,
+          ),
+        ));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(state),
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
@@ -113,21 +131,29 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<
                     separatorBuilder: (context, index) =>
                         const ContextSeparator(),
                     itemBuilder: (context, index) => CardBtn(
-                      title: HomePage.cardData[index]['title'] as String,
-                      subtitle:
-                          HomePage.cardData[index]['subtitle'] as String,
-                      imgPath: HomePage.cardData[index]['imgPath'] as String,
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return HomePage.cardData[index]['page']
-                                  as Widget;
-                            },
-                          ),
-                        );
-                      },
-                    ),
+                        title: HomePage.cardData[index]['title'] as String,
+                        subtitle:
+                            HomePage.cardData[index]['subtitle'] as String,
+                        imgPath: HomePage.cardData[index]['imgPath'] as String,
+                        onPressed: () async {
+                          if (HomePage.cardData[index]['title'] == 'Progreso') {
+                            // When "Progreso" is clicked, fetch user measurements and navigate
+                            final userMeasurements =
+                                await dbService.getUserMeasurements(
+                                    authService.currentUser!.uid);
+                            _navigateToSeeMeasures(userMeasurements);
+                          } else {
+                            // For other cards, navigate to the respective page
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) {
+                                  return HomePage.cardData[index]['page']
+                                      as Widget;
+                                },
+                              ),
+                            );
+                          }
+                        }),
                   )
                 ],
               ),
