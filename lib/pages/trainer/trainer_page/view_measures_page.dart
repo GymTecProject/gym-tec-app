@@ -75,7 +75,7 @@ class _ViewMeasuresState extends State<ViewMeasures> {
     if (_userMeasurement.isEmpty) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             'Ver Medidas',
             style: TextStyle(
               fontSize: 24, // Tamaño de fuente más grande
@@ -93,7 +93,7 @@ class _ViewMeasuresState extends State<ViewMeasures> {
     if (_userMeasurement.length < 2) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             'Ver Medidas',
             style: TextStyle(
               fontSize: 24, // Tamaño de fuente más grande
@@ -110,8 +110,8 @@ class _ViewMeasuresState extends State<ViewMeasures> {
               _showSingleMeasurement('Masa muscular', lastMeasurement.muscleMass, 'kg.'),
               _showSingleMeasurement('Peso', lastMeasurement.weight, 'kg.'),
               _showSingleMeasurement('Porcentaje de agua', lastMeasurement.water, '%'),
-              _showSingleMeasurement(
-                  'Grasa visceral', lastMeasurement.viceralFatLevel, '%'),
+              _showSingleMeasurement('Porcentaje de grasa corporal', lastMeasurement.fatPercentage, '%'),
+              _showSingleMeasurement('Grasa visceral', lastMeasurement.viceralFatLevel, '%'),
               _showSingleMeasurement('Masa osea', lastMeasurement.skeletalMuscle, 'kg.')
             ],
         ),
@@ -122,32 +122,34 @@ class _ViewMeasuresState extends State<ViewMeasures> {
     final previousMeasurement = _userMeasurement[1];
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Medidas de'),
+        title: const Text(
+            'Ver Medidas',
+            style: TextStyle(
+              fontSize: 24, // Tamaño de fuente más grande
+              fontWeight: FontWeight.bold, // Fuente en negrita
+            ),
+          ),
+        
         actions: [
-          IconButton(
-            icon: const Icon(Icons.calendar_today),
+          ElevatedButton(
             onPressed: () => _showDateMenu(context),
+            child: Text('Comparar medidas'),
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10), // Relleno
+            ),
           ),
         ],
       ),
       body: ListView(
         children: [
-          _createComparisonCard('Masa Grasa', previousMeasurement.fatPercentage,
-              lastMeasurement.fatPercentage, 'kg.'),
-          _createComparisonCard(
-              'Altura', previousMeasurement.height, lastMeasurement.height, 'm.'),
-          _createComparisonCard('Masa muscular', previousMeasurement.muscleMass,
-              lastMeasurement.muscleMass, 'kg.'),
-          _createComparisonCard(
-              'Peso', previousMeasurement.weight, lastMeasurement.weight, 'kg'),
-          _createComparisonCard('Porcentaje de agua', previousMeasurement.water,
-              lastMeasurement.water, '%'),
-          _createComparisonCard(
-              'Grasa visceral',
-              previousMeasurement.viceralFatLevel,
-              lastMeasurement.viceralFatLevel, '%'),
-          _createComparisonCard('Masa osea', previousMeasurement.skeletalMuscle,
-              lastMeasurement.skeletalMuscle, 'kg.')
+          _createComparisonCard('Masa Grasa', previousMeasurement.fatPercentage,lastMeasurement.fatPercentage, 'kg.'),
+          _createComparisonCard('Altura', previousMeasurement.height, lastMeasurement.height, 'm.'),
+          _createComparisonCard('Masa muscular', previousMeasurement.muscleMass,lastMeasurement.muscleMass, 'kg.'),
+          _createComparisonCard('Peso', previousMeasurement.weight, lastMeasurement.weight, 'kg'),
+          _createComparisonCard('Porcentaje de grasa corporal', previousMeasurement.fatPercentage, lastMeasurement.fatPercentage, '%'),
+          _createComparisonCard('Porcentaje de agua', previousMeasurement.water, lastMeasurement.water, '%'),
+          _createComparisonCard('Grasa visceral',previousMeasurement.viceralFatLevel,lastMeasurement.viceralFatLevel, '%'),
+          _createComparisonCard('Masa osea', previousMeasurement.skeletalMuscle,lastMeasurement.skeletalMuscle, 'kg.')
         ],
       ),
     );
@@ -203,11 +205,10 @@ Widget _createComparisonCard(String title, num? previousValue, num? currentValue
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
-                'Fecha actual: $currentValue $parameter',
+                'Antes: $previousValue $parameter',
                 style: const TextStyle(fontSize: 16),
-              ),
-              Text(
-                'Fecha anterior: $previousValue $parameter',
+              ),Text(
+                'Ahora: $currentValue $parameter',
                 style: const TextStyle(fontSize: 16),
               ),
               Text(

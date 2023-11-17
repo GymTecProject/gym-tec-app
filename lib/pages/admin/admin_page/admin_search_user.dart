@@ -171,24 +171,6 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                 ),
                                 const ItemSeparator(),
                                 IconButton.filledTonal(
-                                  icon: const Icon(Icons.straighten),
-                                  tooltip: 'Ver medidas',
-                                  onPressed: () async {
-                                    final userMeasurements = await dbService
-                                        .getUserLatestMeasurement(user.id);
-                                    // ignore: use_build_context_synchronously
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => MeasurementsDialog(
-                                        name: user.name,
-                                        m: userMeasurements,
-                                      ),
-                                    );
-                                  },
-                                  // child: const Text('Measurements')
-                                ),
-                                const ItemSeparator(),
-                                IconButton.filledTonal(
                                   icon: const Icon(Icons.fitness_center),
                                   tooltip: 'Crear rutina',
                                   onPressed: () =>

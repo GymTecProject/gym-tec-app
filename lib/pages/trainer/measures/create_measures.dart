@@ -19,13 +19,12 @@ class _CreateMeasuresPageState extends State<CreateMeasuresPage> {
   final _formKey = GlobalKey<FormState>();
 
   int? age;
-  double? fatMass; // Porcentaje de masa corporal
-  double? fatPercentage; // Porcentaje de grasa corporal
+  double? fatMass; 
+  double? fatPercentage; 
   double? height;
-  double? muscleMass; // Porcentaje de masa muscular
+  double? muscleMass; 
   double? weight;
   double? skeletalMuscle;
-  double? weiviceralFatLevelght;
   double? water;
   double? viceralFatLevel;
 
@@ -120,6 +119,11 @@ class _CreateMeasuresPageState extends State<CreateMeasuresPage> {
         final n = num.tryParse(value);
         if (n == null) {
           return 'Por favor ingrese un valor numérico válido';
+        }
+        if(label == 'Altura'){
+          if(n < 65 || n>250){
+            return 'La altura es en centimetros, por favor revise el número ingresado.';
+          }
         }
         return null;
       },
