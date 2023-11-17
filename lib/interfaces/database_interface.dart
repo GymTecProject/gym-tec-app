@@ -4,7 +4,7 @@ import 'package:gym_tec/models/excercises/exercise.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
 import 'package:gym_tec/models/users/user_measurements.dart';
-import 'package:gym_tec/models/weekly_challeges/weekly_challenge.dart';
+import 'package:gym_tec/models/weekly_challeges/challenge_data.dart';
 
 import '../models/users/user_data_protected.dart';
 
@@ -37,6 +37,7 @@ abstract class DatabaseInterface {
   //FIXME
 
   // Weekly Challenges
-  Future<WeeklyChallenge?> getLatestWeeklyChallenge();
+  Future<WeeklyChallengeData?> getLatestWeeklyChallenge();
   Future<String?> createWeeklyChallenge(Map<String, dynamic> data);
+  Future<String?> addSuccessfulUserToChallenge(String uid, int challengeIndex);
 }
