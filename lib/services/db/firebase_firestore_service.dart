@@ -209,6 +209,7 @@ class DatabaseFirebase implements DatabaseInterface {
           .collection('users')
           .doc(uid)
           .collection('measurements')
+          .orderBy('date', descending: true)
           .get();
       if (userMeasurements.docs.isNotEmpty) {
         return userMeasurements.docs.map((doc) {

@@ -10,6 +10,9 @@ import 'package:gym_tec/services/dependency_manager.dart';
 
 import '../../../components/search_users/dialog/admin_dialog.dart';
 import '../../../components/search_users/dialog/measurements_dialog.dart';
+import '../../../models/users/user_measurements.dart';
+import '../../trainer/measures/create_measures.dart';
+import '../../trainer/trainer_page/view_measures_page.dart';
 
 class AdminSearchUser extends StatefulWidget {
   const AdminSearchUser({super.key});
@@ -55,6 +58,40 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
         MaterialPageRoute(
           builder: (context) => CreateRoutinePage(
             clientId: clientId,
+          ),
+        ));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(state),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void _navigateToRegisterMeasures(String clientId) async {
+    dynamic state = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CreateMeasuresPage(
+            clientId: clientId,
+          ),
+        ));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(state),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void _navigateToSeeMeasures(List<UserMeasurement>? m) async {
+    dynamic state = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ViewMeasures(
+            m: m,
           ),
         ));
     if (!mounted) return;
@@ -117,21 +154,20 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 IconButton.filledTonal(
-                                  icon: const Icon(Icons.straighten),
-                                  tooltip: 'Ver medidas',
+                                  icon: const Icon(Icons.remove_red_eye),
+                                  tooltip: 'Visualizar medidas',
                                   onPressed: () async {
                                     final userMeasurements = await dbService
                                         .getUserMeasurements(user.id);
-                                    // ignore: use_build_context_synchronously
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => MeasurementsDialog(
-                                        name: user.name,
-                                        m: userMeasurements?.last,
-                                      ),
-                                    );
+                                    _navigateToSeeMeasures(userMeasurements);
                                   },
-                                  // child: const Text('Measurements')
+                                ),
+                                const ItemSeparator(),
+                                IconButton.filledTonal(
+                                  icon: const Icon(Icons.straighten),
+                                  tooltip: 'Registrar medidas',
+                                  onPressed: () =>
+                                      _navigateToRegisterMeasures(user.id),
                                 ),
                                 const ItemSeparator(),
                                 IconButton.filledTonal(

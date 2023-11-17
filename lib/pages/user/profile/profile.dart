@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
+import 'package:gym_tec/interfaces/auth_interface.dart';
+import 'package:gym_tec/interfaces/database_interface.dart';
+import 'package:gym_tec/models/users/user_measurements.dart';
+import 'package:gym_tec/pages/trainer/measures/create_measures.dart';
+import 'package:gym_tec/pages/trainer/trainer_page/view_measures_page.dart';
 import 'package:gym_tec/pages/user/profile/measurement.dart';
+import 'package:gym_tec/services/dependency_manager.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -35,18 +41,25 @@ class _PageBody extends State<PageBody>  {
   final String _edad = '21';
   final String _correo = 'danielarayasambucci@gmail.com';
 
-  //Parámetros biométricos
-  /*String _altura = 
-  String _peso
-  String _porcentajeGrasa
-  String _mMuscular
-  String _mOsea
-  String _gastoCalorico
-  String _grasaVisceral
-  String _IMC 
+  final DatabaseInterface dbService = DependencyManager.databaseService;
+  final AuthInterface authService = DependencyManager.authService;
 
-  //Mediciones
-*/
+    void _navigateToSeeMeasures(List<UserMeasurement>? m) async {
+    dynamic state = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ViewMeasures(
+            m: m,
+          ),
+        ));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(state),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -83,86 +96,7 @@ class _PageBody extends State<PageBody>  {
                   const Divider(),
                   Padding(padding: const EdgeInsets.only(left: 16),
                   child: Text('Correo electrónico: $_correo', style: const TextStyle(fontSize: 16))),
-                  
-                  SizedBox(
-                    height: 75,
-                    child: Center(child: FilledButton(onPressed: (){}, child: const Text('Cambiar contraseña'))),
-                  ),
-              
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16),
-                    child: SizedBox( height: 50,
-                      child: Center(child:Text('Mediciones', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)))  
-                    )),
-                  Center(child: Container(
-                    constraints: const BoxConstraints(maxWidth: 450), // Ajusta el ancho máximo del texto
-                    child: const Center(child: Text('Seleccione una fecha para visualizar sus mediciones o dos fechas para compararlas', style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
-                    ),
-                  )),
-                  Center(child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 150,
-                          child: DropdownButton<String>(
-                            value: _selectedOption1,
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                _selectedOption1 = newValue!;
-                              });
-                            },
-                            items: <String>[
-                              'Opción 1',
-                              'Opción 2',
-                              'Opción 3',
-                              'Opción 4',
-                            ].map<DropdownMenuItem<String>>(
-                              (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              },
-                            ).toList(),
-                          ),
-                        ),
-                        const SizedBox(width: 16), // Espacio entre los DropdownButton
-                        SizedBox(
-                          width: 150,
-                          child: DropdownButton<String>(
-                            value: _selectedOption2,
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                _selectedOption2 = newValue!;
-                              });
-                            },
-                            items: <String>[
-                              'Opción A',
-                              'Opción B',
-                              'Opción C',
-                              'Opción D',
-                            ].map<DropdownMenuItem<String>>(
-                              (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              },
-                            ).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                SizedBox(
-                  height: 75,
-                  child: Center(
-                    child: FilledButton(
-                      onPressed: () => navigateToMeasurement(context),
-                      child: const Text('Visualizar Cambio'),
-                    ),
-                  ),
-                )],
+                ],
               ),
             ),
           ),
