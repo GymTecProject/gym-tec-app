@@ -75,7 +75,13 @@ class _ViewMeasuresState extends State<ViewMeasures> {
     if (_userMeasurement.isEmpty) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('View Measures'),
+          title: Text(
+            'Ver Medidas',
+            style: TextStyle(
+              fontSize: 24, // Tamaño de fuente más grande
+              fontWeight: FontWeight.bold, // Fuente en negrita
+            ),
+          ),
         ),
         body: const Center(
           child: Text('No hay suficientes datos para comparar.'),
@@ -87,22 +93,31 @@ class _ViewMeasuresState extends State<ViewMeasures> {
     if (_userMeasurement.length < 2) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('View Measures'),
+          title: Text(
+            'Ver Medidas',
+            style: TextStyle(
+              fontSize: 24, // Tamaño de fuente más grande
+              fontWeight: FontWeight.bold, // Fuente en negrita
+            ),
+          ),
         ),
-        body: ListView(
+        body: Padding( // Aplicar Padding al ListView
+        padding: const EdgeInsets.symmetric(horizontal: 8.0), // Relleno solo horizontal
+        child: ListView(
           children: [
-            _showSingleMeasurement('Masa Grasa', lastMeasurement.fatPercentage),
-            _showSingleMeasurement('Altura', lastMeasurement.height),
-            _showSingleMeasurement('Masa muscular', lastMeasurement.muscleMass),
-            _showSingleMeasurement('Peso', lastMeasurement.weight),
-            _showSingleMeasurement('Porcentaje de agua', lastMeasurement.water),
-            _showSingleMeasurement(
-                'Grasa visceral', lastMeasurement.viceralFatLevel),
-            _showSingleMeasurement('Masa osea', lastMeasurement.skeletalMuscle)
-          ],
+              _showSingleMeasurement('Masa Grasa', lastMeasurement.fatPercentage, 'kg.'),
+              _showSingleMeasurement('Altura', lastMeasurement.height, 'm.'),
+              _showSingleMeasurement('Masa muscular', lastMeasurement.muscleMass, 'kg.'),
+              _showSingleMeasurement('Peso', lastMeasurement.weight, 'kg.'),
+              _showSingleMeasurement('Porcentaje de agua', lastMeasurement.water, '%'),
+              _showSingleMeasurement(
+                  'Grasa visceral', lastMeasurement.viceralFatLevel, '%'),
+              _showSingleMeasurement('Masa osea', lastMeasurement.skeletalMuscle, 'kg.')
+            ],
         ),
-      );
-    }
+      )
+    );
+  }
 
     final previousMeasurement = _userMeasurement[1];
     return Scaffold(
@@ -118,91 +133,93 @@ class _ViewMeasuresState extends State<ViewMeasures> {
       body: ListView(
         children: [
           _createComparisonCard('Masa Grasa', previousMeasurement.fatPercentage,
-              lastMeasurement.fatPercentage),
+              lastMeasurement.fatPercentage, 'kg.'),
           _createComparisonCard(
-              'Altura', previousMeasurement.height, lastMeasurement.height),
+              'Altura', previousMeasurement.height, lastMeasurement.height, 'm.'),
           _createComparisonCard('Masa muscular', previousMeasurement.muscleMass,
-              lastMeasurement.muscleMass),
+              lastMeasurement.muscleMass, 'kg.'),
           _createComparisonCard(
-              'Peso', previousMeasurement.weight, lastMeasurement.weight),
+              'Peso', previousMeasurement.weight, lastMeasurement.weight, 'kg'),
           _createComparisonCard('Porcentaje de agua', previousMeasurement.water,
-              lastMeasurement.water),
+              lastMeasurement.water, '%'),
           _createComparisonCard(
               'Grasa visceral',
               previousMeasurement.viceralFatLevel,
-              lastMeasurement.viceralFatLevel),
+              lastMeasurement.viceralFatLevel, '%'),
           _createComparisonCard('Masa osea', previousMeasurement.skeletalMuscle,
-              lastMeasurement.skeletalMuscle)
+              lastMeasurement.skeletalMuscle, 'kg.')
         ],
       ),
     );
   }
 
-  Widget _showSingleMeasurement(String title, num? currentValue) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+Widget _showSingleMeasurement(String title, num? currentValue, String parameter) {
+  return Card(
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center, // Ajustado para centrar el título
+        children: [
+          Text(
+            title,
+            textAlign: TextAlign.center, // Ajustado para centrar el texto
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Fecha actual: $currentValue',
-              style: const TextStyle(fontSize: 16),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '$currentValue $parameter',
+            style: const TextStyle(fontSize: 16),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
 
-  Widget _createComparisonCard(
-      String title, num? previousValue, num? currentValue) {
-    final difference = currentValue != null && previousValue != null
-        ? currentValue - previousValue
-        : null;
+Widget _createComparisonCard(String title, num? previousValue, num? currentValue, String parameter) {
+  final difference = currentValue != null && previousValue != null
+      ? currentValue - previousValue
+      : null;
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+  return Card(
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center, // Ajustado para centrar el título
+        children: [
+          Text(
+            title,
+            textAlign: TextAlign.center, // Ajustado para centrar el texto
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                'Fecha actual: $currentValue $parameter',
+                style: const TextStyle(fontSize: 16),
               ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(
-                  'Fecha actual: $currentValue',
-                  style: const TextStyle(fontSize: 16),
-                ),
-                Text(
-                  'Fecha anterior: $previousValue',
-                  style: const TextStyle(fontSize: 16),
-                ),
-                Text(
-                  'Diferencia: $difference',
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ],
-            ),
-          ],
-        ),
+              Text(
+                'Fecha anterior: $previousValue $parameter',
+                style: const TextStyle(fontSize: 16),
+              ),
+              Text(
+                'Diferencia: $difference $parameter',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 }
