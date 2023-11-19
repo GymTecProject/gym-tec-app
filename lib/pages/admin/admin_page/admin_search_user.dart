@@ -31,8 +31,6 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
   int? _value;
   final List<String> _accTypes = ['Administrator', 'Trainer', 'Client'];
 
-  late List<UserPublicPrivateData> users;
-
   @override
   void initState() {
     super.initState();
@@ -173,7 +171,7 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                   return const Text('Error or no data');
                 }
 
-                users = snapshot.data!;
+                List<UserPublicPrivateData> users = snapshot.data!;
                 List<UserPublicPrivateData> filteredUsers =
                     _filterUsers(users, _searchQuery);
 
