@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gym_tec/models/users/user_data_private.dart';
+import 'package:gym_tec/models/users/user_data_public_private.dart';
 import 'package:gym_tec/models/users/user_measurements.dart';
 import 'package:gym_tec/services/db/firebase_firestore_service.dart';
 
@@ -9,7 +11,7 @@ void main() async {
   await fbFakeInstance
       .collection('users')
       .doc('testUser')
-      .set({'name': 'Juan', 'lastName': 'Perez', 'email': 'test@email.com'});
+      .set({'name': 'Juan', 'sex':'male', 'expirationDate': Timestamp.now()});
   final fakeDbService = DatabaseFirebase(firebaseInstance: fbFakeInstance);
 
   test('Should return userMeasurement object', () async {
@@ -74,5 +76,21 @@ void main() async {
     final userMeasurement =
         await fakeDbService.getUserLatestMeasurement('testUser');
     expect(userMeasurement, isA<UserMeasurement>());
+  });
+
+  test('User PublicPrivate Data should not be null and contain public and private data', () async {
+    await fbFakeInstance
+        .collection('users')
+        .doc('testUser')
+        .collection('private')
+        .doc('data')
+        .set({'accountType': 'administrator'});
+
+    final List<UserPublicPrivateData>? userPublicPrivateData =
+        await fakeDbService.getAllUsersPublicPrivateData();
+    expect(userPublicPrivateData, isNotNull);
+    expect(userPublicPrivateData![0].publicData.id, 'testUser');
+    expect(userPublicPrivateData[0].privateData.accountType, AccountType.administrator);
+    
   });
 }
