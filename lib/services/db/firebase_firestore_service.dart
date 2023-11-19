@@ -97,12 +97,50 @@ class DatabaseFirebase implements DatabaseInterface {
         }).toList();
 
         return Future.wait(finalData);
-
       }
     } catch (e) {
       return null;
     }
     return null;
+  }
+
+  @override
+  Stream<List<UserPublicPrivateData>> getAllUsersPublicPrivateDataStream() {
+    // Stream of public user data
+    var publicDataStream =
+        FirebaseFirestore.instance.collection('users').snapshots();
+
+    return publicDataStream.asyncMap((publicSnapshot) async {
+      // Create a list of Future<UserPublicPrivateData>
+      var futureList = publicSnapshot.docs.map((publicDoc) async {
+        try {
+          // Fetch each user's public data
+          var publicDataMap = publicDoc.data();
+          publicDataMap.addAll({'uid': publicDoc.id});
+          var publicData = UserPublicData.fromJson(publicDataMap);
+
+          // Fetch corresponding private data
+          var privateDataStream = getUserPrivateDataStream(publicDoc.id);
+          var privateData = await privateDataStream
+              .first; // Get the first (latest) snapshot of private data
+
+          // Combine public and private data
+          return UserPublicPrivateData(
+              publicData: publicData, privateData: privateData);
+        } catch (e) {
+          // Handle errors, e.g., private data not found
+          // Decide how you want to handle this case
+          return null; // Or handle the error appropriately
+        }
+      });
+
+      // Wait for all futures in the list to complete and filter out null values
+      var combinedData = await Future.wait(futureList);
+      return combinedData
+          .where((data) => data != null)
+          .cast<UserPublicPrivateData>()
+          .toList();
+    });
   }
 
   @override

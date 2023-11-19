@@ -9,6 +9,7 @@ import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
 import '../../../components/search_users/dialog/admin_dialog.dart';
+import '../../../models/users/user_data_public_private.dart';
 import '../../../models/users/user_measurements.dart';
 import '../../trainer/measures/create_measures.dart';
 import '../../trainer/trainer_page/view_measures_page.dart';
@@ -24,14 +25,14 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
   final AuthInterface authService = DependencyManager.authService;
 
-  late Stream<List<UserPublicData>> _usersStream;
+  late Stream<List<UserPublicPrivateData>> _usersStream;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    _usersStream = dbService.getAllUsersStream();
+    _usersStream = dbService.getAllUsersPublicPrivateDataStream();
     _searchController.addListener(() {
       setState(() {
         _searchQuery = _searchController.text;
@@ -45,9 +46,11 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
     super.dispose();
   }
 
-  List<UserPublicData> _filterUsers(List<UserPublicData> users, String query) {
+  List<UserPublicPrivateData> _filterUsers(
+      List<UserPublicPrivateData> users, String query) {
     return users
-        .where((user) => user.name.toLowerCase().contains(query.toLowerCase()))
+        .where((user) =>
+            user.publicData.name.toLowerCase().contains(query.toLowerCase()))
         .toList();
   }
 
@@ -115,39 +118,45 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
             ),
           ),
           Expanded(
-            child: StreamBuilder<List<UserPublicData>>(
+            child: StreamBuilder<List<UserPublicPrivateData>?>(
               stream: _usersStream,
               builder: (context, snapshot) {
-                List<UserPublicData> users =
-                    snapshot.hasData ? snapshot.data! : [];
-                List<UserPublicData> filteredUsers =
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError || !snapshot.hasData) {
+                  return const Text('Error or no data');
+                }
+
+                List<UserPublicPrivateData> users = snapshot.data!;
+                List<UserPublicPrivateData> filteredUsers =
                     _filterUsers(users, _searchQuery);
 
                 return ListView.builder(
                   itemCount: filteredUsers.length,
                   itemBuilder: (context, index) {
-                    UserPublicData user = filteredUsers[index];
+                    UserPublicPrivateData user = filteredUsers[index];
                     return Card(
                       clipBehavior: Clip.antiAlias,
                       child: ExpansionTile(
-                        key: ValueKey(user.id),
+                        key: ValueKey(user.publicData.id),
                         title: Text(
-                          user.name,
+                          user.publicData.name,
                           style: TextStyle(
-                            color: user.expirationDate
+                            color: user.publicData.expirationDate
                                     .toDate()
                                     .isBefore(DateTime.now())
                                 ? Colors.red
                                 : null,
                           ),
                         ),
-                        subtitle: Text(user.expirationDate.toDate().toString()),
+                        subtitle: Text(
+                            user.publicData.expirationDate.toDate().toString()),
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
                               children: [
-                                ExpansionTileContent(id: user.id),
+                                ExpansionTileContent(id: user.publicData.id),
                               ],
                             ),
                           ),
@@ -159,8 +168,9 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                   icon: const Icon(Icons.remove_red_eye),
                                   tooltip: 'Visualizar medidas',
                                   onPressed: () async {
-                                    final userMeasurements = await dbService
-                                        .getUserMeasurements(user.id);
+                                    final userMeasurements =
+                                        await dbService.getUserMeasurements(
+                                            user.publicData.id);
                                     _navigateToSeeMeasures(userMeasurements);
                                   },
                                 ),
@@ -168,15 +178,15 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                 IconButton.filledTonal(
                                   icon: const Icon(Icons.straighten),
                                   tooltip: 'Registrar medidas',
-                                  onPressed: () =>
-                                      _navigateToRegisterMeasures(user.id),
+                                  onPressed: () => _navigateToRegisterMeasures(
+                                      user.publicData.id),
                                 ),
                                 const ItemSeparator(),
                                 IconButton.filledTonal(
                                   icon: const Icon(Icons.fitness_center),
                                   tooltip: 'Crear rutina',
-                                  onPressed: () =>
-                                      _navigateToCreateRoutine(user.id),
+                                  onPressed: () => _navigateToCreateRoutine(
+                                      user.publicData.id),
                                 ),
                                 const ItemSeparator(),
                                 IconButton.filledTonal(
@@ -187,7 +197,8 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                       showDialog(
                                         context: context,
                                         builder: (context) {
-                                          return AdminDialog(user: user);
+                                          return AdminDialog(
+                                              user: user.publicData);
                                         },
                                       );
                                     }),

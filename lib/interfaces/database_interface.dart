@@ -47,4 +47,5 @@ abstract class DatabaseInterface {
 
   // Reports
   Future<String> addErrorReport(String uid, String description);
+  Stream<List<UserPublicPrivateData>> getAllUsersPublicPrivateDataStream();
 }
