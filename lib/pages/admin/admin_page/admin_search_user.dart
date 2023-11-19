@@ -77,7 +77,7 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
           ),
         ));
     if (!mounted) return;
-    if(state == null) return;
+    if (state == null) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(state),
@@ -131,7 +131,16 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                       clipBehavior: Clip.antiAlias,
                       child: ExpansionTile(
                         key: ValueKey(user.id),
-                        title: Text(user.name),
+                        title: Text(
+                          user.name,
+                          style: TextStyle(
+                            color: user.expirationDate
+                                    .toDate()
+                                    .isBefore(DateTime.now())
+                                ? Colors.red
+                                : null,
+                          ),
+                        ),
                         subtitle: Text(user.expirationDate.toDate().toString()),
                         children: [
                           Padding(
