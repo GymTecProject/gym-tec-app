@@ -237,18 +237,24 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                 ),
                                 const ItemSeparator(),
                                 IconButton.filledTonal(
-                                    icon:
-                                        const Icon(Icons.admin_panel_settings),
-                                    tooltip: 'Admin',
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AdminDialog(
-                                              user: user.publicData);
-                                        },
-                                      );
-                                    }),
+                                  icon: const Icon(Icons.admin_panel_settings),
+                                  tooltip: 'Admin',
+                                  onPressed: () async {
+                                    final result = await showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AdminDialog(
+                                            user: user.publicData);
+                                      },
+                                    );
+                                    if (result ==
+                                        'Rol actualizado con éxito.') {
+                                      _usersStream = dbService
+                                          .getAllUsersPublicPrivateDataStream();
+                                      setState(() {});
+                                    }
+                                  },
+                                ),
                               ],
                             ),
                           )
