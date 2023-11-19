@@ -6,6 +6,7 @@ class RoutineExercise {
   String comment;
   int series;
   int repetitions;
+  num weight;
 
   RoutineExercise({
     required this.name,
@@ -14,6 +15,7 @@ class RoutineExercise {
     required this.comment,
     required this.series,
     required this.repetitions,
+    this.weight = 0,
   });
 
   factory RoutineExercise.fromJson(Map<String, dynamic> json) {
@@ -24,6 +26,7 @@ class RoutineExercise {
       comment: json['comment'],
       series: json['series'],
       repetitions: json['repetitions'],
+      weight: json['weight'],
     );
     return exercise;
   }
@@ -35,5 +38,6 @@ class RoutineExercise {
         'comment': comment,
         'series': series,
         'repetitions': repetitions,
+        'weight': weight,
       };
 }

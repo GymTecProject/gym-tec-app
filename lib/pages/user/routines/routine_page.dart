@@ -6,6 +6,7 @@ import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/routines/routine_data.dart';
+import 'package:gym_tec/models/routines/routine_exercise.dart';
 import 'package:gym_tec/models/routines/routine_workout.dart';
 import 'package:gym_tec/pages/user/routines/routine_day.dart';
 import 'package:intl/intl.dart';
@@ -60,6 +61,18 @@ class _RoutinePageState extends State<RoutinePage> {
       }
     }
     return title;
+  }
+
+  String _dayCategory(List<RoutineExercise> day) {
+    final Map<String, int> categoies = {};
+    for (var data in day) { 
+      if (categoies.containsKey(data.category)) {
+        categoies[data.category] = categoies[data.category]! + 1;
+      } else {
+        categoies[data.category] = 1;
+      }
+    }
+    return categoies.keys.reduce((a, b) => categoies[a]! > categoies[b]! ? a : b);
   }
 
   void _openHistroyDialog() async {
@@ -130,6 +143,7 @@ class _RoutinePageState extends State<RoutinePage> {
                                       (BuildContext context, int index) {
                                     return CardBtn(
                                       title: _getDaysTitle(workout[index].days),
+                                      subtitle: _dayCategory(workout[index].exercises),
                                       onPressed: () {
                                         Navigator.of(context).push(
                                           MaterialPageRoute(
