@@ -29,6 +29,7 @@ abstract class DatabaseInterface {
   Stream<UserPrivateData> getUserPrivateDataStream(String uid);
   Stream<UserProtectedData> getUserProtectedDataStream(String uid);
   Stream<List<UserPublicData>> getAllUsersStream();
+  Stream<List<UserPublicPrivateData>> getAllUsersPublicPrivateDataStream();
 
   // Routines
   Future<List<RoutineData>?> getUserRoutines(String uid, int limit);
@@ -47,5 +48,4 @@ abstract class DatabaseInterface {
 
   // Reports
   Future<String> addErrorReport(String uid, String description);
-  Stream<List<UserPublicPrivateData>> getAllUsersPublicPrivateDataStream();
 }

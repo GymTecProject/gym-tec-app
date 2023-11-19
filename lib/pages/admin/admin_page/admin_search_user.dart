@@ -9,6 +9,7 @@ import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
 import '../../../components/search_users/dialog/admin_dialog.dart';
+import '../../../models/users/user_data_private.dart';
 import '../../../models/users/user_data_public_private.dart';
 import '../../../models/users/user_measurements.dart';
 import '../../trainer/measures/create_measures.dart';
@@ -28,6 +29,10 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
   late Stream<List<UserPublicPrivateData>> _usersStream;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  int? _value;
+  final List<String> _accTypes = ['Administrator', 'Trainer', 'Client'];
+
+  late List<UserPublicPrivateData> users;
 
   @override
   void initState() {
@@ -46,12 +51,34 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
     super.dispose();
   }
 
+  AccountType _mapStringToAccountType(String accountTypeString) {
+    switch (accountTypeString) {
+      case 'Administrator':
+        return AccountType.administrator;
+      case 'Trainer':
+        return AccountType.trainer;
+      case 'Client':
+        return AccountType.client;
+      default:
+        throw Exception('Invalid account type string');
+    }
+  }
+
   List<UserPublicPrivateData> _filterUsers(
       List<UserPublicPrivateData> users, String query) {
-    return users
-        .where((user) =>
-            user.publicData.name.toLowerCase().contains(query.toLowerCase()))
-        .toList();
+    return users.where((user) {
+      bool nameMatches =
+          user.publicData.name.toLowerCase().contains(query.toLowerCase());
+
+      bool accountTypeMatches = true;
+      if (_value != null) {
+        var selectedAccountType = _mapStringToAccountType(_accTypes[_value!]);
+        accountTypeMatches =
+            user.privateData.accountType == selectedAccountType;
+      }
+
+      return nameMatches && accountTypeMatches;
+    }).toList();
   }
 
   void _navigateToCreateRoutine(String clientId) async {
@@ -117,6 +144,26 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
               ),
             ),
           ),
+          SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (int i = 0; i < _accTypes.length; i++)
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: ChoiceChip(
+                        label: Text(_accTypes[i]),
+                        selected: _value == i,
+                        onSelected: (bool selected) {
+                          setState(() {
+                            _value = selected ? i : null;
+                          });
+                        },
+                      ),
+                    ),
+                ],
+              )),
           Expanded(
             child: StreamBuilder<List<UserPublicPrivateData>?>(
               stream: _usersStream,
@@ -127,7 +174,7 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                   return const Text('Error or no data');
                 }
 
-                List<UserPublicPrivateData> users = snapshot.data!;
+                users = snapshot.data!;
                 List<UserPublicPrivateData> filteredUsers =
                     _filterUsers(users, _searchQuery);
 
