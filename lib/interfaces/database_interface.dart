@@ -3,6 +3,7 @@ import 'package:gym_tec/models/routines/routine_data.dart';
 import 'package:gym_tec/models/excercises/exercise.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
+import 'package:gym_tec/models/users/user_data_public_private.dart';
 import 'package:gym_tec/models/users/user_measurements.dart';
 import 'package:gym_tec/models/weekly_challeges/challenge_data.dart';
 
@@ -18,6 +19,7 @@ abstract class DatabaseInterface {
   Future<UserPublicData?> getUserPublicData(String uid);
   Future<UserProtectedData?> getUserProtectedData(String uid);
   Future<UserPrivateData?> getUserPrivateData(String uid);
+  Future<List<UserPublicPrivateData>?> getAllUsersPublicPrivateData();
   Future<String?> createUserPublicData(String uid, Map<String, dynamic> data);
   Future<String?> createUserProtectedData(
       String uid, Map<String, dynamic> data);
@@ -37,11 +39,12 @@ abstract class DatabaseInterface {
   Future<List<UserMeasurement>?> getUserMeasurements(String uid);
   Future<UserMeasurement?> getUserLatestMeasurement(String uid);
   Future<String?> createUserMeasurement(String uid, Map<String, dynamic> data);
-  //FIXME
 
   // Weekly Challenges
   Future<WeeklyChallengeData?> getLatestWeeklyChallenge();
   Future<String?> createWeeklyChallenge(Map<String, dynamic> data);
   Future<String?> addSuccessfulUserToChallenge(String uid, int challengeIndex);
 
+  // Reports
+  Future<String> addErrorReport(String uid, String description);
 }

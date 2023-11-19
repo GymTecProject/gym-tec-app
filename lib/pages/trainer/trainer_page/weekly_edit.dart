@@ -12,7 +12,6 @@ import 'dart:math';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-
 class EditChallenges extends StatefulWidget {
   const EditChallenges({super.key});
 
@@ -21,13 +20,12 @@ class EditChallenges extends StatefulWidget {
 }
 
 class _EditChallengesState extends State<EditChallenges> {
-  
   late WeeklyChallengeData weeklyChallenge;
   final DatabaseInterface dbService = DependencyManager.databaseService;
 
   @override
-  void initState(){
-    weeklyChallenge  = WeeklyChallengeData(
+  void initState() {
+    weeklyChallenge = WeeklyChallengeData(
       date: Timestamp.now(),
       pin: generatePIN(),
       exercises: [],
@@ -37,7 +35,8 @@ class _EditChallengesState extends State<EditChallenges> {
   }
 
   void _getWeeklyChallenge() async {
-    WeeklyChallengeData? lastWeeklyChallenge = await dbService.getLatestWeeklyChallenge();
+    WeeklyChallengeData? lastWeeklyChallenge =
+        await dbService.getLatestWeeklyChallenge();
     if (lastWeeklyChallenge != null) {
       setState(() {
         weeklyChallenge = lastWeeklyChallenge;
@@ -59,6 +58,7 @@ class _EditChallengesState extends State<EditChallenges> {
     });
 
     if (!mounted) return;
+    if (state == null) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(state),
@@ -73,139 +73,141 @@ class _EditChallengesState extends State<EditChallenges> {
     return number.toString();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Editar Retos de la semana',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
+        appBar: AppBar(
+          title: const Text(
+            'Editar Retos de la semana',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.pin),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text("PIN:"),
-                  content: Text(weeklyChallenge.pin),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text("Cerrar"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.info_outline),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("PIN:"),
+                      content: Text(weeklyChallenge.pin),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text("Cerrar"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
-            );
-          },
+            ),
+          ],
         ),
-      ],
-      ),
-    body: Center(
-      child: ContentPadding(
-        child: Column(
-          children: [
-            Expanded(
+        body: Center(
+            child: ContentPadding(
+                child: Column(children: [
+          Expanded(
               child: Skeletonizer(
-                enabled: weeklyChallenge.exercises.isEmpty,
-                child: weeklyChallenge.exercises.isNotEmpty
-                    ? ListView.separated(
-                        itemCount: weeklyChallenge.exercises.length,
-                        shrinkWrap: true,
-                        separatorBuilder: (context, index) =>
-                            const ContextSeparator(),
-                        itemBuilder: (context, index) => CardBtn(
-                          title: "Reto ${index + 1}: ${weeklyChallenge.exercises[index].exercise.name}",
-                    onPressed: ()=>{
-                      showModalBottomSheet<void>(
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Padding(
-                            padding:
-                                MediaQuery.of(context).viewInsets,
-                            child: SingleChildScrollView(
-                              child: Form(
-                                child: Container(
-                                  padding:
-                                      const EdgeInsets.all(24.0),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                    const Row(
-                                      children: [
-                                        Flexible(
-                                          child: Card(
-                                            elevation: 0, 
-                                            color: Colors.transparent,
-                                            child: Text(
-                                              'Cantidad de usuarios que han cumplido el reto:',
-                                            style: TextStyle(
-                                              fontWeight:
-                                                FontWeight.bold,
-                                                fontSize: 20,
-                                            ),
-                                          )),
+            enabled: weeklyChallenge.exercises.isEmpty,
+            child: weeklyChallenge.exercises.isNotEmpty
+                ? ListView.separated(
+                    itemCount: weeklyChallenge.exercises.length,
+                    shrinkWrap: true,
+                    separatorBuilder: (context, index) =>
+                        const ContextSeparator(),
+                    itemBuilder: (context, index) => CardBtn(
+                        title:
+                            "Reto ${index + 1}: ${weeklyChallenge.exercises[index].exercise.name}",
+                        onPressed: () => {
+                              showModalBottomSheet<void>(
+                                isScrollControlled: true,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Padding(
+                                    padding: MediaQuery.of(context).viewInsets,
+                                    child: SingleChildScrollView(
+                                      child: Form(
+                                        child: Container(
+                                          padding: const EdgeInsets.all(24.0),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              const Row(
+                                                children: [
+                                                  Flexible(
+                                                    child: Card(
+                                                        elevation: 0,
+                                                        color:
+                                                            Colors.transparent,
+                                                        child: Text(
+                                                          'Cantidad de usuarios que han cumplido el reto:',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 20,
+                                                          ),
+                                                        )),
+                                                  ),
+                                                ],
+                                              ),
+                                              const ContextSeparator(),
+                                              Text(
+                                                  weeklyChallenge
+                                                      .exercises[index]
+                                                      .successfulUsers
+                                                      .length
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                  )),
+                                              const ContextSeparator(),
+                                            ],
+                                          ),
                                         ),
-                                      ],
+                                      ),
                                     ),
-                                    const ContextSeparator(),
-                                    Text(weeklyChallenge.exercises[index].successfulUsers.length.toString(), style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    )),
-                                    const ContextSeparator(),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      )
-                    }
-                  ),
-                )
+                                  );
+                                },
+                              )
+                            }),
+                  )
                 : ListView.builder(
-                itemCount: 3,
-                itemBuilder: (context, index) => Column(
-                  children: [
-                    CardBtn(
-                      title: "Nombre de ejemplo",
-                      onPressed: () => {},
+                    itemCount: 3,
+                    itemBuilder: (context, index) => Column(
+                      children: [
+                        CardBtn(
+                          title: "Nombre de ejemplo",
+                          onPressed: () => {},
+                        ),
+                        const ContextSeparator(),
+                      ],
                     ),
-                    const ContextSeparator(),
-                  ],
-                ),
-              ),
-              )),
-                ActionBtn(title: "Actualizar", fontWeight:FontWeight.bold, onPressed: () {
-                  try {
-                    setState(() {
-                      weeklyChallenge = WeeklyChallengeData(
-                        date: Timestamp.now(),
-                        pin: generatePIN(),
-                        exercises: [],
-                      );
-                    });
+                  ),
+          )),
+          ActionBtn(
+              title: "Actualizar",
+              fontWeight: FontWeight.bold,
+              onPressed: () {
+                try {
+                  setState(() {
+                    weeklyChallenge = WeeklyChallengeData(
+                      date: Timestamp.now(),
+                      pin: generatePIN(),
+                      exercises: [],
+                    );
+                  });
 
-                    _navigateToAddWeeklyChallenge();
-                  } catch (e) {
-                  }
-                }),
-            ]
-          )
-        )
-      )
-    );
-  }         
+                  _navigateToAddWeeklyChallenge();
+                } catch (e) {}
+              }),
+        ]))));
+  }
 }

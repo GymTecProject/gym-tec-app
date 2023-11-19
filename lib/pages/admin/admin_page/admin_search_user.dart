@@ -9,7 +9,6 @@ import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
 import '../../../components/search_users/dialog/admin_dialog.dart';
-import '../../../components/search_users/dialog/measurements_dialog.dart';
 import '../../../models/users/user_measurements.dart';
 import '../../trainer/measures/create_measures.dart';
 import '../../trainer/trainer_page/view_measures_page.dart';
@@ -78,6 +77,7 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
           ),
         ));
     if (!mounted) return;
+    if(state == null) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(state),
@@ -87,20 +87,13 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
   }
 
   void _navigateToSeeMeasures(List<UserMeasurement>? m) async {
-    dynamic state = await Navigator.push(
+    await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ViewMeasures(
             m: m,
           ),
         ));
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(state),
-        duration: const Duration(seconds: 3),
-      ),
-    );
   }
 
   @override

@@ -70,20 +70,14 @@ class _HomePageState extends State<HomePage>
   }
 
   void _navigateToSeeMeasures(List<UserMeasurement>? m) async {
-    dynamic state = await Navigator.push(
+    Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ViewMeasures(
             m: m,
           ),
         ));
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(state),
-        duration: const Duration(seconds: 3),
-      ),
-    );
+  
   }
 
   @override

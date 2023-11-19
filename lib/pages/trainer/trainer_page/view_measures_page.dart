@@ -59,7 +59,7 @@ class _ViewMeasuresState extends State<ViewMeasures> {
               title: Text(
                 formattedDate,
                 textAlign: TextAlign.center, // Centra el texto
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold, // Hace el texto en negrita
                 ),
               ),
@@ -139,10 +139,10 @@ class _ViewMeasuresState extends State<ViewMeasures> {
         actions: [
           ElevatedButton(
             onPressed: () => _showDateMenu(context),
-            child: Text('Comparar medidas'),
             style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10), // Relleno
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10), // Relleno
             ),
+            child: const Text('Comparar medidas'),
           ),
         ],
       ),

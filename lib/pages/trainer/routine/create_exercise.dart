@@ -271,7 +271,7 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
                                                   const ContextSeparator(),
                                                   ActionBtn(
                                                       title: "Guardar",
-                                                      onPressed: _saveExercise)
+                                                      onPressed: _saveExercise),
                                                 ],
                                               ),
                                             ),

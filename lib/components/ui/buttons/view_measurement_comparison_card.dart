@@ -16,7 +16,7 @@ class MeasurementComparisonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final difference = currentValue != null && previousValue != null
+    final difference = previousValue != null
         ? currentValue - previousValue
         : null;
 

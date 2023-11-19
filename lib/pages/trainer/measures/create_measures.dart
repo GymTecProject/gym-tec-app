@@ -54,9 +54,9 @@ class _CreateMeasuresPageState extends State<CreateMeasuresPage> {
     try {
       await dbService.createUserMeasurement(clientId, measurementData.toJson());
       if (!mounted) return;
-      Navigator.pop(context, 'Rutina creada con éxito');
+      Navigator.pop(context, 'Medida creada con éxito');
     } catch (e) {
-      Navigator.pop(context, 'Error al crear la rutina');
+      Navigator.pop(context, 'Error al crear nueva medida');
     }
   }
 

@@ -5,6 +5,7 @@ import 'package:gym_tec/models/excercises/exercise.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_protected.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
+import 'package:gym_tec/models/users/user_data_public_private.dart';
 import 'package:gym_tec/models/weekly_challeges/challenge_data.dart';
 
 import '../../models/users/user_measurements.dart';
@@ -63,7 +64,7 @@ class DatabaseFirebase implements DatabaseInterface {
       }).toList();
     });
   }
-  
+
   @override
   Future<List<UserPublicData>?> getAllUsers() async {
     try {
@@ -74,6 +75,29 @@ class DatabaseFirebase implements DatabaseInterface {
           data.addAll({'uid': doc.id});
           return UserPublicData.fromJson(data);
         }).toList();
+      }
+    } catch (e) {
+      return null;
+    }
+    return null;
+  }
+
+  @override
+  Future<List<UserPublicPrivateData>?> getAllUsersPublicPrivateData() async {
+    try {
+      var users = await firebaseInstance.collection('users').get();
+      if (users.docs.isNotEmpty) {
+        var finalData = users.docs.map((doc) async {
+          final data = doc.data();
+          data.addAll({'uid': doc.id});
+          var publicData = UserPublicData.fromJson(data);
+          var privateData = await getUserPrivateData(doc.id);
+          return UserPublicPrivateData(
+              publicData: publicData, privateData: privateData!);
+        }).toList();
+
+        return Future.wait(finalData);
+
       }
     } catch (e) {
       return null;
@@ -364,10 +388,10 @@ class DatabaseFirebase implements DatabaseInterface {
     }
   }
 
-
   @override
-  Future<String?> addSuccessfulUserToChallenge(String uid, int challengeIndex) async  {
-    try{
+  Future<String?> addSuccessfulUserToChallenge(
+      String uid, int challengeIndex) async {
+    try {
       var weeklyChallenge = await firebaseInstance
           .collection('weeklyChallenges')
           .orderBy('date', descending: true)
@@ -379,21 +403,35 @@ class DatabaseFirebase implements DatabaseInterface {
         var exercise = exercises[challengeIndex];
         var successfulUsers = exercise['successfulUsers'];
         successfulUsers.add(uid);
-        await firebaseInstance.collection('weeklyChallenges').doc(weeklyChallenge.docs.first.id).update({
+        await firebaseInstance
+            .collection('weeklyChallenges')
+            .doc(weeklyChallenge.docs.first.id)
+            .update({
           'exercises': exercises,
         });
         return 'success';
       }
       return null;
-    }
-    catch(e){
+    } catch (e) {
       return null;
     }
   }
 
+  @override
+  Future<String> addErrorReport(String uid, String description) async {
+    try {
+      final newReport = await firebaseInstance.collection('errorReports').add({
+        'uid': uid,
+        'date': Timestamp.now(),
+        'description': description,
+      });
+      return newReport.id;
+    } catch (e) {
+      return 'error';
+    }
+  }
 
   DatabaseFirebase({
     required this.firebaseInstance,
   });
-
 }

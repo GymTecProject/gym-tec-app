@@ -161,7 +161,7 @@ class _WeeklyRoutinesState extends State<WeeklyRoutines> {
                     onPressed: isChallengeCompleted ? () {} : () => _showBottomSheet(index),
                     imgPath: isChallengeCompleted ? 'assets/images/check.png': null,
                     style:  isChallengeCompleted ? ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF0A0A0A),
+                      backgroundColor: const Color(0xFF0A0A0A),
                       foregroundColor: Colors.white, 
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.0),

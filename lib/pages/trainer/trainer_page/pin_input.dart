@@ -27,9 +27,9 @@ class _PinInput extends State<PinInput> {
     final defaultPinTheme = PinTheme(
       width: 70,
       height: 70,
-      textStyle: TextStyle(fontSize: 30, color: Color(0xFF456800), fontWeight: FontWeight.w600),
+      textStyle: const TextStyle(fontSize: 30, color: Color(0xFF456800), fontWeight: FontWeight.w600),
       decoration: BoxDecoration(
-        border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
+        border: Border.all(color: const Color.fromRGBO(234, 239, 243, 1)),
         borderRadius: BorderRadius.circular(20),
       ),
     );
@@ -56,7 +56,7 @@ class _PinInput extends State<PinInput> {
                 fontSize: 30,
               ),
             ),
-            ContextSeparator(),
+            const ContextSeparator(),
             const Text(
               'Ingrese el PIN para validar que el reto se cumplió',
               textAlign: TextAlign.center, // Centrar el texto en su contenedor
@@ -64,19 +64,19 @@ class _PinInput extends State<PinInput> {
                 fontSize: 24,
               ),
             ),
-            ContextSeparator(),
+            const ContextSeparator(),
             Pinput(
               controller: _pinController,
               length: 4,
               defaultPinTheme: defaultPinTheme,
               focusedPinTheme: defaultPinTheme.copyWith(
                 decoration: defaultPinTheme.decoration!.copyWith(
-                  border: Border.all(color: Color(0xFF456800)),
+                  border: Border.all(color: const Color(0xFF456800)),
                 ),
               ),
               submittedPinTheme: defaultPinTheme.copyWith(
                 decoration: defaultPinTheme.decoration!.copyWith(
-                  color: Color.fromRGBO(234, 239, 243, 1),
+                  color: const Color.fromRGBO(234, 239, 243, 1),
                 ),
               ),
               pinAnimationType: PinAnimationType.fade,
