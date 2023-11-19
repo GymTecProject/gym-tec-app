@@ -3,7 +3,6 @@ import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
-import 'package:gym_tec/models/users/user_data_public.dart';
 import 'package:gym_tec/pages/trainer/routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
@@ -203,7 +202,10 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
                               children: [
-                                ExpansionTileContent(id: user.publicData.id),
+                                ExpansionTileContent(
+                                    id: user.publicData.id,
+                                    accType: user.privateData
+                                        .getAccountTypeString()),
                               ],
                             ),
                           ),
@@ -244,7 +246,9 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                       context: context,
                                       builder: (context) {
                                         return AdminDialog(
-                                            user: user.publicData);
+                                            user: user.publicData,
+                                            initialRole: user.privateData
+                                                .getAccountTypeString());
                                       },
                                     );
                                     if (result ==

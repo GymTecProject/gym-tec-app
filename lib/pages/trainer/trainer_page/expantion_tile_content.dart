@@ -7,8 +7,9 @@ import '../../../models/users/user_data_private.dart';
 
 class ExpansionTileContent extends StatefulWidget {
   final String id;
+  final String accType;
 
-  const ExpansionTileContent({super.key, required this.id});
+  const ExpansionTileContent({super.key, required this.id, this.accType = ''});
 
   @override
   State<ExpansionTileContent> createState() => _ExpansionTileContentState();
@@ -26,18 +27,23 @@ class _ExpansionTileContentState extends State<ExpansionTileContent> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        StreamBuilder<UserPrivateData>(
-            stream: dbService.getUserPrivateDataStream(widget.id),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final userPrivateData = snapshot.data!;
-                return ListTile(
-                  title: Text(
-                      'Tipo de Usuario: ${userPrivateData.getAccountTypeString()}'),
-                );
-              }
-              return const CircularProgressIndicator();
-            }),
+        if (widget.accType.isNotEmpty)
+          ListTile(
+            title: Text('Tipo de Usuario: ${widget.accType}'),
+          ),
+        if (widget.accType.isEmpty)
+          StreamBuilder<UserPrivateData>(
+              stream: dbService.getUserPrivateDataStream(widget.id),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final userPrivateData = snapshot.data!;
+                  return ListTile(
+                    title: Text(
+                        'Tipo de Usuario: ${userPrivateData.getAccountTypeString()}'),
+                  );
+                }
+                return const CircularProgressIndicator();
+              }),
         StreamBuilder<UserProtectedData>(
             stream: dbService.getUserProtectedDataStream(widget.id),
             builder: (context, snapshot) {
@@ -53,7 +59,14 @@ class _ExpansionTileContentState extends State<ExpansionTileContent> {
                     ),
                     ListTile(
                       title: Text('Objetivo: ${userProtectedData.objective}'),
-                    )
+                    ),
+                    ...List.generate(
+                      userProtectedData.medicalConditions.length,
+                      (index) => ListTile(
+                        title: Text(
+                            'Condición Médica ${index + 1}: ${userProtectedData.medicalConditions[index]}'),
+                      ),
+                    ),
                   ],
                 );
               }
