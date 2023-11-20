@@ -108,7 +108,7 @@ class _ViewMeasuresState extends State<ViewMeasures> {
           ),
         ),
         body: Padding( // Aplicar Padding al ListView
-        padding: const EdgeInsets.symmetric(horizontal: 8.0), // Relleno solo horizontal
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0), // Relleno solo horizontal
         child: ListView(
           children: [
               SingleMeasurementCard(title: 'Masa grasa', currentValue: lastMeasurement.fatPercentage, parameter: 'kg.'),

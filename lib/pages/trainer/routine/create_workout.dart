@@ -146,7 +146,9 @@ class _CreateWorkoutState extends State<CreateWorkout> {
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: CardBtn(
                         title: widget.workout.exercises[index].name,
-                        subtitle: "Series: ${widget.workout.exercises[index].series}\nRepeticiones: ${widget.workout.exercises[index].repetitions}\nComentarios: ${widget.workout.exercises[index].comment.isNotEmpty ? widget.workout.exercises[index].comment : "Ninguno"}",
+                        subtitle: "Series: ${widget.workout.exercises[index].series}\nRepeticiones: ${
+                          widget.workout.exercises[index].repetitions}\nComentarios: ${
+                            widget.workout.exercises[index].comment.isNotEmpty ? widget.workout.exercises[index].comment : "Ninguno"}",
                         onPressed: () async {
                           final exercise = await Navigator.push(
                             context,
