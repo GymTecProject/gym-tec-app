@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/buttons/action_btn.dart';
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
+import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
@@ -160,27 +161,29 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
                     });
                   },
                 ),
-                SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        for (int i = 0; i < _categories.length; i++)
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: ChoiceChip(
-                              label: Text(_categories[i]),
-                              selected: _value == i,
-                              onSelected: (bool selected) {
-                                setState(() {
-                                  _value = selected ? i : null;
-                                  _runFilter(actEntry);
-                                });
-                              },
+                ContentPadding(
+                  child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          for (int i = 0; i < _categories.length; i++)
+                            Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: ChoiceChip(
+                                label: Text(_categories[i]),
+                                selected: _value == i,
+                                onSelected: (bool selected) {
+                                  setState(() {
+                                    _value = selected ? i : null;
+                                    _runFilter(actEntry);
+                                  });
+                                },
+                              ),
                             ),
-                          ),
-                      ],
-                    )),
+                        ],
+                      )),
+                ),
                 Expanded(
                     child: ListView.builder(
                         itemCount: _foundExcercises.length,
