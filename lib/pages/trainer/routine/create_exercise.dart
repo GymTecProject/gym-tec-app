@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gym_tec/components/ui/buttons/action_btn.dart';
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
@@ -225,6 +226,11 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
                                                         child: TextFormField(
                                                           controller:
                                                               _setsController,
+                                                          keyboardType:
+                                                            TextInputType.number,
+                                                          inputFormatters: <TextInputFormatter>[
+                                                            FilteringTextInputFormatter.digitsOnly
+                                                          ],
                                                           decoration:
                                                               const InputDecoration(
                                                             prefixIcon: Icon(
@@ -242,6 +248,11 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
                                                         child: TextFormField(
                                                           controller:
                                                               _repsController,
+                                                          keyboardType:
+                                                            TextInputType.number,
+                                                          inputFormatters: <TextInputFormatter>[
+                                                            FilteringTextInputFormatter.digitsOnly
+                                                          ],
                                                           decoration:
                                                               const InputDecoration(
                                                             prefixIcon: Icon(Icons
@@ -274,6 +285,8 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
                                                   const ContextSeparator(),
                                                   ActionBtn(
                                                       title: "Guardar",
+                                                      disabled: _setsController.text.isEmpty ||
+                                                          _repsController.text.isEmpty,
                                                       onPressed: _saveExercise),
                                                 ],
                                               ),
