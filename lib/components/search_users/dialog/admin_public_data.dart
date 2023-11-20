@@ -188,11 +188,11 @@ class _AdminPublicDataState extends State<AdminPublicData> {
                 children: [
                   ElevatedButton(
                     onPressed: () async {
-                      // Show date picker
                       DateTime? pickedDate = await showDatePicker(
                         context: context,
                         initialDate: DateTime.now(),
-                        firstDate: DateTime.now(),
+                        firstDate:
+                            DateTime.now().subtract(const Duration(days: 1)),
                         lastDate: DateTime(DateTime.now().year + 5),
                       );
 

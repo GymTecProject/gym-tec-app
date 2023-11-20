@@ -29,13 +29,18 @@ abstract class DatabaseInterface {
   Stream<UserPrivateData> getUserPrivateDataStream(String uid);
   Stream<UserProtectedData> getUserProtectedDataStream(String uid);
   Stream<List<UserPublicData>> getAllUsersStream();
+
   Future<String?> updateUserMedicalConditions(
       String uid, List<String> conditions);
+  Stream<List<UserPublicPrivateData>> getAllUsersPublicPrivateDataStream();
+  Stream<List<UserPublicPrivateData>> getActiveUsersPublicPrivateDataStream();
+
 
   // Routines
   Future<List<RoutineData>?> getUserRoutines(String uid, int limit);
   Future<RoutineData?> getUserLastestRoutine(String uid);
   Future<String?> createRoutine(Map<String, dynamic> data);
+  Future<String?> updateUserExerciseWeight(String uid, int workoutId, int exerciseId, num weight, Timestamp date);
 
   // Measurements
   Future<List<UserMeasurement>?> getUserMeasurements(String uid);
