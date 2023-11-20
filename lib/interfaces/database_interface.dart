@@ -29,8 +29,12 @@ abstract class DatabaseInterface {
   Stream<UserPrivateData> getUserPrivateDataStream(String uid);
   Stream<UserProtectedData> getUserProtectedDataStream(String uid);
   Stream<List<UserPublicData>> getAllUsersStream();
+
+  Future<String?> updateUserMedicalConditions(
+      String uid, List<String> conditions);
   Stream<List<UserPublicPrivateData>> getAllUsersPublicPrivateDataStream();
   Stream<List<UserPublicPrivateData>> getActiveUsersPublicPrivateDataStream();
+
 
   // Routines
   Future<List<RoutineData>?> getUserRoutines(String uid, int limit);

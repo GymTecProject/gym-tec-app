@@ -224,6 +224,19 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
+  Future<String?> updateUserMedicalConditions(String uid, List<String> conditions)async {
+    try{
+      await firebaseInstance.collection('users').doc(uid).collection('protected').doc('data').update({
+        'medicalConditions': conditions,
+      });
+      return uid;
+    }
+    catch(e){
+      return null;
+    }
+  }
+
+  @override
   Future<UserPrivateData?> getUserPrivateData(String uid) async {
     try {
       var userPrivateData = await firebaseInstance
