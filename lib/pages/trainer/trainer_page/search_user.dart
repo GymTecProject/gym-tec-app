@@ -11,6 +11,7 @@ import 'package:gym_tec/pages/trainer/trainer_page/view_measures_page.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
 import '../../../models/users/user_data_private.dart';
+import '../../../models/users/user_data_public.dart';
 import '../../../models/users/user_data_public_private.dart';
 
 class SearchUser extends StatefulWidget {
@@ -190,13 +191,23 @@ class _SearchUserState extends State<SearchUser> {
                   itemCount: filteredUsers.length,
                   itemBuilder: (context, index) {
                     UserPublicPrivateData user = filteredUsers[index];
+
+                    String sexText = user.publicData.sex == Sex.male
+                        ? "Hombre"
+                        : user.publicData.sex == Sex.female
+                            ? "Mujer"
+                            : "Otro";
+
+                    String expirationDateStr =
+                        user.publicData.expirationDate.toDate().toString();
+
                     return Card(
                       clipBehavior: Clip.antiAlias,
                       child: ExpansionTile(
                         key: ValueKey(user.publicData.id),
                         title: Text(user.publicData.name),
                         subtitle: Text(
-                            user.publicData.expirationDate.toDate().toString()),
+                            "$sexText - ${expirationDateStr.substring(0, expirationDateStr.length - 4)}"),
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(16.0),

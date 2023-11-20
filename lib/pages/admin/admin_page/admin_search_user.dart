@@ -9,6 +9,7 @@ import 'package:gym_tec/services/dependency_manager.dart';
 
 import '../../../components/search_users/dialog/admin_dialog.dart';
 import '../../../models/users/user_data_private.dart';
+import '../../../models/users/user_data_public.dart';
 import '../../../models/users/user_data_public_private.dart';
 import '../../../models/users/user_measurements.dart';
 import '../../trainer/measures/create_measures.dart';
@@ -185,6 +186,16 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                   itemCount: filteredUsers.length,
                   itemBuilder: (context, index) {
                     UserPublicPrivateData user = filteredUsers[index];
+
+                    String sexText = user.publicData.sex == Sex.male
+                        ? "Hombre"
+                        : user.publicData.sex == Sex.female
+                            ? "Mujer"
+                            : "Otro";
+
+                    String expirationDateStr =
+                        user.publicData.expirationDate.toDate().toString();
+
                     return Card(
                       clipBehavior: Clip.antiAlias,
                       child: ExpansionTile(
@@ -200,7 +211,7 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                           ),
                         ),
                         subtitle: Text(
-                            user.publicData.expirationDate.toDate().toString()),
+                            "$sexText - ${expirationDateStr.substring(0, expirationDateStr.length - 4)}"),
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(16.0),
