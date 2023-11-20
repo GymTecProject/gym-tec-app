@@ -97,7 +97,7 @@ class _RoutinePageState extends State<RoutinePage> {
   void initState() {
     super.initState();
     _fetchRoutineData();
-    Timer(const Duration(seconds: 5), () {
+    Timer(const Duration(seconds: 30), () {
     if (routine == null) {
       setState(() {
         showSkeleton = false;
