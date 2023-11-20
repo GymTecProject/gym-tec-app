@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gym_tec/components/ui/buttons/action_btn.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
-import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
+import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -17,6 +18,9 @@ class ExercisePage extends StatefulWidget {
   final int series;
   final int repetitions;
   final num weight;
+  final int workoutIndex;
+  final int exerciseIndex;
+  final Timestamp date;
   
   const ExercisePage({
     super.key,
@@ -28,6 +32,9 @@ class ExercisePage extends StatefulWidget {
     required this.series,
     required this.repetitions,
     required this.weight,
+    required this.workoutIndex,
+    required this.exerciseIndex,
+    required this.date,
   });
 
   @override
@@ -37,16 +44,33 @@ class ExercisePage extends StatefulWidget {
 class _ExercisePage extends State<ExercisePage> {
   final TextEditingController _weightController = TextEditingController();
   final DatabaseInterface dbService = DependencyManager.databaseService;
+  final AuthInterface authService = DependencyManager.authService;
 
   Future<void> _launchURL() async {
     final Uri url = Uri.parse("https://www.youtube.com/watch?v=sXi4xP8w2UM");
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
-      print("Se abrió el navegador");
     } else {
       // Aquí puedes manejar el error o mostrar un mensaje si el enlace no se puede abrir.
       throw 'Could not launch $url';
     }
+  }
+
+  void _saveWeight() async{
+    final user = authService.currentUser;
+    if (user == null) return;
+    try{
+      num weight = num.parse(_weightController.text);
+      await dbService.updateUserExerciseWeight(user.uid, widget.workoutIndex, widget.exerciseIndex, weight, widget.date);
+    } 
+    catch (e) {
+      await dbService.updateUserExerciseWeight(user.uid, widget.workoutIndex, widget.exerciseIndex, 0, widget.date);
+      }
+  }
+
+  void _updateWeightRoutine(){
+    final currentWeight = num.tryParse(_weightController.text) ?? 0;
+    Navigator.pop(context, currentWeight);
   }
 
   @override
@@ -61,12 +85,17 @@ class _ExercisePage extends State<ExercisePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        //function
+        _saveWeight();
+        _updateWeightRoutine();
         return true;
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Exercise Details'),
+          title: const Text('Información del ejercicio',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        )
         ),
         body: ContentPadding(
           child: Column(

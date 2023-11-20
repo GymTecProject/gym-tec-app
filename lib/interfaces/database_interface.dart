@@ -34,6 +34,7 @@ abstract class DatabaseInterface {
   Future<List<RoutineData>?> getUserRoutines(String uid, int limit);
   Future<RoutineData?> getUserLastestRoutine(String uid);
   Future<String?> createRoutine(Map<String, dynamic> data);
+  Future<String?> updateUserExerciseWeight(String uid, int workoutId, int exerciseId, num weight, Timestamp date);
 
   // Measurements
   Future<List<UserMeasurement>?> getUserMeasurements(String uid);
