@@ -20,53 +20,72 @@ class _ViewMeasuresState extends State<ViewMeasures> {
   final AuthInterface authService = DependencyManager.authService;
 
   List<UserMeasurement> _userMeasurement = [];
-  UserMeasurement? previousMeasurement;
 
+  UserMeasurement? previousMeasurement;
+  UserMeasurement? lastMeasurement;
+  
   @override
   void initState() {
     super.initState();
-    _fetchMeasuresData();
+    _userMeasurement = widget.m!;
+    lastMeasurement = _userMeasurement.first;
+    previousMeasurement = _userMeasurement[1];
   }
 
-  void _fetchMeasuresData() async {
-    if (widget.m == null) {
-      print("USERMEASUREMENT IS NULL");
-      _userMeasurement = [];
-      return;
-    } else {
-      print("UserMeasurements len: ${widget.m?.length}");
-      print("Last User's age: ${widget.m?.last.age}");
-      for (int i = 0; i < widget.m!.length; i++) {
-        print(widget.m?[i].muscleMass);
-      }
+  String getMonth(int month){
+    if(month == 1){
+      return "Enero";
+    }else if (month ==2){
+        return "Febrero";
+    }else if (month ==3){
+        return "Marzo";
+    }else if (month ==4){
+        return "Abril";
+    }else if (month ==5){
+        return "Mayo";
+    }else if (month ==6){
+        return "Junio";
+    }else if (month ==7){
+        return "Julio";
+    }else if (month ==8){
+        return "Agosto";
+    }else if (month ==9){
+        return "Ssetiembre";
+    }else if (month ==10){
+        return "Octubre";
+    }else if (month ==11){
+        return "Noviembre";
+    }else{
+        return "Diciembre";
     }
-    setState(() {
-      _userMeasurement = widget.m!;
-    });
   }
+
 
   void _showDateMenu(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return ListView.builder(
+
           itemCount: _userMeasurement.length,
           itemBuilder: (context, index) {
-            DateTime date = _userMeasurement[index].date.toDate(); // Asume que date es un Timestamp
-            String formattedDate = "${date.day}/${date.month}/${date.year}";
+            if (index == 0) return Container();
+            DateTime date = _userMeasurement[index].date.toDate(); 
+            String formattedDate = "${date.day} de ${getMonth(date.month)} del ${date.year}";
 
             return ListTile(
               title: Text(
                 formattedDate,
-                textAlign: TextAlign.center, // Centra el texto
+                textAlign: TextAlign.center, 
                 style: const TextStyle(
-                  fontWeight: FontWeight.bold, // Hace el texto en negrita
+                  fontWeight: FontWeight.bold, 
                 ),
               ),
               onTap: () {
                 Navigator.pop(context);
                 setState(() {
                   previousMeasurement = _userMeasurement[index];
+
                 });
               },
             );
@@ -95,7 +114,6 @@ class _ViewMeasuresState extends State<ViewMeasures> {
       );
     }
 
-    final lastMeasurement = _userMeasurement.first;
     if (_userMeasurement.length < 2) {
       return Scaffold(
         appBar: AppBar(
@@ -111,21 +129,21 @@ class _ViewMeasuresState extends State<ViewMeasures> {
         padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0), // Relleno solo horizontal
         child: ListView(
           children: [
-              SingleMeasurementCard(title: 'Masa grasa', currentValue: lastMeasurement.fatPercentage, parameter: 'kg.'),
-              SingleMeasurementCard(title: 'Altura', currentValue: lastMeasurement.height , parameter: 'm.'),
-              SingleMeasurementCard(title: 'Masa muscular', currentValue: lastMeasurement.muscleMass , parameter: 'kg.'),
-              SingleMeasurementCard(title: 'Peso', currentValue: lastMeasurement.weight , parameter: 'kg.'),
-              SingleMeasurementCard(title: 'Porcentaje de agua', currentValue: lastMeasurement.water , parameter: 'kg.'),
-              SingleMeasurementCard(title: 'Porcentaje de grasa corporal', currentValue: lastMeasurement.fatPercentage , parameter: 'kg.'),
-              SingleMeasurementCard(title: 'Porcentaje de Grasa visceral', currentValue: lastMeasurement.viceralFatLevel , parameter: 'kg.'),
-              SingleMeasurementCard(title: 'Masa ósea', currentValue: lastMeasurement.skeletalMuscle , parameter: 'kg.')
+              SingleMeasurementCard(title: 'Masa grasa', currentValue: lastMeasurement!.fatPercentage, parameter: 'kg.'),
+              SingleMeasurementCard(title: 'Altura', currentValue: lastMeasurement!.height , parameter: 'm.'),
+              SingleMeasurementCard(title: 'Masa muscular', currentValue: lastMeasurement!.muscleMass , parameter: 'kg.'),
+              SingleMeasurementCard(title: 'Peso', currentValue: lastMeasurement!.weight , parameter: 'kg.'),
+              SingleMeasurementCard(title: 'Porcentaje de agua', currentValue: lastMeasurement!.water , parameter: 'kg.'),
+              SingleMeasurementCard(title: 'Porcentaje de grasa corporal', currentValue: lastMeasurement!.fatPercentage , parameter: 'kg.'),
+              SingleMeasurementCard(title: 'Porcentaje de Grasa visceral', currentValue: lastMeasurement!.viceralFatLevel , parameter: 'kg.'),
+              SingleMeasurementCard(title: 'Masa ósea', currentValue: lastMeasurement!.skeletalMuscle , parameter: 'kg.')
           ],
         ),
       )
     );
   }
 
-    final previousMeasurement = _userMeasurement[1];
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -149,59 +167,18 @@ class _ViewMeasuresState extends State<ViewMeasures> {
       body: ListView(
         children: [
 
-          MeasurementComparisonCard(title: 'Masa Grasa', previousValue: previousMeasurement.fatPercentage , currentValue: lastMeasurement.fatPercentage , parameter: 'kg.'),
-          MeasurementComparisonCard(title: 'Altura', previousValue: previousMeasurement.height , currentValue: lastMeasurement.height , parameter: 'm.'),
-          MeasurementComparisonCard(title: 'Masa muscular', previousValue: previousMeasurement.muscleMass , currentValue: lastMeasurement.muscleMass , parameter: 'kg.'),
-          MeasurementComparisonCard(title: 'Peso', previousValue: previousMeasurement.weight , currentValue: lastMeasurement.weight , parameter: 'kg.'),
-          MeasurementComparisonCard(title: 'Porcentaje de grasa corporal', previousValue: previousMeasurement.fatPercentage , currentValue: lastMeasurement.fatPercentage , parameter: '%'),
-          MeasurementComparisonCard(title: 'Porcentaje de agua', previousValue: previousMeasurement.water , currentValue: lastMeasurement.water , parameter: '%'),
-          MeasurementComparisonCard(title: 'Porcentaje de Grasa visceral', previousValue: previousMeasurement.viceralFatLevel , currentValue: lastMeasurement.viceralFatLevel , parameter: '%'),
-          MeasurementComparisonCard(title: 'Masa ósea', previousValue: previousMeasurement.skeletalMuscle , currentValue: lastMeasurement.skeletalMuscle , parameter: 'kg.')
+          MeasurementComparisonCard(title: 'Masa Grasa', previousValue: previousMeasurement!.fatPercentage , currentValue: lastMeasurement!.fatPercentage , parameter: 'kg.'),
+          MeasurementComparisonCard(title: 'Altura', previousValue: previousMeasurement!.height , currentValue: lastMeasurement!.height , parameter: 'm.'),
+          MeasurementComparisonCard(title: 'Masa muscular', previousValue: previousMeasurement!.muscleMass , currentValue: lastMeasurement!.muscleMass , parameter: 'kg.'),
+          MeasurementComparisonCard(title: 'Peso', previousValue: previousMeasurement!.weight , currentValue: lastMeasurement!.weight , parameter: 'kg.'),
+          MeasurementComparisonCard(title: 'Porcentaje de grasa corporal', previousValue: previousMeasurement!.fatPercentage , currentValue: lastMeasurement!.fatPercentage , parameter: '%'),
+          MeasurementComparisonCard(title: 'Porcentaje de agua', previousValue: previousMeasurement!.water , currentValue: lastMeasurement!.water , parameter: '%'),
+          MeasurementComparisonCard(title: 'Porcentaje de Grasa visceral', previousValue: previousMeasurement!.viceralFatLevel , currentValue: lastMeasurement!.viceralFatLevel , parameter: '%'),
+          MeasurementComparisonCard(title: 'Masa ósea', previousValue: previousMeasurement!.skeletalMuscle , currentValue: lastMeasurement!.skeletalMuscle , parameter: 'kg.')
         ],
       ),
     );
   }
 
-Widget _createComparisonCard(String title, num? previousValue, num? currentValue, String parameter) {
-  final difference = currentValue != null && previousValue != null
-      ? currentValue - previousValue
-      : null;
-
-  return Card(
-    child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center, // Ajustado para centrar el título
-        children: [
-          Text(
-            title,
-            textAlign: TextAlign.center, // Ajustado para centrar el texto
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                'Antes: $previousValue $parameter',
-                style: const TextStyle(fontSize: 16),
-              ),Text(
-                'Ahora: $currentValue $parameter',
-                style: const TextStyle(fontSize: 16),
-              ),
-              Text(
-                'Diferencia: $difference $parameter',
-                style: const TextStyle(fontSize: 16),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-  );
-}
 
 }
