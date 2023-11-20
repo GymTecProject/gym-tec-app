@@ -50,6 +50,14 @@ class _ExercisePage extends State<ExercisePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.weight != 0) {
+    _weightController.text = widget.weight.toString();
+  }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
@@ -124,48 +132,6 @@ class _ExercisePage extends State<ExercisePage> {
               ),
             ],
               ),)
-        // body: Padding(
-        //   padding: const EdgeInsets.all(16.0),
-        //   child: Column(
-        //     crossAxisAlignment: CrossAxisAlignment.start,
-        //     children: [
-        //       Text(
-        //         title,
-        //         style: const TextStyle(
-        //           fontSize: 20,
-        //           fontWeight: FontWeight.bold,
-        //         ),
-        //       ),
-        //       Text(
-        //         subtitle,
-        //         style: const TextStyle(fontSize: 18),
-        //       ),
-        //       const SizedBox(height: 20), // Espacio entre el texto y la imagen
-        //       Text(
-        //         'Series: $series',
-        //         style: const TextStyle(fontSize: 18),
-        //       ),
-        //       const SizedBox(height: 20), // Espacio entre la imagen y el siguiente texto
-        //       Text(
-        //         'Repeticiones: $repetitions',
-        //         style: const TextStyle(fontSize: 18),
-        //       ),
-        //       const SizedBox(height: 20), // Espacio entre la imagen y el siguiente texto
-        //       Text(
-        //         url,
-        //         style: const TextStyle(fontSize: 18),
-        //       ),
-        //       Text(
-        //         comment,
-        //         style: const TextStyle(fontSize: 18),
-        //       ),
-        //       Text(
-        //         category,
-        //         style: const TextStyle(fontSize: 18),
-        //       ),
-        //     ],
-        //   ),
-        // ),
       ),
     );
   }

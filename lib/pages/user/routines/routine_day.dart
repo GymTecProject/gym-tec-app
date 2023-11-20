@@ -43,7 +43,7 @@ class _RoutineDayState extends State<RoutineDay> {
                   itemBuilder: (BuildContext context, int index) {
                     return CardBtn(
                       title: widget.exercises[index].name,
-                      subtitle: '${widget.exercises[index].series}/${widget.exercises[index].repetitions}',
+                      subtitle: widget.exercises[index].category,
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -56,7 +56,7 @@ class _RoutineDayState extends State<RoutineDay> {
                                 url: widget.exercises[index].url,
                                 comment: widget.exercises[index].comment,
                                 category: widget.exercises[index].category,
-                                weight: widget.exercises[index].weight,
+                                weight: widget.exercises[index].weight
                               );
                             },
                           ),
