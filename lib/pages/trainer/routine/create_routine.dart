@@ -75,7 +75,12 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
   void removeCollection() {
     setState(() {
       if (routine.workout.isNotEmpty) {
+
+        for(int day in routine.workout.last.days){
+          weekDays[day] = "";
+          }
         routine.workout.removeLast();
+        
         collectionsCreated.removeLast();
       }
     });
@@ -110,6 +115,28 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.fastOutSlowIn,
     );
+  }
+
+  void _navigateToCreateWorkout(String buttonName, int index){
+    Navigator.push( context,
+      MaterialPageRoute(
+        builder: (context) => CreateWorkout(
+            buttonName: buttonName,
+            weekDays: weekDays,
+            workout: routine.workout[index],
+            collectionsCreated: collectionsCreated,
+            collectionIndex: index,
+        )
+      ),
+    ).then((result){
+      setState(() {
+        print(collectionsCreated.toString());
+        print(weekDays.toString());
+        if (result != null) {
+          collectionsCreated[index] = true;
+        }
+      });
+    });
   }
 
   @override
@@ -149,7 +176,6 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
                                 setState(() {
                                   amountOfWeeks = index + 2;
                                   isChipSelected = true;
-                                  print(isChipSelected.toString());
                                 });
                               },
                             )).toList(),
@@ -190,17 +216,8 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: CardBtn(
                         title: buttonName,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CreateWorkout(
-                                  buttonName: buttonName,
-                                  weekDays: weekDays,
-                                  workout: routine.workout[index]),
-                            ),
-                          );
-                        },
+                        onPressed: () => _navigateToCreateWorkout(buttonName, index)
+                        ,
                       ),
                     );
                   }

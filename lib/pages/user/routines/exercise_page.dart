@@ -47,13 +47,15 @@ class _ExercisePage extends State<ExercisePage> {
   final AuthInterface authService = DependencyManager.authService;
 
   Future<void> _launchURL() async {
-    final Uri url = Uri.parse("https://www.youtube.com/watch?v=sXi4xP8w2UM");
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      // Aquí puedes manejar el error o mostrar un mensaje si el enlace no se puede abrir.
-      throw 'Could not launch $url';
+    try{
+      final Uri url = Uri.parse(widget.url);
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url);
+      } else {
+        
+      }
     }
+    catch (e){}
   }
 
   void _saveWeight() async{

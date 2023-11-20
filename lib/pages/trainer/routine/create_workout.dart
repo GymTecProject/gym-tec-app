@@ -12,12 +12,16 @@ class CreateWorkout extends StatefulWidget {
   final String buttonName;
   final Map<int, String> weekDays;
   final Workout workout;
+  List<bool> collectionsCreated;
+  final int collectionIndex;
 
-  const CreateWorkout({
+  CreateWorkout({
     super.key,
     required this.buttonName,
     required this.weekDays,
     required this.workout,
+    required this.collectionsCreated,
+    required this.collectionIndex,
   });
 
   @override
@@ -25,13 +29,20 @@ class CreateWorkout extends StatefulWidget {
 }
 
 class _CreateWorkoutState extends State<CreateWorkout> {
-  List<Widget> buttons = [];
   final ScrollController _scrollController = ScrollController();
+  List<bool> exercisesCreated = [];
 
   @override
   void initState() {
+    for (int i = 0; i < widget.workout.exercises.length; i++) {
+      if (widget.workout.exercises[i].category == "") {
+        exercisesCreated.add(false);
+      }
+      else{
+        exercisesCreated.add(true);
+      }
+    }
     super.initState();
-    print(widget.workout.toJson());
   }
 
   void setDays(int day) {
@@ -57,6 +68,7 @@ class _CreateWorkoutState extends State<CreateWorkout> {
         repetitions: 0,
       );
       widget.workout.exercises.add(exercise);
+      exercisesCreated.add(false);
     });
   }
 
@@ -64,13 +76,31 @@ class _CreateWorkoutState extends State<CreateWorkout> {
     setState(() {
       if (widget.workout.exercises.isNotEmpty) {
         widget.workout.exercises.removeLast();
+        exercisesCreated.removeLast();
       }
     });
   }
 
+  void _updateCollectionsCreated() {
+
+    bool isSelectedInWorkoutDays = widget.weekDays.entries.any(
+    (e) => widget.workout.days.contains(e.key));
+
+    
+    widget.collectionsCreated[widget.collectionIndex] =
+        widget.workout.exercises.isNotEmpty &&
+            isSelectedInWorkoutDays &&
+            exercisesCreated.every((element) => element == true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () async {
+        _updateCollectionsCreated();
+        return true;
+      },
+      child: Scaffold(
       appBar: AppBar(
         title: const Text(
           'Modificar colección',
@@ -161,6 +191,7 @@ class _CreateWorkoutState extends State<CreateWorkout> {
                           if (exercise != null) {
                             setState(() {
                               widget.workout.exercises[index] = exercise;
+                              exercisesCreated[index] = true;
                             });
                           }
                         },
@@ -184,6 +215,6 @@ class _CreateWorkoutState extends State<CreateWorkout> {
           icon: const Icon(Icons.add),
         )
       ]),
-    );
+    ));
   }
 }
