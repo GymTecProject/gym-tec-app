@@ -16,7 +16,7 @@ service cloud.firestore {
 
     match /{document=**} {
        
-      allow read, write: if request.time < timestamp.date(2021, 1, 1);
+      allow read, write: if true;
 
     }
   }
