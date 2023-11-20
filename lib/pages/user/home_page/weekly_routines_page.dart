@@ -138,7 +138,6 @@ class _WeeklyRoutinesState extends State<WeeklyRoutines> {
             fontWeight: FontWeight.bold,
           ),
         )
-        
       ),
     body: Skeletonizer(
       enabled: weeklyChallenge.exercises.isEmpty,
