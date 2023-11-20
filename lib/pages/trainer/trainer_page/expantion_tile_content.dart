@@ -3,6 +3,8 @@ import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/users/user_data_protected.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
+import '../../../components/search_users/custom_list_tile.dart';
+
 class ExpansionTileContent extends StatefulWidget {
   final String id;
   final String accType;
@@ -26,8 +28,10 @@ class _ExpansionTileContentState extends State<ExpansionTileContent> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ListTile(
-          title: Text('Tipo de Usuario: ${widget.accType}'),
+        CustomListTile(
+          title: 'Tipo de Usuario',
+          content: widget.accType,
+          icon: Icons.person,
         ),
         StreamBuilder<UserProtectedData>(
             stream: dbService.getUserProtectedDataStream(widget.id),
@@ -36,22 +40,28 @@ class _ExpansionTileContentState extends State<ExpansionTileContent> {
                 final userProtectedData = snapshot.data!;
                 return Column(
                   children: [
-                    ListTile(
-                      title: Text('Correo: ${userProtectedData.email}'),
+                    CustomListTile(
+                      title: 'Correo',
+                      content: userProtectedData.email,
+                      icon: Icons.email,
                     ),
-                    ListTile(
-                      title: Text('Telefono: ${userProtectedData.phoneNumber}'),
+                    CustomListTile(
+                      title: 'Teléfono',
+                      content: userProtectedData.phoneNumber,
+                      icon: Icons.phone,
                     ),
-                    ListTile(
-                      title: Text('Objetivo: ${userProtectedData.objective}'),
+                    CustomListTile(
+                      title: 'Objetivo',
+                      content: userProtectedData.objective,
+                      icon: Icons.flag,
                     ),
-                    ...List.generate(
-                      userProtectedData.medicalConditions.length,
-                      (index) => ListTile(
-                        title: Text(
-                            'Condición Médica ${index + 1}: ${userProtectedData.medicalConditions[index]}'),
-                      ),
-                    ),
+                    ...userProtectedData.medicalConditions
+                        .map((condition) => CustomListTile(
+                              title: 'Condición Médica',
+                              content: condition,
+                              icon: Icons.healing,
+                            ))
+                        .toList(),
                   ],
                 );
               }
