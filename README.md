@@ -17,4 +17,4 @@ to start the app in debug mode make shure to use the emulators as follows:
 ### Deploy rules
 Firebase rules will be loaded automatically to the emulators when they are started. To deploy the rules to the production database use the following command:
 `firebase deploy --only firestore:rules`
-
+https://www.youtube.com/watch?v=eW5MdE3ZcAw
