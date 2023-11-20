@@ -97,7 +97,6 @@ class DatabaseFirebase implements DatabaseInterface {
         }).toList();
 
         return Future.wait(finalData);
-
       }
     } catch (e) {
       return null;
@@ -157,6 +156,19 @@ class DatabaseFirebase implements DatabaseInterface {
       }
       return null;
     } on FirebaseException {
+      return null;
+    }
+  }
+
+  @override
+  Future<String?> updateUserMedicalConditions(String uid, List<String> conditions)async {
+    try{
+      await firebaseInstance.collection('users').doc(uid).collection('protected').doc('data').update({
+        'medicalConditions': conditions,
+      });
+      return uid;
+    }
+    catch(e){
       return null;
     }
   }
