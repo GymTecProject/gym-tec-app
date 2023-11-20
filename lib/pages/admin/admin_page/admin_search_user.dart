@@ -166,7 +166,13 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
               stream: _usersStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
+                  return const Center(
+                    child: SizedBox(
+                      width: 25.0,
+                      height: 25.0,
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
                 } else if (snapshot.hasError || !snapshot.hasData) {
                   return const Text('Error or no data');
                 }

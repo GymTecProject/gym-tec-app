@@ -55,7 +55,13 @@ class _ExpansionTileContentState extends State<ExpansionTileContent> {
                   ],
                 );
               }
-              return const CircularProgressIndicator();
+              return const Center(
+                child: SizedBox(
+                  width: 25.0,
+                  height: 25.0,
+                  child: CircularProgressIndicator(),
+                ),
+              );
             })
       ],
     );

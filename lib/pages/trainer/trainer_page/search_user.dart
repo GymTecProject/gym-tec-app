@@ -171,7 +171,13 @@ class _SearchUserState extends State<SearchUser> {
               stream: _usersStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
+                  return const Center(
+                    child: SizedBox(
+                      width: 25.0,
+                      height: 25.0,
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
                 } else if (snapshot.hasError || !snapshot.hasData) {
                   return const Text('Error or no data');
                 }
@@ -188,16 +194,7 @@ class _SearchUserState extends State<SearchUser> {
                       clipBehavior: Clip.antiAlias,
                       child: ExpansionTile(
                         key: ValueKey(user.publicData.id),
-                        title: Text(
-                          user.publicData.name,
-                          style: TextStyle(
-                            color: user.publicData.expirationDate
-                                    .toDate()
-                                    .isBefore(DateTime.now())
-                                ? Colors.red
-                                : null,
-                          ),
-                        ),
+                        title: Text(user.publicData.name),
                         subtitle: Text(
                             user.publicData.expirationDate.toDate().toString()),
                         children: [
