@@ -130,162 +130,168 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
       appBar: AppBar(
         title: const Text('Clientes'),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: const InputDecoration(
-                labelText: 'Search',
-                suffixIcon: Icon(Icons.search),
+      body: Padding(
+        padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: _searchController,
+                decoration: const InputDecoration(
+                  labelText: 'Search',
+                  suffixIcon: Icon(Icons.search),
+                ),
               ),
             ),
-          ),
-          SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (int i = 0; i < _accTypes.length; i++)
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: ChoiceChip(
-                        label: Text(_accTypes[i]),
-                        selected: _value == i,
-                        onSelected: (bool selected) {
-                          setState(() {
-                            _value = selected ? i : null;
-                          });
-                        },
-                      ),
-                    ),
-                ],
-              )),
-          Expanded(
-            child: StreamBuilder<List<UserPublicPrivateData>?>(
-              stream: _usersStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: SizedBox(
-                      width: 25.0,
-                      height: 25.0,
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                } else if (snapshot.hasError || !snapshot.hasData) {
-                  return const Text('Error or no data');
-                }
-
-                List<UserPublicPrivateData> users = snapshot.data!;
-                List<UserPublicPrivateData> filteredUsers =
-                    _filterUsers(users, _searchQuery);
-
-                return ListView.builder(
-                  itemCount: filteredUsers.length,
-                  itemBuilder: (context, index) {
-                    UserPublicPrivateData user = filteredUsers[index];
-
-                    String sexText = user.publicData.sex == Sex.male
-                        ? "Hombre"
-                        : user.publicData.sex == Sex.female
-                            ? "Mujer"
-                            : "Otro";
-
-                    String expirationDateStr =
-                        user.publicData.expirationDate.toDate().toString();
-
-                    return Card(
-                      clipBehavior: Clip.antiAlias,
-                      child: ExpansionTile(
-                        key: ValueKey(user.publicData.id),
-                        title: Text(
-                          user.publicData.name,
-                          style: TextStyle(
-                            color: user.publicData.expirationDate
-                                    .toDate()
-                                    .isBefore(DateTime.now())
-                                ? Colors.red
-                                : null,
+            ContentPadding(
+              padding: 10,
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (int i = 0; i < _accTypes.length; i++)
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: ChoiceChip(
+                            label: Text(_accTypes[i]),
+                            selected: _value == i,
+                            onSelected: (bool selected) {
+                              setState(() {
+                                _value = selected ? i : null;
+                              });
+                            },
                           ),
                         ),
-                        subtitle: Text(
-                            "$sexText - ${expirationDateStr.substring(0, expirationDateStr.length - 4)}"),
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              children: [
-                                ExpansionTileContent(
-                                    id: user.publicData.id,
-                                    accType: user.privateData
-                                        .getAccountTypeString()),
-                              ],
-                            ),
-                          ),
-                          ContentPadding(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                IconButton.filledTonal(
-                                  icon: const Icon(Icons.remove_red_eye),
-                                  tooltip: 'Visualizar medidas',
-                                  onPressed: () async {
-                                    final userMeasurements =
-                                        await dbService.getUserMeasurements(
-                                            user.publicData.id);
-                                    _navigateToSeeMeasures(userMeasurements);
-                                  },
-                                ),
-                                const ItemSeparator(),
-                                IconButton.filledTonal(
-                                  icon: const Icon(Icons.straighten),
-                                  tooltip: 'Registrar medidas',
-                                  onPressed: () => _navigateToRegisterMeasures(
-                                      user.publicData.id),
-                                ),
-                                const ItemSeparator(),
-                                IconButton.filledTonal(
-                                  icon: const Icon(Icons.fitness_center),
-                                  tooltip: 'Crear rutina',
-                                  onPressed: () => _navigateToCreateRoutine(
-                                      user.publicData.id),
-                                ),
-                                const ItemSeparator(),
-                                IconButton.filledTonal(
-                                  icon: const Icon(Icons.admin_panel_settings),
-                                  tooltip: 'Admin',
-                                  onPressed: () async {
-                                    final result = await showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AdminDialog(
-                                            user: user.publicData,
-                                            initialRole: user.privateData
-                                                .getAccountTypeString());
-                                      },
-                                    );
-                                    if (result ==
-                                        'Rol actualizado con éxito.') {
-                                      _usersStream = dbService
-                                          .getAllUsersPublicPrivateDataStream();
-                                      setState(() {});
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
+                    ],
+                  )),
+            ),
+            Expanded(
+              child: StreamBuilder<List<UserPublicPrivateData>?>(
+                stream: _usersStream,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: SizedBox(
+                        width: 25.0,
+                        height: 25.0,
+                        child: CircularProgressIndicator(),
                       ),
                     );
-                  },
-                );
-              },
+                  } else if (snapshot.hasError || !snapshot.hasData) {
+                    return const Text('Error or no data');
+                  }
+      
+                  List<UserPublicPrivateData> users = snapshot.data!;
+                  List<UserPublicPrivateData> filteredUsers =
+                      _filterUsers(users, _searchQuery);
+      
+                  return ListView.builder(
+                    itemCount: filteredUsers.length,
+                    itemBuilder: (context, index) {
+                      UserPublicPrivateData user = filteredUsers[index];
+      
+                      String sexText = user.publicData.sex == Sex.male
+                          ? "Hombre"
+                          : user.publicData.sex == Sex.female
+                              ? "Mujer"
+                              : "Otro";
+      
+                      String expirationDateStr =
+                          user.publicData.expirationDate.toDate().toString();
+      
+                      return Card(
+                        clipBehavior: Clip.antiAlias,
+                        child: ExpansionTile(
+                          key: ValueKey(user.publicData.id),
+                          title: Text(
+                            user.publicData.name,
+                            style: TextStyle(
+                              color: user.publicData.expirationDate
+                                      .toDate()
+                                      .isBefore(DateTime.now())
+                                  ? Colors.red
+                                  : null,
+                            ),
+                          ),
+                          subtitle: Text(
+                              "$sexText - ${expirationDateStr.substring(0, expirationDateStr.length - 4)}"),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                children: [
+                                  ExpansionTileContent(
+                                      id: user.publicData.id,
+                                      accType: user.privateData
+                                          .getAccountTypeString()),
+                                ],
+                              ),
+                            ),
+                            ContentPadding(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  IconButton.filledTonal(
+                                    icon: const Icon(Icons.remove_red_eye),
+                                    tooltip: 'Visualizar medidas',
+                                    onPressed: () async {
+                                      final userMeasurements =
+                                          await dbService.getUserMeasurements(
+                                              user.publicData.id);
+                                      _navigateToSeeMeasures(userMeasurements);
+                                    },
+                                  ),
+                                  const ItemSeparator(),
+                                  IconButton.filledTonal(
+                                    icon: const Icon(Icons.straighten),
+                                    tooltip: 'Registrar medidas',
+                                    onPressed: () => _navigateToRegisterMeasures(
+                                        user.publicData.id),
+                                  ),
+                                  const ItemSeparator(),
+                                  IconButton.filledTonal(
+                                    icon: const Icon(Icons.fitness_center),
+                                    tooltip: 'Crear rutina',
+                                    onPressed: () => _navigateToCreateRoutine(
+                                        user.publicData.id),
+                                  ),
+                                  const ItemSeparator(),
+                                  IconButton.filledTonal(
+                                    icon: const Icon(Icons.admin_panel_settings),
+                                    tooltip: 'Admin',
+                                    onPressed: () async {
+                                      final result = await showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AdminDialog(
+                                              user: user.publicData,
+                                              initialRole: user.privateData
+                                                  .getAccountTypeString());
+                                        },
+                                      );
+                                      if (result ==
+                                          'Rol actualizado con éxito.') {
+                                        _usersStream = dbService
+                                            .getAllUsersPublicPrivateDataStream();
+                                        setState(() {});
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
