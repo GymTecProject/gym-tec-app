@@ -56,6 +56,7 @@ class _RoutineDayState extends State<RoutineDay> {
                                 url: widget.exercises[index].url,
                                 comment: widget.exercises[index].comment,
                                 category: widget.exercises[index].category,
+                                weight: widget.exercises[index].weight,
                               );
                             },
                           ),
