@@ -34,6 +34,8 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
   };
   late final RoutineData routine;
   List<Widget> buttons = [];
+  List<bool> collectionsCreated = [];
+  bool isChipSelected = false;
   int amountOfWeeks = 1;
   final ScrollController _scrollController = ScrollController();
   final DatabaseInterface dbService = DependencyManager.databaseService;
@@ -64,6 +66,7 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
           days: [],
         );
         routine.workout.add(newWorkout);
+        collectionsCreated.add(false);
       }
       _scrollToEnd();
     });
@@ -73,6 +76,7 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
     setState(() {
       if (routine.workout.isNotEmpty) {
         routine.workout.removeLast();
+        collectionsCreated.removeLast();
       }
     });
   }
@@ -144,6 +148,8 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
                               onPressed: () {
                                 setState(() {
                                   amountOfWeeks = index + 2;
+                                  isChipSelected = true;
+                                  print(isChipSelected.toString());
                                 });
                               },
                             )).toList(),
@@ -207,7 +213,9 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
       ),
       floatingActionButton: ExpandableFab(distance: 100, children: [
         ActionFab(
-          onPressed: saveRoutine,
+          onPressed: collectionsCreated.isNotEmpty && isChipSelected && collectionsCreated.every((item) => item)
+            ? saveRoutine
+            : null,
           icon: const Icon(Icons.save),
         ),
         ActionFab(
