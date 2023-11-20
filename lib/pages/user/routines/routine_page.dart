@@ -13,7 +13,7 @@ import 'package:gym_tec/models/routines/routine_workout.dart';
 import 'package:gym_tec/pages/user/routines/routine_day.dart';
 import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../../../services/dependency_manager.dart';
 
 class RoutinePage extends StatefulWidget {
@@ -68,14 +68,46 @@ class _RoutinePageState extends State<RoutinePage> {
 
   String _dayCategory(List<RoutineExercise> day) {
     final Map<String, int> categoies = {};
-    for (var data in day) { 
+    for (var data in day) {
       if (categoies.containsKey(data.category)) {
         categoies[data.category] = categoies[data.category]! + 1;
       } else {
         categoies[data.category] = 1;
       }
     }
-    return categoies.keys.reduce((a, b) => categoies[a]! > categoies[b]! ? a : b);
+    return categoies.keys
+        .reduce((a, b) => categoies[a]! > categoies[b]! ? a : b);
+  }
+
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  void _openWhatsAppDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Rutina Expirada'),
+          content: const Text('Contactanos por Whatsapp para más información.'),
+          actions: <Widget>[
+            Center(
+              child: TextButton(
+                child: const Text('Abrir Whatsapp'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                  _launchURL('https://api.whatsapp.com/send?phone=50662735229');
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _openHistroyDialog() async {
@@ -98,24 +130,24 @@ class _RoutinePageState extends State<RoutinePage> {
     super.initState();
     _fetchRoutineData();
     Timer(const Duration(seconds: 30), () {
-    if (routine == null) {
-      setState(() {
-        showSkeleton = false;
-      });
-    }
-  });
+      if (routine == null) {
+        setState(() {
+          showSkeleton = false;
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Rutina',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        )
-      ),
+          title: const Text(
+        'Rutina',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      )),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -136,6 +168,14 @@ class _RoutinePageState extends State<RoutinePage> {
                                             fontWeight: FontWeight.bold,
                                             fontSize: 26),
                                         'Fecha: ${DateFormat('dd/MM/yyyy').format(routine!.date.toDate())}'),
+                                    if (routine!.expirationDate
+                                        .toDate()
+                                        .isBefore(DateTime.now()))
+                                      IconButton(
+                                        onPressed: _openWhatsAppDialog,
+                                        icon: const Icon(
+                                            Icons.warning_amber_rounded),
+                                      ),
                                     IconButton(
                                         onPressed: _openHistroyDialog,
                                         icon: const Icon(Icons.event_repeat)),
@@ -147,11 +187,11 @@ class _RoutinePageState extends State<RoutinePage> {
                                 physics: const NeverScrollableScrollPhysics(),
                                 separatorBuilder: (context, index) =>
                                     const ContextSeparator(),
-                                itemBuilder:
-                                    (BuildContext context, int index) {
+                                itemBuilder: (BuildContext context, int index) {
                                   return CardBtn(
                                     title: _getDaysTitle(workout[index].days),
-                                    subtitle: _dayCategory(workout[index].exercises),
+                                    subtitle:
+                                        _dayCategory(workout[index].exercises),
                                     onPressed: () {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
@@ -173,35 +213,36 @@ class _RoutinePageState extends State<RoutinePage> {
                               ),
                             ],
                           )
-                        : showSkeleton ? Column(
-                          children: [
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                        : showSkeleton
+                            ? Column(
                                 children: [
-                                  Text(
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 26),
-                                      'Fecha: ${DateFormat('dd/MM/yyyy').format(DateTime.now())}'),
-                                ]),
-                            const ContextSeparator(),
-                            Skeletonizer(
-                              enabled: routine == null,
-                              child: ListView.separated(
-                                  itemCount: 4,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) => CardBtn(
-                                    title: 'No hay rutina asignada',
-                                    onPressed: () => {},
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 26),
+                                            'Fecha: ${DateFormat('dd/MM/yyyy').format(DateTime.now())}'),
+                                      ]),
+                                  const ContextSeparator(),
+                                  Skeletonizer(
+                                    enabled: routine == null,
+                                    child: ListView.separated(
+                                      itemCount: 4,
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, index) => CardBtn(
+                                        title: 'No hay rutina asignada',
+                                        onPressed: () => {},
+                                      ),
+                                      separatorBuilder: (context, index) =>
+                                          const ContextSeparator(),
+                                    ),
                                   ),
-                                  separatorBuilder: (context, index) =>
-                                      const ContextSeparator(),
-                                ),
-                            ),
-                          ],
-                        )
-                      : const Text('No una hay rutina asignada'),
+                                ],
+                              )
+                            : const Text('No una hay rutina asignada'),
                   ],
                 ),
               ),
