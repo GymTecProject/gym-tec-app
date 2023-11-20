@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/routines/routine_data.dart';
 import 'package:gym_tec/models/excercises/exercise.dart';
-import 'package:gym_tec/models/routines/routine_workout.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_protected.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
@@ -224,14 +223,19 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
-  Future<String?> updateUserMedicalConditions(String uid, List<String> conditions)async {
-    try{
-      await firebaseInstance.collection('users').doc(uid).collection('protected').doc('data').update({
+  Future<String?> updateUserMedicalConditions(
+      String uid, List<String> conditions) async {
+    try {
+      await firebaseInstance
+          .collection('users')
+          .doc(uid)
+          .collection('protected')
+          .doc('data')
+          .update({
         'medicalConditions': conditions,
       });
       return uid;
-    }
-    catch(e){
+    } catch (e) {
       return null;
     }
   }
@@ -507,42 +511,64 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
-  Future<String?> updateUserExerciseWeight(
-      String uid, int workoutId, int exerciseId, num weight, Timestamp date) async {
+  Future<String?> updateUserExerciseWeight(String uid, int workoutId,
+      int exerciseId, num weight, Timestamp date) async {
     try {
       var routines = await firebaseInstance
-      .collection('routines')
-      .orderBy('date', descending: true)
-      .limit(1)
-      .where('clientId', isEqualTo: uid)
-      .get();
-      if(routines.docs.isNotEmpty){
+          .collection('routines')
+          .orderBy('date', descending: true)
+          .limit(1)
+          .where('clientId', isEqualTo: uid)
+          .get();
+      if (routines.docs.isNotEmpty) {
         var routine = routines.docs.first.data();
 
-        if (routine['date'].seconds == date.seconds && routine['date'].nanoseconds == date.nanoseconds) {
+        if (routine['date'].seconds == date.seconds &&
+            routine['date'].nanoseconds == date.nanoseconds) {
           var workouts = routine['workout'];
           var workout = workouts[workoutId];
           var exercises = workout['exercises'];
           var exercise = exercises[exerciseId];
           exercise['weight'] = weight;
-        
+
           await firebaseInstance
               .collection('routines')
               .doc(routines.docs.first.id)
               .update({
             'workout': workouts,
-          });        
-        }
-        else{
+          });
+        } else {
           return null;
         }
       }
       return null;
-      
-    } 
-    catch (e) {
+    } catch (e) {
       print("error" + e.toString());
       return null;
+    }
+  }
+
+  @override
+  Future<String?> addSocialLink(Map<String, String> data) async {
+    try {
+      final doc =
+          await firebaseInstance.collection('social').doc('links').get();
+      if (doc.exists) {
+        final docData = doc.data()!;
+        docData.addAll(data);
+        await firebaseInstance
+            .collection('social')
+            .doc('links')
+            .update(docData);
+      } else {
+        await firebaseInstance
+            .collection('social')
+            .doc('links')
+            .set(data);
+      }
+      return doc.id;
+    } catch (e) {
+      rethrow;
     }
   }
 

@@ -35,12 +35,12 @@ abstract class DatabaseInterface {
   Stream<List<UserPublicPrivateData>> getAllUsersPublicPrivateDataStream();
   Stream<List<UserPublicPrivateData>> getActiveUsersPublicPrivateDataStream();
 
-
   // Routines
   Future<List<RoutineData>?> getUserRoutines(String uid, int limit);
   Future<RoutineData?> getUserLastestRoutine(String uid);
   Future<String?> createRoutine(Map<String, dynamic> data);
-  Future<String?> updateUserExerciseWeight(String uid, int workoutId, int exerciseId, num weight, Timestamp date);
+  Future<String?> updateUserExerciseWeight(
+      String uid, int workoutId, int exerciseId, num weight, Timestamp date);
 
   // Measurements
   Future<List<UserMeasurement>?> getUserMeasurements(String uid);
@@ -54,4 +54,7 @@ abstract class DatabaseInterface {
 
   // Reports
   Future<String> addErrorReport(String uid, String description);
+
+  // Social
+  Future<String?> addSocialLink(Map<String, String> data);
 }

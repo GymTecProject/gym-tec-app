@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,7 +12,7 @@ void main() async {
   await fbFakeInstance
       .collection('users')
       .doc('testUser')
-      .set({'name': 'Juan', 'sex':'male', 'expirationDate': Timestamp.now()});
+      .set({'name': 'Juan', 'sex': 'male', 'expirationDate': Timestamp.now()});
   final fakeDbService = DatabaseFirebase(firebaseInstance: fbFakeInstance);
 
   test('Should return userMeasurement object', () async {
@@ -78,7 +79,9 @@ void main() async {
     expect(userMeasurement, isA<UserMeasurement>());
   });
 
-  test('User PublicPrivate Data should not be null and contain public and private data', () async {
+  test(
+      'User PublicPrivate Data should not be null and contain public and private data',
+      () async {
     await fbFakeInstance
         .collection('users')
         .doc('testUser')
@@ -90,7 +93,26 @@ void main() async {
         await fakeDbService.getAllUsersPublicPrivateData();
     expect(userPublicPrivateData, isNotNull);
     expect(userPublicPrivateData![0].publicData.id, 'testUser');
-    expect(userPublicPrivateData[0].privateData.accountType, AccountType.administrator);
-    
+    expect(userPublicPrivateData[0].privateData.accountType,
+        AccountType.administrator);
+  });
+
+  test('Should create a new social document if it does not exist', () async {
+    final doc = await fbFakeInstance.collection('social').doc('links').get();
+    expect(doc.exists, false);
+    await fakeDbService.addSocialLink({
+      'facebook': 'facebook.com',
+      'instagram': 'instagram.com',
+      'twitter': 'twitter.com',
+      'youtube': 'youtube.com',
+      'tiktok': 'tiktok.com',
+    });
+    final doc2 = await fbFakeInstance.collection('social').doc('links').get();
+    expect(doc2.exists, true);
+    expect(doc2.data()!['facebook'], 'facebook.com');
+    expect(doc2.data()!['instagram'], 'instagram.com');
+    expect(doc2.data()!['twitter'], 'twitter.com');
+    expect(doc2.data()!['youtube'], 'youtube.com');
+    expect(doc2.data()!['tiktok'], 'tiktok.com');
   });
 }

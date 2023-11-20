@@ -12,10 +12,10 @@ class CreateWorkout extends StatefulWidget {
   final String buttonName;
   final Map<int, String> weekDays;
   final Workout workout;
-  List<bool> collectionsCreated;
+  final List<bool> collectionsCreated;
   final int collectionIndex;
 
-  CreateWorkout({
+  const CreateWorkout({
     super.key,
     required this.buttonName,
     required this.weekDays,
