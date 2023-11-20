@@ -3,12 +3,14 @@ import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
-import 'package:gym_tec/models/users/user_data_public.dart';
 import 'package:gym_tec/pages/trainer/routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
 import '../../../components/search_users/dialog/admin_dialog.dart';
+import '../../../models/users/user_data_private.dart';
+import '../../../models/users/user_data_public.dart';
+import '../../../models/users/user_data_public_private.dart';
 import '../../../models/users/user_measurements.dart';
 import '../../trainer/measures/create_measures.dart';
 import '../../trainer/trainer_page/view_measures_page.dart';
@@ -24,14 +26,16 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
   final AuthInterface authService = DependencyManager.authService;
 
-  late Stream<List<UserPublicData>> _usersStream;
+  late Stream<List<UserPublicPrivateData>> _usersStream;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  int? _value;
+  final List<String> _accTypes = ['Administrator', 'Trainer', 'Client'];
 
   @override
   void initState() {
     super.initState();
-    _usersStream = dbService.getAllUsersStream();
+    _usersStream = dbService.getAllUsersPublicPrivateDataStream();
     _searchController.addListener(() {
       setState(() {
         _searchQuery = _searchController.text;
@@ -45,10 +49,34 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
     super.dispose();
   }
 
-  List<UserPublicData> _filterUsers(List<UserPublicData> users, String query) {
-    return users
-        .where((user) => user.name.toLowerCase().contains(query.toLowerCase()))
-        .toList();
+  AccountType _mapStringToAccountType(String accountTypeString) {
+    switch (accountTypeString) {
+      case 'Administrator':
+        return AccountType.administrator;
+      case 'Trainer':
+        return AccountType.trainer;
+      case 'Client':
+        return AccountType.client;
+      default:
+        throw Exception('Invalid account type string');
+    }
+  }
+
+  List<UserPublicPrivateData> _filterUsers(
+      List<UserPublicPrivateData> users, String query) {
+    return users.where((user) {
+      bool nameMatches =
+          user.publicData.name.toLowerCase().contains(query.toLowerCase());
+
+      bool accountTypeMatches = true;
+      if (_value != null) {
+        var selectedAccountType = _mapStringToAccountType(_accTypes[_value!]);
+        accountTypeMatches =
+            user.privateData.accountType == selectedAccountType;
+      }
+
+      return nameMatches && accountTypeMatches;
+    }).toList();
   }
 
   void _navigateToCreateRoutine(String clientId) async {
@@ -77,7 +105,7 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
           ),
         ));
     if (!mounted) return;
-    if(state == null) return;
+    if (state == null) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(state),
@@ -114,31 +142,85 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
               ),
             ),
           ),
+          SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (int i = 0; i < _accTypes.length; i++)
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: ChoiceChip(
+                        label: Text(_accTypes[i]),
+                        selected: _value == i,
+                        onSelected: (bool selected) {
+                          setState(() {
+                            _value = selected ? i : null;
+                          });
+                        },
+                      ),
+                    ),
+                ],
+              )),
           Expanded(
-            child: StreamBuilder<List<UserPublicData>>(
+            child: StreamBuilder<List<UserPublicPrivateData>?>(
               stream: _usersStream,
               builder: (context, snapshot) {
-                List<UserPublicData> users =
-                    snapshot.hasData ? snapshot.data! : [];
-                List<UserPublicData> filteredUsers =
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: SizedBox(
+                      width: 25.0,
+                      height: 25.0,
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                } else if (snapshot.hasError || !snapshot.hasData) {
+                  return const Text('Error or no data');
+                }
+
+                List<UserPublicPrivateData> users = snapshot.data!;
+                List<UserPublicPrivateData> filteredUsers =
                     _filterUsers(users, _searchQuery);
 
                 return ListView.builder(
                   itemCount: filteredUsers.length,
                   itemBuilder: (context, index) {
-                    UserPublicData user = filteredUsers[index];
+                    UserPublicPrivateData user = filteredUsers[index];
+
+                    String sexText = user.publicData.sex == Sex.male
+                        ? "Hombre"
+                        : user.publicData.sex == Sex.female
+                            ? "Mujer"
+                            : "Otro";
+
+                    String expirationDateStr =
+                        user.publicData.expirationDate.toDate().toString();
+
                     return Card(
                       clipBehavior: Clip.antiAlias,
                       child: ExpansionTile(
-                        key: ValueKey(user.id),
-                        title: Text(user.name),
-                        subtitle: Text(user.expirationDate.toDate().toString()),
+                        key: ValueKey(user.publicData.id),
+                        title: Text(
+                          user.publicData.name,
+                          style: TextStyle(
+                            color: user.publicData.expirationDate
+                                    .toDate()
+                                    .isBefore(DateTime.now())
+                                ? Colors.red
+                                : null,
+                          ),
+                        ),
+                        subtitle: Text(
+                            "$sexText - ${expirationDateStr.substring(0, expirationDateStr.length - 4)}"),
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
                               children: [
-                                ExpansionTileContent(id: user.id),
+                                ExpansionTileContent(
+                                    id: user.publicData.id,
+                                    accType: user.privateData
+                                        .getAccountTypeString()),
                               ],
                             ),
                           ),
@@ -150,8 +232,9 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                   icon: const Icon(Icons.remove_red_eye),
                                   tooltip: 'Visualizar medidas',
                                   onPressed: () async {
-                                    final userMeasurements = await dbService
-                                        .getUserMeasurements(user.id);
+                                    final userMeasurements =
+                                        await dbService.getUserMeasurements(
+                                            user.publicData.id);
                                     _navigateToSeeMeasures(userMeasurements);
                                   },
                                 ),
@@ -159,29 +242,38 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                 IconButton.filledTonal(
                                   icon: const Icon(Icons.straighten),
                                   tooltip: 'Registrar medidas',
-                                  onPressed: () =>
-                                      _navigateToRegisterMeasures(user.id),
+                                  onPressed: () => _navigateToRegisterMeasures(
+                                      user.publicData.id),
                                 ),
                                 const ItemSeparator(),
                                 IconButton.filledTonal(
                                   icon: const Icon(Icons.fitness_center),
                                   tooltip: 'Crear rutina',
-                                  onPressed: () =>
-                                      _navigateToCreateRoutine(user.id),
+                                  onPressed: () => _navigateToCreateRoutine(
+                                      user.publicData.id),
                                 ),
                                 const ItemSeparator(),
                                 IconButton.filledTonal(
-                                    icon:
-                                        const Icon(Icons.admin_panel_settings),
-                                    tooltip: 'Admin',
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AdminDialog(user: user);
-                                        },
-                                      );
-                                    }),
+                                  icon: const Icon(Icons.admin_panel_settings),
+                                  tooltip: 'Admin',
+                                  onPressed: () async {
+                                    final result = await showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AdminDialog(
+                                            user: user.publicData,
+                                            initialRole: user.privateData
+                                                .getAccountTypeString());
+                                      },
+                                    );
+                                    if (result ==
+                                        'Rol actualizado con éxito.') {
+                                      _usersStream = dbService
+                                          .getAllUsersPublicPrivateDataStream();
+                                      setState(() {});
+                                    }
+                                  },
+                                ),
                               ],
                             ),
                           )

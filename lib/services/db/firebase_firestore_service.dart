@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/routines/routine_data.dart';
 import 'package:gym_tec/models/excercises/exercise.dart';
+import 'package:gym_tec/models/routines/routine_workout.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_protected.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
@@ -102,6 +103,68 @@ class DatabaseFirebase implements DatabaseInterface {
       return null;
     }
     return null;
+  }
+
+  @override
+  Stream<List<UserPublicPrivateData>> getAllUsersPublicPrivateDataStream() {
+    var publicDataStream =
+        FirebaseFirestore.instance.collection('users').snapshots();
+
+    return publicDataStream.asyncMap((publicSnapshot) async {
+      var futureList = publicSnapshot.docs.map((publicDoc) async {
+        try {
+          var publicDataMap = publicDoc.data();
+          publicDataMap.addAll({'uid': publicDoc.id});
+          var publicData = UserPublicData.fromJson(publicDataMap);
+
+          var privateDataStream = getUserPrivateDataStream(publicDoc.id);
+          var privateData = await privateDataStream.first;
+
+          return UserPublicPrivateData(
+              publicData: publicData, privateData: privateData);
+        } catch (e) {
+          return null;
+        }
+      });
+
+      var combinedData = await Future.wait(futureList);
+      return combinedData
+          .where((data) => data != null)
+          .cast<UserPublicPrivateData>()
+          .toList();
+    });
+  }
+
+  @override
+  Stream<List<UserPublicPrivateData>> getActiveUsersPublicPrivateDataStream() {
+    var publicDataStream = FirebaseFirestore.instance
+        .collection('users')
+        .where('expirationDate', isGreaterThan: Timestamp.now())
+        .snapshots();
+
+    return publicDataStream.asyncMap((publicSnapshot) async {
+      var futureList = publicSnapshot.docs.map((publicDoc) async {
+        try {
+          var publicDataMap = publicDoc.data();
+          publicDataMap.addAll({'uid': publicDoc.id});
+          var publicData = UserPublicData.fromJson(publicDataMap);
+
+          var privateDataStream = getUserPrivateDataStream(publicDoc.id);
+          var privateData = await privateDataStream.first;
+
+          return UserPublicPrivateData(
+              publicData: publicData, privateData: privateData);
+        } catch (e) {
+          return null;
+        }
+      });
+
+      var combinedData = await Future.wait(futureList);
+      return combinedData
+          .where((data) => data != null)
+          .cast<UserPublicPrivateData>()
+          .toList();
+    });
   }
 
   @override
@@ -440,6 +503,46 @@ class DatabaseFirebase implements DatabaseInterface {
       return newReport.id;
     } catch (e) {
       return 'error';
+    }
+  }
+
+  @override
+  Future<String?> updateUserExerciseWeight(
+      String uid, int workoutId, int exerciseId, num weight, Timestamp date) async {
+    try {
+      var routines = await firebaseInstance
+      .collection('routines')
+      .orderBy('date', descending: true)
+      .limit(1)
+      .where('clientId', isEqualTo: uid)
+      .get();
+      if(routines.docs.isNotEmpty){
+        var routine = routines.docs.first.data();
+
+        if (routine['date'].seconds == date.seconds && routine['date'].nanoseconds == date.nanoseconds) {
+          var workouts = routine['workout'];
+          var workout = workouts[workoutId];
+          var exercises = workout['exercises'];
+          var exercise = exercises[exerciseId];
+          exercise['weight'] = weight;
+        
+          await firebaseInstance
+              .collection('routines')
+              .doc(routines.docs.first.id)
+              .update({
+            'workout': workouts,
+          });        
+        }
+        else{
+          return null;
+        }
+      }
+      return null;
+      
+    } 
+    catch (e) {
+      print("error" + e.toString());
+      return null;
     }
   }
 

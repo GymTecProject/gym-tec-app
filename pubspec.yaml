@@ -45,6 +45,7 @@ dependencies:
   shared_preferences: ^2.2.1
   fake_cloud_firestore: ^2.4.3
   pinput: ^3.0.1
+  url_launcher: ^6.1.14
   
 
 flutter_launcher_icons:
