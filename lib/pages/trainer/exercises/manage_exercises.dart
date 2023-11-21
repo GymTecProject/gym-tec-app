@@ -8,6 +8,7 @@ import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/excercises/exercise.dart';
 import 'package:gym_tec/models/routines/routine_exercise.dart';
+import 'package:gym_tec/pages/user/routines/exercise_data.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
 class ManageExercisesPage extends StatefulWidget {
@@ -21,9 +22,10 @@ class ManageExercisesPage extends StatefulWidget {
 class _ManageExercisesPage extends State<ManageExercisesPage> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _repsController = TextEditingController();
-  final TextEditingController _setsController = TextEditingController();
-  final TextEditingController _commentsController = TextEditingController();
+  final TextEditingController _modifyNameController = TextEditingController();
+  final TextEditingController _modifyUrlController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _urlController = TextEditingController();
 
   int? _value;
   String actEntry = '';
@@ -31,15 +33,18 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
   List<Exercise> _allExercises = [];
   List<Exercise> _foundExcercises = [];
 
-  RoutineExercise? _selectedExercise;
+  //RoutineExercise? _selectedExercise;
+  Exercise? _selectedExercise;
 
-  final List<String> _categories = [
+  final List<String> items = [
     'Tren superior',
     'Tren inferior',
     'Funcional',
     'Cardio',
     'Core'
   ];
+
+  String? selectedItem = 'Tren superior';
 
   void _getAllExercises() async {
     try {
@@ -59,19 +64,6 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
   void initState() {
     _foundExcercises = _allExercises;
     super.initState();
-    // _setsController.text =
-    //     widget.exercise.series != 0 ? widget.exercise.series.toString() : "";
-    // _repsController.text =
-    //     widget.exercise.repetitions != 0 ? widget.exercise.repetitions.toString() : "";
-    // _commentsController.text = widget.exercise.comment;
-
-    _selectedExercise = RoutineExercise(
-        name: "",
-        url: "",
-        category: "",
-        comment: "",
-        series: 0,
-        repetitions: 0);
 
     _getAllExercises();
   }
@@ -84,7 +76,7 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
           .where((item) =>
               item.category
                   .toLowerCase()
-                  .contains(_categories[value].toLowerCase()) &&
+                  .contains(items[value].toLowerCase()) &&
               item.name.toLowerCase().contains(entered.toLowerCase()))
           .toList();
     } else {
@@ -105,122 +97,131 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
 
   // fix name not changing in workout on save
 
-  void _saveExercise() {
-    if (_formKey.currentState!.validate() && _selectedExercise != null) {
-      _selectedExercise!.comment = _commentsController.text;
-      _selectedExercise!.series = int.parse(_setsController.text);
-      _selectedExercise!.repetitions = int.parse(_repsController.text);
+  void _saveExercise(int index) {
 
-      Navigator.pop(context);
-      Navigator.pop(context, _selectedExercise);
-    }
+    setState(() {
+      
+    });
   }
 
-  void showBottomSheetAddExercise(){
-    showModalBottomSheet<void>(
-      isScrollControlled: true,
-      context: context,
-      builder: (BuildContext context) {
-        return Padding(
-          padding:
-              MediaQuery.of(context).viewInsets,
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Container(
-                padding:
-                    const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisAlignment:
-                      MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    
-                    Text(
-                        '¿Qué hay que hacer?',
-                      style: TextStyle(
-                        fontWeight:
-                          FontWeight.bold,
+  void _createExercise() async {
+    final Exercise exercise = Exercise(
+      name: _nameController.text,
+      category: selectedItem!,
+      url: _urlController.text,
+    );
+
+    //function to create exercise
+
+    _nameController.clear();
+    _urlController.clear();
+    setState(() {
+      selectedItem = 'Tren superior';
+    });
+
+     Navigator.pop(context);
+  }
+
+  void showBottomSheetAddExercise() {
+  String? localSelectedItem = selectedItem;
+
+  showModalBottomSheet<void>(
+    isScrollControlled: true,
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setModalState) {
+          return Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Container(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      const Text(
+                        'Agregar ejercicio',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
                           fontSize: 20,
+                        ),
                       ),
-                    ),
-                    Row(
-                      children: [
-                        Flexible(
-                          child: TextFormField(
-                            controller:
-                                _setsController,
-                            keyboardType:
-                              TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            decoration:
-                                const InputDecoration(
-                              prefixIcon: Icon(
-                                  Icons
-                                      .repeat_on),
-                              labelText: 'Sets',
-                              hintText: 'Ej: 3',
-                              border:
-                                  OutlineInputBorder(),
-                            ),
+                      const ContextSeparator(),
+                      Flexible(
+                        child: TextFormField(
+                          controller: _nameController,
+                          decoration: const InputDecoration(
+                            prefixIcon: Icon(Icons.info_outline),
+                            labelText: 'Nombre del ejercicio',
+                            border: OutlineInputBorder(),
                           ),
                         ),
-                        const ItemSeparator(),
-                        Flexible(
-                          child: TextFormField(
-                            controller:
-                                _repsController,
-                            keyboardType:
-                              TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            decoration:
-                                const InputDecoration(
-                              prefixIcon: Icon(Icons
-                                  .fitness_center),
-                              labelText:
-                                  'Repeticiones',
-                              hintText: 'Ej: 12',
-                              border:
-                                  OutlineInputBorder(),
-                            ),
+                      ),
+                      const ItemSeparator(),
+                     Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            value: localSelectedItem,
+                            icon: const Icon(Icons.arrow_drop_down),
+                            iconSize: 24,
+                            elevation: 16,
+                            onChanged: (String? newValue) {
+                              setModalState(() {
+                                localSelectedItem = newValue;
+                              });
+                              setState(() {
+                                selectedItem = newValue;
+                              });
+                            },
+                            items: items.map<DropdownMenuItem<String>>(
+                              (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              },
+                            ).toList(),
                           ),
                         ),
-                      ],
-                    ),
-                    const ContextSeparator(),
-                    TextFormField(
-                      controller:
-                          _commentsController,
-                      maxLines:
-                          4, // Establece el número de líneas que desees
-                      decoration:
-                          const InputDecoration(
-                        prefixIcon: Icon(
-                            Icons.speaker_notes),
-                        labelText: 'Comentarios',
-                        border:
-                            OutlineInputBorder(),
                       ),
-                    ),
-                    const ContextSeparator(),
-                    ActionBtn(
+                      const ItemSeparator(),
+                      Flexible(
+                        child: TextFormField(
+                          controller: _urlController,
+                          decoration: const InputDecoration(
+                            prefixIcon: Icon(Icons.link),
+                            labelText: 'URL del video',
+
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                      const ContextSeparator(),
+                      ActionBtn(
                         title: "Guardar",
-                        disabled: _setsController.text.isEmpty ||
-                            _repsController.text.isEmpty,
-                        onPressed: _saveExercise),
-                  ],
+                        disabled: _nameController.text.isEmpty || _urlController.text.isEmpty,
+                        onPressed: _createExercise,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
-    );
-  }
+          );
+        },
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -281,11 +282,11 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          for (int i = 0; i < _categories.length; i++)
+                          for (int i = 0; i < items.length; i++)
                             Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: ChoiceChip(
-                                label: Text(_categories[i]),
+                                label: Text(items[i]),
                                 selected: _value == i,
                                 onSelected: (bool selected) {
                                   setState(() {
@@ -308,104 +309,102 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
                                 subtitle: _foundExcercises[index].category,
                                 onPressed: () {
                                   setState(() {
-                                    _selectedExercise!.name =
-                                        _foundExcercises[index].name;
-                                    _selectedExercise!.url =
-                                        _foundExcercises[index].url;
-                                    _selectedExercise!.category =
-                                        _foundExcercises[index].category;
+                                    _modifyNameController.text = _foundExcercises[index].name;
+                                    _modifyUrlController.text = _foundExcercises[index].url;
+                                    selectedItem = _foundExcercises[index].category;
                                   });
                                   showModalBottomSheet<void>(
                                     isScrollControlled: true,
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return Padding(
-                                        padding:
-                                            MediaQuery.of(context).viewInsets,
-                                        child: SingleChildScrollView(
-                                          child: Form(
-                                            key: _formKey,
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.all(24.0),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  Row(
-                                                    children: [
+                                      return StatefulBuilder(
+                                        builder: (BuildContext context, StateSetter setModalState) {
+                                          return Padding(
+                                            padding: MediaQuery.of(context).viewInsets,
+                                            child: SingleChildScrollView(
+                                              child: Form(
+                                                key: _formKey,
+                                                child: Container(
+                                                  padding: const EdgeInsets.all(24.0),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      const Text(
+                                                        'Agregar ejercicio',
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 20,
+                                                        ),
+                                                      ),
+                                                      const ContextSeparator(),
                                                       Flexible(
                                                         child: TextFormField(
-                                                          controller:
-                                                              _setsController,
-                                                          keyboardType:
-                                                            TextInputType.number,
-                                                          inputFormatters: <TextInputFormatter>[
-                                                            FilteringTextInputFormatter.digitsOnly
-                                                          ],
-                                                          decoration:
-                                                              const InputDecoration(
-                                                            prefixIcon: Icon(
-                                                                Icons
-                                                                    .repeat_on),
-                                                            labelText: 'Sets',
-                                                            hintText: 'Ej: 3',
-                                                            border:
-                                                                OutlineInputBorder(),
+                                                          controller: _modifyNameController,
+                                                          decoration: const InputDecoration(
+                                                            prefixIcon: Icon(Icons.info_outline),
+                                                            labelText: 'Nombre del ejercicio',
+                                                            border: OutlineInputBorder(),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const ItemSeparator(),
+                                                    Container(
+                                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                        decoration: BoxDecoration(
+                                                          border: Border.all(color: Colors.grey),
+                                                          borderRadius: BorderRadius.circular(5),
+                                                        ),
+                                                        child: DropdownButtonHideUnderline(
+                                                          child: DropdownButton<String>(
+                                                            isExpanded: true,
+                                                            value: selectedItem,
+                                                            icon: const Icon(Icons.arrow_drop_down),
+                                                            iconSize: 24,
+                                                            elevation: 16,
+                                                            onChanged: (String? newValue) {
+                                                              setModalState(() {
+                                                                selectedItem = newValue;
+                                                              });
+                                                              setState(() {
+                                                                selectedItem = newValue;
+                                                              });
+                                                            },
+                                                            items: items.map<DropdownMenuItem<String>>(
+                                                              (String value) {
+                                                                return DropdownMenuItem<String>(
+                                                                  value: value,
+                                                                  child: Text(value),
+                                                                );
+                                                              },
+                                                            ).toList(),
                                                           ),
                                                         ),
                                                       ),
                                                       const ItemSeparator(),
                                                       Flexible(
                                                         child: TextFormField(
-                                                          controller:
-                                                              _repsController,
-                                                          keyboardType:
-                                                            TextInputType.number,
-                                                          inputFormatters: <TextInputFormatter>[
-                                                            FilteringTextInputFormatter.digitsOnly
-                                                          ],
-                                                          decoration:
-                                                              const InputDecoration(
-                                                            prefixIcon: Icon(Icons
-                                                                .fitness_center),
-                                                            labelText:
-                                                                'Repeticiones',
-                                                            hintText: 'Ej: 12',
-                                                            border:
-                                                                OutlineInputBorder(),
+                                                          controller: _modifyUrlController,
+                                                          decoration: const InputDecoration(
+                                                            prefixIcon: Icon(Icons.link),
+                                                            labelText: 'URL del video',
+                                                            border: OutlineInputBorder(),
                                                           ),
                                                         ),
                                                       ),
+                                                      const ContextSeparator(),
+                                                      ActionBtn(
+                                                        title: "Guardar",
+                                                        disabled: _nameController.text.isEmpty || _urlController.text.isEmpty,
+                                                        onPressed: _createExercise,
+                                                      ),
                                                     ],
                                                   ),
-                                                  const ContextSeparator(),
-                                                  TextFormField(
-                                                    controller:
-                                                        _commentsController,
-                                                    maxLines:
-                                                        4, // Establece el número de líneas que desees
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      prefixIcon: Icon(
-                                                          Icons.speaker_notes),
-                                                      labelText: 'Comentarios',
-                                                      border:
-                                                          OutlineInputBorder(),
-                                                    ),
-                                                  ),
-                                                  const ContextSeparator(),
-                                                  ActionBtn(
-                                                      title: "Guardar",
-                                                      disabled: _setsController.text.isEmpty ||
-                                                          _repsController.text.isEmpty,
-                                                      onPressed: _saveExercise),
-                                                ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ),
+                                          );
+                                        },
                                       );
                                     },
                                   );
