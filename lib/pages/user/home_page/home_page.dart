@@ -24,16 +24,16 @@ class HomePage extends StatefulWidget {
 
   static const cardData = [
     {
-      'title': 'Reto semanal',
-      'subtitle': 'Puedes completarlos todos?',
-      'imgPath': 'assets/images/h1-1.png',
-      'page': WeeklyRoutines(),
-    },
-    {
       'title': 'Rutina',
       'subtitle': 'Sigue tu rutina diaria',
       'imgPath': 'assets/images/h2-1.png',
       'page': RoutinePage(),
+    },
+    {
+      'title': 'Reto semanal',
+      'subtitle': 'Puedes completarlos todos?',
+      'imgPath': 'assets/images/h1-1.png',
+      'page': WeeklyRoutines(),
     },
     {
       'title': 'Progreso',
