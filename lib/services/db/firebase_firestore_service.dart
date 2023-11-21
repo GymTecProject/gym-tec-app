@@ -584,6 +584,7 @@ class DatabaseFirebase implements DatabaseInterface {
   @override
   Future<String?> updateExercise(String id, Exercise exercise) async {
     try {
+      exercise.id = id;
       await firebaseInstance
           .collection('exercises')
           .doc(id)
