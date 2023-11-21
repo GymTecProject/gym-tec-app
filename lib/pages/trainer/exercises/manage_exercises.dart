@@ -111,6 +111,8 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
 
     setState(() {
       selectedItem = 'Tren superior';
+      _getAllExercises();
+      _runFilter(actEntry);
     });
 
     Navigator.pop(context);
@@ -129,6 +131,8 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
     _urlController.clear();
     setState(() {
       selectedItem = 'Tren superior';
+      _getAllExercises();
+      _runFilter(actEntry);
     });
 
      Navigator.pop(context);
