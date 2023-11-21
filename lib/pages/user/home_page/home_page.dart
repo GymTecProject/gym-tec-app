@@ -31,13 +31,13 @@ class HomePage extends StatefulWidget {
     },
     {
       'title': 'Reto semanal',
-      'subtitle': 'Puedes completarlos todos?',
+      'subtitle': '¿Puedes completarlos todos?',
       'imgPath': 'assets/images/h1-1.png',
       'page': WeeklyRoutines(),
     },
     {
       'title': 'Progreso',
-      'subtitle': 'Mira cuanto has avanzado!',
+      'subtitle': '¡Mira cuanto has avanzado!',
       'imgPath': 'assets/images/h3-1.png',
       'page': ProgressPage(),
     },
