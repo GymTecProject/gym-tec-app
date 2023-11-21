@@ -98,10 +98,22 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
   // fix name not changing in workout on save
 
   void _saveExercise(int index) {
+    
+    final String idExercise = _foundExcercises[index].id!;
+
+    final Exercise exercise = Exercise(
+      name: _modifyNameController.text,
+      category: selectedItem!,
+      url: _modifyUrlController.text,
+    );
+
+    dbService.updateExercise(idExercise, exercise);
 
     setState(() {
-      
+      selectedItem = 'Tren superior';
     });
+
+    Navigator.pop(context);
   }
 
   void _createExercise() async {
@@ -111,7 +123,7 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
       url: _urlController.text,
     );
 
-    //function to create exercise
+    dbService.addExcercise(exercise);
 
     _nameController.clear();
     _urlController.clear();
@@ -395,8 +407,8 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
                                                       const ContextSeparator(),
                                                       ActionBtn(
                                                         title: "Guardar",
-                                                        disabled: _nameController.text.isEmpty || _urlController.text.isEmpty,
-                                                        onPressed: _createExercise,
+                                                        disabled: _modifyNameController.text.isEmpty || _modifyUrlController.text.isEmpty,
+                                                        onPressed: () => _saveExercise(index),
                                                       ),
                                                     ],
                                                   ),
