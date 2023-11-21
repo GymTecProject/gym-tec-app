@@ -6,13 +6,13 @@ import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
+import 'package:gym_tec/main.dart';
 import 'package:gym_tec/models/excercises/exercise.dart';
 import 'package:gym_tec/models/routines/routine_exercise.dart';
 import 'package:gym_tec/pages/user/routines/exercise_data.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
 class ManageExercisesPage extends StatefulWidget {
-
   const ManageExercisesPage({super.key});
 
   @override
@@ -26,6 +26,7 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
   final TextEditingController _modifyUrlController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _urlController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   int? _value;
   String actEntry = '';
@@ -97,8 +98,7 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
 
   // fix name not changing in workout on save
 
-  void _saveExercise(int index) {
-    
+  void _saveExercise(int index) async {
     final String idExercise = _foundExcercises[index].id!;
 
     final Exercise exercise = Exercise(
@@ -107,12 +107,14 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
       url: _modifyUrlController.text,
     );
 
-    dbService.updateExercise(idExercise, exercise);
+    await dbService.updateExercise(idExercise, exercise);
 
     setState(() {
       selectedItem = 'Tren superior';
+      _searchController.clear();
       _getAllExercises();
-      _runFilter(actEntry);
+      _runFilter("");
+      _value = null;
     });
 
     Navigator.pop(context);
@@ -125,119 +127,121 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
       url: _urlController.text,
     );
 
-    dbService.addExcercise(exercise);
-
+    await dbService.addExcercise(exercise);
     _nameController.clear();
     _urlController.clear();
     setState(() {
       selectedItem = 'Tren superior';
+      _searchController.clear();
       _getAllExercises();
-      _runFilter(actEntry);
+      _runFilter(_searchController.text);
+      _value = null;
     });
 
-     Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   void showBottomSheetAddExercise() {
-  String? localSelectedItem = selectedItem;
+    String? localSelectedItem = selectedItem;
 
-  showModalBottomSheet<void>(
-    isScrollControlled: true,
-    context: context,
-    builder: (BuildContext context) {
-      return StatefulBuilder(
-        builder: (BuildContext context, StateSetter setModalState) {
-          return Padding(
-            padding: MediaQuery.of(context).viewInsets,
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Container(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      const Text(
-                        'Agregar ejercicio',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
-                      ),
-                      const ContextSeparator(),
-                      Flexible(
-                        child: TextFormField(
-                          controller: _nameController,
-                          decoration: const InputDecoration(
-                            prefixIcon: Icon(Icons.info_outline),
-                            labelText: 'Nombre del ejercicio',
-                            border: OutlineInputBorder(),
+    showModalBottomSheet<void>(
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Container(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        const Text(
+                          'Agregar ejercicio',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
                           ),
                         ),
-                      ),
-                      const ItemSeparator(),
-                     Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(5),
+                        const ContextSeparator(),
+                        Flexible(
+                          child: TextFormField(
+                            controller: _nameController,
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(Icons.info_outline),
+                              labelText: 'Nombre del ejercicio',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
                         ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            value: localSelectedItem,
-                            icon: const Icon(Icons.arrow_drop_down),
-                            iconSize: 24,
-                            elevation: 16,
-                            onChanged: (String? newValue) {
-                              setModalState(() {
-                                localSelectedItem = newValue;
-                              });
-                              setState(() {
-                                selectedItem = newValue;
-                              });
-                            },
-                            items: items.map<DropdownMenuItem<String>>(
-                              (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
+                        const ItemSeparator(),
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              isExpanded: true,
+                              value: localSelectedItem,
+                              icon: const Icon(Icons.arrow_drop_down),
+                              iconSize: 24,
+                              elevation: 16,
+                              onChanged: (String? newValue) {
+                                setModalState(() {
+                                  localSelectedItem = newValue;
+                                });
+                                setState(() {
+                                  selectedItem = newValue;
+                                });
                               },
-                            ).toList(),
+                              items: items.map<DropdownMenuItem<String>>(
+                                (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                },
+                              ).toList(),
+                            ),
                           ),
                         ),
-                      ),
-                      const ItemSeparator(),
-                      Flexible(
-                        child: TextFormField(
-                          controller: _urlController,
-                          decoration: const InputDecoration(
-                            prefixIcon: Icon(Icons.link),
-                            labelText: 'URL del video',
-
-                            border: OutlineInputBorder(),
+                        const ItemSeparator(),
+                        Flexible(
+                          child: TextFormField(
+                            controller: _urlController,
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(Icons.link),
+                              labelText: 'URL del video',
+                              border: OutlineInputBorder(),
+                            ),
                           ),
                         ),
-                      ),
-                      const ContextSeparator(),
-                      ActionBtn(
-                        title: "Guardar",
-                        disabled: _nameController.text.isEmpty || _urlController.text.isEmpty,
-                        onPressed: _createExercise,
-                      ),
-                    ],
+                        const ContextSeparator(),
+                        ActionBtn(
+                          title: "Guardar",
+                          disabled: _nameController.text.isEmpty ||
+                              _urlController.text.isEmpty,
+                          onPressed: _createExercise,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
-      );
-    },
-  );
-}
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -250,7 +254,7 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-        actions: <Widget>[
+          actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.add_circle_outline_outlined),
               onPressed: () {
@@ -268,6 +272,7 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
                 ),
                 SearchAnchor(
                   builder: (context, controller) => SearchBar(
+                    controller: _searchController,
                     hintText: 'Buscar Ejercicios',
                     padding: const MaterialStatePropertyAll<EdgeInsets>(
                         EdgeInsets.symmetric(horizontal: 16.0)),
@@ -325,72 +330,105 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
                                 subtitle: _foundExcercises[index].category,
                                 onPressed: () {
                                   setState(() {
-                                    _modifyNameController.text = _foundExcercises[index].name;
-                                    _modifyUrlController.text = _foundExcercises[index].url;
-                                    selectedItem = _foundExcercises[index].category;
+                                    _modifyNameController.text =
+                                        _foundExcercises[index].name;
+                                    _modifyUrlController.text =
+                                        _foundExcercises[index].url;
+                                    selectedItem =
+                                        _foundExcercises[index].category;
                                   });
                                   showModalBottomSheet<void>(
                                     isScrollControlled: true,
                                     context: context,
                                     builder: (BuildContext context) {
                                       return StatefulBuilder(
-                                        builder: (BuildContext context, StateSetter setModalState) {
+                                        builder: (BuildContext context,
+                                            StateSetter setModalState) {
                                           return Padding(
-                                            padding: MediaQuery.of(context).viewInsets,
+                                            padding: MediaQuery.of(context)
+                                                .viewInsets,
                                             child: SingleChildScrollView(
                                               child: Form(
                                                 key: _formKey,
                                                 child: Container(
-                                                  padding: const EdgeInsets.all(24.0),
+                                                  padding: const EdgeInsets.all(
+                                                      24.0),
                                                   child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    mainAxisSize: MainAxisSize.min,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
                                                     children: <Widget>[
                                                       const Text(
                                                         'Agregar ejercicio',
                                                         style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                           fontSize: 20,
                                                         ),
                                                       ),
                                                       const ContextSeparator(),
                                                       Flexible(
                                                         child: TextFormField(
-                                                          controller: _modifyNameController,
-                                                          decoration: const InputDecoration(
-                                                            prefixIcon: Icon(Icons.info_outline),
-                                                            labelText: 'Nombre del ejercicio',
-                                                            border: OutlineInputBorder(),
+                                                          controller:
+                                                              _modifyNameController,
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            prefixIcon: Icon(Icons
+                                                                .info_outline),
+                                                            labelText:
+                                                                'Nombre del ejercicio',
+                                                            border:
+                                                                OutlineInputBorder(),
                                                           ),
                                                         ),
                                                       ),
                                                       const ItemSeparator(),
-                                                    Container(
-                                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                                        decoration: BoxDecoration(
-                                                          border: Border.all(color: Colors.grey),
-                                                          borderRadius: BorderRadius.circular(5),
+                                                      Container(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal: 10,
+                                                                vertical: 5),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.grey),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
                                                         ),
-                                                        child: DropdownButtonHideUnderline(
-                                                          child: DropdownButton<String>(
+                                                        child:
+                                                            DropdownButtonHideUnderline(
+                                                          child: DropdownButton<
+                                                              String>(
                                                             isExpanded: true,
                                                             value: selectedItem,
-                                                            icon: const Icon(Icons.arrow_drop_down),
+                                                            icon: const Icon(Icons
+                                                                .arrow_drop_down),
                                                             iconSize: 24,
                                                             elevation: 16,
-                                                            onChanged: (String? newValue) {
+                                                            onChanged: (String?
+                                                                newValue) {
                                                               setModalState(() {
-                                                                selectedItem = newValue;
+                                                                selectedItem =
+                                                                    newValue;
                                                               });
                                                               setState(() {
-                                                                selectedItem = newValue;
+                                                                selectedItem =
+                                                                    newValue;
                                                               });
                                                             },
-                                                            items: items.map<DropdownMenuItem<String>>(
+                                                            items: items.map<
+                                                                DropdownMenuItem<
+                                                                    String>>(
                                                               (String value) {
-                                                                return DropdownMenuItem<String>(
+                                                                return DropdownMenuItem<
+                                                                    String>(
                                                                   value: value,
-                                                                  child: Text(value),
+                                                                  child: Text(
+                                                                      value),
                                                                 );
                                                               },
                                                             ).toList(),
@@ -400,19 +438,32 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
                                                       const ItemSeparator(),
                                                       Flexible(
                                                         child: TextFormField(
-                                                          controller: _modifyUrlController,
-                                                          decoration: const InputDecoration(
-                                                            prefixIcon: Icon(Icons.link),
-                                                            labelText: 'URL del video',
-                                                            border: OutlineInputBorder(),
+                                                          controller:
+                                                              _modifyUrlController,
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            prefixIcon: Icon(
+                                                                Icons.link),
+                                                            labelText:
+                                                                'URL del video',
+                                                            border:
+                                                                OutlineInputBorder(),
                                                           ),
                                                         ),
                                                       ),
                                                       const ContextSeparator(),
                                                       ActionBtn(
                                                         title: "Guardar",
-                                                        disabled: _modifyNameController.text.isEmpty || _modifyUrlController.text.isEmpty,
-                                                        onPressed: () => _saveExercise(index),
+                                                        disabled:
+                                                            _modifyNameController
+                                                                    .text
+                                                                    .isEmpty ||
+                                                                _modifyUrlController
+                                                                    .text
+                                                                    .isEmpty,
+                                                        onPressed: () =>
+                                                            _saveExercise(
+                                                                index),
                                                       ),
                                                     ],
                                                   ),
