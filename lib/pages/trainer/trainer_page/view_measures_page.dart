@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/buttons/view_measurement_comparison_card.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
-import 'package:gym_tec/models/users/user_measurements.dart';
+import 'package:gym_tec/models/measures/measurements.dart';
 import 'package:gym_tec/components/ui/buttons/view_single_measurement_card.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 

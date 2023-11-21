@@ -8,7 +8,7 @@ import 'package:gym_tec/models/users/user_data_public.dart';
 import 'package:gym_tec/models/users/user_data_public_private.dart';
 import 'package:gym_tec/models/weekly_challeges/challenge_data.dart';
 
-import '../../models/users/user_measurements.dart';
+import '../../models/measures/measurements.dart';
 
 class DatabaseFirebase implements DatabaseInterface {
   late FirebaseFirestore firebaseInstance;
@@ -399,6 +399,7 @@ class DatabaseFirebase implements DatabaseInterface {
       if (exercises.docs.isNotEmpty) {
         return exercises.docs.map((doc) {
           final data = doc.data();
+          data.addAll({'id': doc.id});
           return Exercise.fromJson(data);
         }).toList();
       }
@@ -561,14 +562,35 @@ class DatabaseFirebase implements DatabaseInterface {
             .doc('links')
             .update(docData);
       } else {
-        await firebaseInstance
-            .collection('social')
-            .doc('links')
-            .set(data);
+        await firebaseInstance.collection('social').doc('links').set(data);
       }
       return doc.id;
     } catch (e) {
       rethrow;
+    }
+  }
+
+  @override
+  Future<String?> addExcercise(Exercise exercise) async {
+    try {
+      final doc =
+          await firebaseInstance.collection('exercises').add(exercise.toJson());
+      return doc.id;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<String?> updateExercise(String id, Exercise exercise) async {
+    try {
+      await firebaseInstance
+          .collection('exercises')
+          .doc(id)
+          .update(exercise.toJson());
+      return id;
+    } catch (e) {
+      return null;
     }
   }
 

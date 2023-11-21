@@ -11,7 +11,7 @@ import '../../../components/search_users/dialog/admin_dialog.dart';
 import '../../../models/users/user_data_private.dart';
 import '../../../models/users/user_data_public.dart';
 import '../../../models/users/user_data_public_private.dart';
-import '../../../models/users/user_measurements.dart';
+import '../../../models/measures/measurements.dart';
 import '../../trainer/measures/create_measures.dart';
 import '../../trainer/trainer_page/view_measures_page.dart';
 

@@ -5,7 +5,7 @@ import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_protected.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
-import 'package:gym_tec/models/users/user_measurements.dart';
+import 'package:gym_tec/models/measures/measurements.dart';
 import 'package:gym_tec/models/users/user_register_form.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 

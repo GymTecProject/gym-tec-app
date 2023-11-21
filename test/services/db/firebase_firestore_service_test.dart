@@ -1,10 +1,11 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gym_tec/models/excercises/exercise.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_public_private.dart';
-import 'package:gym_tec/models/users/user_measurements.dart';
+import 'package:gym_tec/models/measures/measurements.dart';
 import 'package:gym_tec/services/db/firebase_firestore_service.dart';
 
 void main() async {
@@ -14,7 +15,7 @@ void main() async {
       .doc('testUser')
       .set({'name': 'Juan', 'sex': 'male', 'expirationDate': Timestamp.now()});
   final fakeDbService = DatabaseFirebase(firebaseInstance: fbFakeInstance);
-
+  String excerciseTestId = '';
   test('Should return userMeasurement object', () async {
     await fbFakeInstance
         .collection('users')
@@ -114,5 +115,32 @@ void main() async {
     expect(doc2.data()!['twitter'], 'twitter.com');
     expect(doc2.data()!['youtube'], 'youtube.com');
     expect(doc2.data()!['tiktok'], 'tiktok.com');
+  });
+
+  test('Should create a new exercise', () async {
+    Exercise exercise = Exercise(name: 'test', url: 'test', category: 'test');
+    await fakeDbService.addExcercise(exercise);
+
+    final doc = await fbFakeInstance
+        .collection('exercises')
+        .where('name', isEqualTo: 'test')
+        .get();
+    expect(doc.docs[0].data(), isNotNull);
+  });
+
+  test('Should update an exercise', () async {
+    final newDoc = await fbFakeInstance.collection('exercises').add({
+      'name': 'test',
+      'url': 'test',
+      'category': 'test',
+    });
+    Exercise exercise =
+        Exercise(name: 'test', url: 'test', category: 'updated');
+
+    await fakeDbService.updateExercise(newDoc.id, exercise);
+    final doc2 =
+        await fbFakeInstance.collection('exercises').doc(newDoc.id).get();
+    final data2 = doc2.data();
+    expect(data2!['category'], 'updated');
   });
 }

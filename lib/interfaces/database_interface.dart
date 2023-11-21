@@ -4,7 +4,7 @@ import 'package:gym_tec/models/excercises/exercise.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
 import 'package:gym_tec/models/users/user_data_public_private.dart';
-import 'package:gym_tec/models/users/user_measurements.dart';
+import 'package:gym_tec/models/measures/measurements.dart';
 import 'package:gym_tec/models/weekly_challeges/challenge_data.dart';
 
 import '../models/users/user_data_protected.dart';
@@ -12,6 +12,8 @@ import '../models/users/user_data_protected.dart';
 abstract class DatabaseInterface {
   // Exercises
   Future<List<Exercise>> getExercises();
+  Future<String?> addExcercise(Exercise exercise);
+  Future<String?> updateExercise(String id, Exercise exercise);
 
   // Users
   Future<List<UserPublicData>?> getAllUsers();

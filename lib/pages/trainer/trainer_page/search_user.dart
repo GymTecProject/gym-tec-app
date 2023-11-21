@@ -3,7 +3,7 @@ import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
-import 'package:gym_tec/models/users/user_measurements.dart';
+import 'package:gym_tec/models/measures/measurements.dart';
 import 'package:gym_tec/pages/trainer/measures/create_measures.dart';
 import 'package:gym_tec/pages/trainer/routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';

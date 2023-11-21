@@ -2,8 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
-import 'package:gym_tec/models/measures/measures_data.dart';
-import 'package:gym_tec/models/users/user_measurements.dart';
+import 'package:gym_tec/models/measures/measurements.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
 class CreateMeasuresPage extends StatefulWidget {
@@ -27,8 +26,6 @@ class _CreateMeasuresPageState extends State<CreateMeasuresPage> {
   double? skeletalMuscle;
   double? water;
   double? viceralFatLevel;
-
-  late final MeasurementData measures;
 
   List<Widget> buttons = [];
 

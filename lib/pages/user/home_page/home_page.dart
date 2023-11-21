@@ -12,7 +12,7 @@ import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:intl/intl.dart';
 
 import '../../../interfaces/auth_interface.dart';
-import '../../../models/users/user_measurements.dart';
+import '../../../models/measures/measurements.dart';
 import '../../trainer/trainer_page/view_measures_page.dart';
 
 class HomePage extends StatefulWidget {
