@@ -104,7 +104,7 @@ class _ExercisePage extends State<ExercisePage> {
             children: [
               Card(
                 child: ListTile(
-                  leading: Icon(Icons.fitness_center), // Ícono que deseas usar
+                  leading: const Icon(Icons.fitness_center), // Ícono que deseas usar
                   title: Text(widget.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   subtitle: Text(widget.subtitle, style: const TextStyle(fontSize: 14)),
                 ),
@@ -112,15 +112,15 @@ class _ExercisePage extends State<ExercisePage> {
               const ItemSeparator(),
               Card(
                 child: ListTile(
-                  leading: Icon(Icons.repeat_on),
+                  leading: const Icon(Icons.repeat_on),
                   title: const Text("Series", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  subtitle: Text("${widget.series.toString()}", style: const TextStyle(fontSize: 14)),
+                  subtitle: Text(widget.series.toString(), style: const TextStyle(fontSize: 14)),
                 ),
               ),
               const ItemSeparator(),
               Card(
                 child: ListTile(
-                  leading: Icon(Icons.replay),
+                  leading: const Icon(Icons.replay),
                   title: const Text("Repeticiones", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   subtitle: Text(widget.repetitions.toString(), style: const TextStyle(fontSize: 14)),
                 ),
@@ -128,7 +128,7 @@ class _ExercisePage extends State<ExercisePage> {
               const ItemSeparator(),
               Card(
                 child: ListTile(
-                  leading: Icon(Icons.speaker_notes),
+                  leading: const Icon(Icons.speaker_notes),
                   title: const Text("Comentarios", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   subtitle: Text(widget.comment.isNotEmpty ? widget.comment : "Ninguno", style: const TextStyle(fontSize: 14)),
                 ),
