@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
+import 'package:intl/intl.dart';
 import '../../../interfaces/database_interface.dart';
 import '../../../services/dependency_manager.dart';
 
@@ -206,7 +207,7 @@ class _AdminPublicDataState extends State<AdminPublicData> {
                     child: const Text('Seleccionar Fecha de Expiración'),
                   ),
                   Text(
-                    'Fecha de expiración: ${selectedExpirationDate.toLocal()}',
+                    'Fecha de expiración: ${DateFormat('dd/MM/yyyy').format(selectedExpirationDate)}',
                     style: const TextStyle(color: Colors.amber),
                   ),
                 ],

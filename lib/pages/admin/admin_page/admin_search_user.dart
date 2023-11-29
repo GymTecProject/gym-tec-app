@@ -6,6 +6,7 @@ import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/pages/trainer/routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
+import 'package:intl/intl.dart';
 
 import '../../../components/search_users/dialog/admin_dialog.dart';
 import '../../../models/users/user_data_private.dart';
@@ -182,25 +183,25 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                   } else if (snapshot.hasError || !snapshot.hasData) {
                     return const Text('Error or no data');
                   }
-      
+
                   List<UserPublicPrivateData> users = snapshot.data!;
                   List<UserPublicPrivateData> filteredUsers =
                       _filterUsers(users, _searchQuery);
-      
+
                   return ListView.builder(
                     itemCount: filteredUsers.length,
                     itemBuilder: (context, index) {
                       UserPublicPrivateData user = filteredUsers[index];
-      
+
                       String sexText = user.publicData.sex == Sex.male
                           ? "Hombre"
                           : user.publicData.sex == Sex.female
                               ? "Mujer"
                               : "Otro";
-      
+
                       String expirationDateStr =
                           user.publicData.expirationDate.toDate().toString();
-      
+
                       return Card(
                         clipBehavior: Clip.antiAlias,
                         child: ExpansionTile(
@@ -215,8 +216,8 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                   : null,
                             ),
                           ),
-                          subtitle: Text(
-                              "$sexText - ${expirationDateStr.substring(0, expirationDateStr.length - 4)}"),
+                          subtitle:
+                              Text("$sexText - ${DateFormat('dd/MM/yyyy').format(user.publicData.expirationDate.toDate())}"),
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(16.0),
@@ -231,7 +232,8 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                             ),
                             ContentPadding(
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   IconButton.filledTonal(
                                     icon: const Icon(Icons.remove_red_eye),
@@ -247,8 +249,9 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                   IconButton.filledTonal(
                                     icon: const Icon(Icons.straighten),
                                     tooltip: 'Registrar medidas',
-                                    onPressed: () => _navigateToRegisterMeasures(
-                                        user.publicData.id),
+                                    onPressed: () =>
+                                        _navigateToRegisterMeasures(
+                                            user.publicData.id),
                                   ),
                                   const ItemSeparator(),
                                   IconButton.filledTonal(
@@ -259,7 +262,8 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                   ),
                                   const ItemSeparator(),
                                   IconButton.filledTonal(
-                                    icon: const Icon(Icons.admin_panel_settings),
+                                    icon:
+                                        const Icon(Icons.admin_panel_settings),
                                     tooltip: 'Admin',
                                     onPressed: () async {
                                       final result = await showDialog(

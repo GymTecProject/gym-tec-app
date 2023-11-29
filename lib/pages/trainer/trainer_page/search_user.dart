@@ -9,6 +9,7 @@ import 'package:gym_tec/pages/trainer/routine/create_routine.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/view_measures_page.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
+import 'package:intl/intl.dart';
 
 import '../../../models/users/user_data_private.dart';
 import '../../../models/users/user_data_public.dart';
@@ -136,7 +137,7 @@ class _SearchUserState extends State<SearchUser> {
         title: const Text('Clientes'),
       ),
       body: Padding(
-        padding: EdgeInsets.only(bottom: 20, left: 20, right: 20),
+        padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
         child: Column(
           children: [
             Padding(
@@ -212,7 +213,7 @@ class _SearchUserState extends State<SearchUser> {
                           key: ValueKey(user.publicData.id),
                           title: Text(user.publicData.name),
                           subtitle: Text(
-                              "$sexText - ${expirationDateStr.substring(0, expirationDateStr.length - 4)}"),
+                              "$sexText - ${DateFormat('dd//MM/yyyy').format(user.publicData.expirationDate.toDate())}"),
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(16.0),

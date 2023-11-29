@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gym_tec/components/ui/buttons/action_btn.dart';
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
-import 'package:gym_tec/main.dart';
 import 'package:gym_tec/models/excercises/exercise.dart';
-import 'package:gym_tec/models/routines/routine_exercise.dart';
-import 'package:gym_tec/pages/user/routines/exercise_data.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
 class ManageExercisesPage extends StatefulWidget {
@@ -182,7 +178,7 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
                         const ItemSeparator(),
                         Container(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
                             borderRadius: BorderRadius.circular(5),
@@ -386,7 +382,7 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
                                                       ),
                                                       const ItemSeparator(),
                                                       Container(
-                                                        padding: EdgeInsets
+                                                        padding: const EdgeInsets
                                                             .symmetric(
                                                                 horizontal: 10,
                                                                 vertical: 5),

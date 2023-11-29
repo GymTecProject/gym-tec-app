@@ -544,7 +544,7 @@ class DatabaseFirebase implements DatabaseInterface {
       }
       return null;
     } catch (e) {
-      print("error" + e.toString());
+      print("error$e");
       return null;
     }
   }
