@@ -112,7 +112,7 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
       _runFilter("");
       _value = null;
     });
-
+    if(!mounted) return;
     Navigator.pop(context);
   }
 
