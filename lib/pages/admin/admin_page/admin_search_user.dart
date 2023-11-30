@@ -199,8 +199,6 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                               ? "Mujer"
                               : "Otro";
 
-                      String expirationDateStr =
-                          user.publicData.expirationDate.toDate().toString();
 
                       return Card(
                         clipBehavior: Clip.antiAlias,

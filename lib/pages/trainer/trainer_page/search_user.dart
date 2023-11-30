@@ -204,8 +204,6 @@ class _SearchUserState extends State<SearchUser> {
                               ? "Mujer"
                               : "Otro";
       
-                      String expirationDateStr =
-                          user.publicData.expirationDate.toDate().toString();
       
                       return Card(
                         clipBehavior: Clip.antiAlias,
