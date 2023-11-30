@@ -31,7 +31,6 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
   List<Exercise> _foundExcercises = [];
 
   //RoutineExercise? _selectedExercise;
-  Exercise? _selectedExercise;
 
   final List<String> items = [
     'Tren superior',

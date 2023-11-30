@@ -14,7 +14,6 @@ void main() async {
       .doc('testUser')
       .set({'name': 'Juan', 'sex': 'male', 'expirationDate': Timestamp.now()});
   final fakeDbService = DatabaseFirebase(firebaseInstance: fbFakeInstance);
-  String excerciseTestId = '';
   test('Should return userMeasurement object', () async {
     await fbFakeInstance
         .collection('users')
