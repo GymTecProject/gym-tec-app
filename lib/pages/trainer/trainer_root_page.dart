@@ -14,14 +14,14 @@ class TrainerRootPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const List<NavTab> tabs = [
-      NavTab(label: 'Home', icon: Icon(Icons.home), widget: HomePage()),
+      NavTab(label: 'Inicio', icon: Icon(Icons.home), widget: HomePage()),
       NavTab(
-          label: 'Trainer',
+          label: 'Entrenar',
           icon: Icon(Icons.accessibility_new),
           widget: TrainerPage()),
-      NavTab(label: 'Profile', icon: Icon(Icons.person), widget: ProfilePage()),
+      NavTab(label: 'Perfil', icon: Icon(Icons.person), widget: ProfilePage()),
       NavTab(
-          label: 'Settings',
+          label: 'Ajustes',
           icon: Icon(Icons.settings),
           widget: SettingsPage()),
     ];

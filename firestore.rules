@@ -16,8 +16,83 @@ service cloud.firestore {
 
     match /{document=**} {
        
-      allow read, write: if true;
+      match /users/{userId} {
+        allow create: if true;
+        allow read: if (
+          request.auth != null
+        )
+        allow update: if (
+          request.auth != null
+          && (request.auth.uid == userId || isAdmin())
 
+        )
+      }
+      match /users/{userId}/protected/{data} {
+        allow create: if true;
+        allow read: if (
+          isLogged()
+          && (request.auth.uid == userId || isAdmin() || isTrainer())
+        )
+        allow update: if (
+          isLogged()
+          && (request.auth.uid == userId || isAdmin())
+        )
+      }
+
+      match /users/{userId}/private/{data} {
+        allow create: if true;
+        allow read: if (
+          isLogged()
+          && (request.auth.uid == userId || isAdmin())
+        )
+        allow update: if isAdmin()
+      }
+      match /users/{userId}/measurements/{data} {
+        allow create: if (
+          isLogged()
+          && (isAdmin() || isTrainer())
+        );
+        allow read: if (
+          isLogged()
+          && (isAdmin() || isTrainer() || isMeasurementOwner())
+        )
+      }
     }
+
+    match /exercises/{exerciseId} {
+      allow create, update: if (
+        isLogged()
+        && isAdmin()
+      );
+      allow read: if (
+        isLogged()
+        && (isAdmin() || isTrainer())
+      )
+    }
+
+    match /routines/{routineId} {
+      allow create, update, read: if (
+        isLogged()
+        && (isAdmin() || isTrainer() || (request.auth.uid == resource.data.clientId))
+
+      );
+    }
+
+    function isLogged() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return isLogged() && get(/databases/$(database)/documents/users/$(request.auth.uid)/private/data).data.accountType == "administrator";
+    }
+    function isTrainer() {
+      return isLogged() && get(/databases/$(database)/documents/users/$(request.auth.uid)/private/data).data.accountType == "trainer";
+    }
+
+    function isMeasurementOwner() {
+      return isLogged() && get(/databases/$(database)/documents/users/$(request.auth.uid)).id == request.auth.uid;
+    }
+
   }
+
 }
+

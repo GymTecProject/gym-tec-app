@@ -51,7 +51,7 @@ class _AdminPageState extends State<AdminPage> {
           const Padding(
             padding: EdgeInsets.all(15.0),
             child: Text(
-              'Panel de Admins',
+              'Panel de Administrador',
               style: TextStyle(
                 fontSize: 50,
                 fontWeight: FontWeight.bold,

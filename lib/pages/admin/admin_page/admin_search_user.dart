@@ -89,6 +89,7 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
           ),
         ));
     if (!mounted) return;
+    if (state == null) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(state),

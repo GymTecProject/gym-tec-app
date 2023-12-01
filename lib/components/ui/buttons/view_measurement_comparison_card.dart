@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 class MeasurementComparisonCard extends StatelessWidget {
@@ -16,9 +17,8 @@ class MeasurementComparisonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final difference = previousValue != null
-        ? currentValue - previousValue
-        : null;
+    
+    final difference = previousValue != null? currentValue - previousValue : null;
 
     return Card(
       child: Padding(
@@ -38,17 +38,34 @@ class MeasurementComparisonCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(
-                  'Antes: $previousValue $parameter',
-                  style: const TextStyle(fontSize: 16),
+                Column(
+                  children: [
+                    const Text('Antes'),
+                    Text(
+                      '$previousValue $parameter',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
                 ),
-                Text(
-                  'Ahora: $currentValue $parameter',
-                  style: const TextStyle(fontSize: 16),
+                Column(
+                  children: [
+                    const Text('Ahora'),
+                    Text(
+                      '$currentValue $parameter',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
                 ),
-                Text(
-                  'Diferencia: $difference $parameter',
-                  style: const TextStyle(fontSize: 16),
+                Column(
+                  children: [
+                    const Text('Diferencia'),
+                    Text(
+                      difference != null
+                          ? '$difference $parameter'
+                          : 'N/A',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
                 ),
               ],
             ),

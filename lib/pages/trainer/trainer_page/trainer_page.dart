@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-//import 'package:intl/intl.dart';
-
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
-import 'package:gym_tec/pages/trainer/exercises/manage_exercises.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/weekly_edit.dart';
 import 'package:gym_tec/pages/trainer/trainer_page/search_user.dart';
 
@@ -27,12 +24,6 @@ class _TrainerPageState extends State<TrainerPage> {
       'subtitle': 'Editar/Establecer',
       'imgPath': 'assets/images/h1-1.png',
       'page': EditChallenges(),
-    },
-    {
-      'title': 'Ejercicios',
-      'subtitle': 'Agregar y editar ejercicios',
-      'imgPath': 'assets/images/h2-1.png',
-      'page': ManageExercisesPage(),
     },
   ];
 

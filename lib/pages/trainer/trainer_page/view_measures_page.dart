@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/buttons/view_measurement_comparison_card.dart';
+import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
 import 'package:gym_tec/models/measures/measurements.dart';
@@ -133,35 +134,35 @@ class _ViewMeasuresState extends State<ViewMeasures> {
                 SingleMeasurementCard(
                     title: 'Masa grasa',
                     currentValue: lastMeasurement!.fatPercentage,
-                    parameter: 'kg.'),
+                    parameter: 'kg'),
                 SingleMeasurementCard(
                     title: 'Altura',
                     currentValue: lastMeasurement!.height,
-                    parameter: 'm.'),
+                    parameter: 'cm'),
                 SingleMeasurementCard(
                     title: 'Masa muscular',
                     currentValue: lastMeasurement!.muscleMass,
-                    parameter: 'kg.'),
+                    parameter: 'kg'),
                 SingleMeasurementCard(
                     title: 'Peso',
                     currentValue: lastMeasurement!.weight,
-                    parameter: 'kg.'),
+                    parameter: 'kg'),
                 SingleMeasurementCard(
                     title: 'Porcentaje de agua',
                     currentValue: lastMeasurement!.water,
-                    parameter: 'kg.'),
+                    parameter: '%'),
                 SingleMeasurementCard(
                     title: 'Porcentaje de grasa corporal',
                     currentValue: lastMeasurement!.fatPercentage,
-                    parameter: 'kg.'),
+                    parameter: '%'),
                 SingleMeasurementCard(
                     title: 'Porcentaje de Grasa visceral',
                     currentValue: lastMeasurement!.viceralFatLevel,
-                    parameter: 'kg.'),
+                    parameter: '%'),
                 SingleMeasurementCard(
                     title: 'Masa ósea',
                     currentValue: lastMeasurement!.skeletalMuscle,
-                    parameter: 'kg.')
+                    parameter: 'kg')
               ],
             ),
           ));
@@ -187,49 +188,51 @@ class _ViewMeasuresState extends State<ViewMeasures> {
           ),
         ],
       ),
-      body: ListView(
-        children: [
-          MeasurementComparisonCard(
-              title: 'Masa Grasa',
-              previousValue: previousMeasurement!.fatPercentage,
-              currentValue: lastMeasurement!.fatPercentage,
-              parameter: 'kg.'),
-          MeasurementComparisonCard(
-              title: 'Altura',
-              previousValue: previousMeasurement!.height,
-              currentValue: lastMeasurement!.height,
-              parameter: 'm.'),
-          MeasurementComparisonCard(
-              title: 'Masa muscular',
-              previousValue: previousMeasurement!.muscleMass,
-              currentValue: lastMeasurement!.muscleMass,
-              parameter: 'kg.'),
-          MeasurementComparisonCard(
-              title: 'Peso',
-              previousValue: previousMeasurement!.weight,
-              currentValue: lastMeasurement!.weight,
-              parameter: 'kg.'),
-          MeasurementComparisonCard(
-              title: 'Porcentaje de grasa corporal',
-              previousValue: previousMeasurement!.fatPercentage,
-              currentValue: lastMeasurement!.fatPercentage,
-              parameter: '%'),
-          MeasurementComparisonCard(
-              title: 'Porcentaje de agua',
-              previousValue: previousMeasurement!.water,
-              currentValue: lastMeasurement!.water,
-              parameter: '%'),
-          MeasurementComparisonCard(
-              title: 'Porcentaje de Grasa visceral',
-              previousValue: previousMeasurement!.viceralFatLevel,
-              currentValue: lastMeasurement!.viceralFatLevel,
-              parameter: '%'),
-          MeasurementComparisonCard(
-              title: 'Masa ósea',
-              previousValue: previousMeasurement!.skeletalMuscle,
-              currentValue: lastMeasurement!.skeletalMuscle,
-              parameter: 'kg.')
-        ],
+      body: ContentPadding(
+        child: ListView(
+          children: [
+            MeasurementComparisonCard(
+                title: 'Masa Grasa',
+                previousValue: previousMeasurement!.fatPercentage,
+                currentValue: lastMeasurement!.fatPercentage,
+                parameter: 'kg'),
+            MeasurementComparisonCard(
+                title: 'Altura',
+                previousValue: previousMeasurement!.height,
+                currentValue: lastMeasurement!.height,
+                parameter: 'cm'),
+            MeasurementComparisonCard(
+                title: 'Masa muscular',
+                previousValue: previousMeasurement!.muscleMass,
+                currentValue: lastMeasurement!.muscleMass,
+                parameter: 'kg'),
+            MeasurementComparisonCard(
+                title: 'Peso',
+                previousValue: previousMeasurement!.weight,
+                currentValue: lastMeasurement!.weight,
+                parameter: 'kg'),
+            MeasurementComparisonCard(
+                title: 'Porcentaje de grasa corporal',
+                previousValue: previousMeasurement!.fatPercentage,
+                currentValue: lastMeasurement!.fatPercentage,
+                parameter: '%'),
+            MeasurementComparisonCard(
+                title: 'Porcentaje de agua',
+                previousValue: previousMeasurement!.water,
+                currentValue: lastMeasurement!.water,
+                parameter: '%'),
+            MeasurementComparisonCard(
+                title: 'Porcentaje de Grasa visceral',
+                previousValue: previousMeasurement!.viceralFatLevel,
+                currentValue: lastMeasurement!.viceralFatLevel,
+                parameter: '%'),
+            MeasurementComparisonCard(
+                title: 'Masa ósea',
+                previousValue: previousMeasurement!.skeletalMuscle,
+                currentValue: lastMeasurement!.skeletalMuscle,
+                parameter: 'kg')
+          ],
+        ),
       ),
     );
   }

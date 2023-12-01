@@ -21,7 +21,7 @@ class ExercisePage extends StatefulWidget {
   final int workoutIndex;
   final int exerciseIndex;
   final Timestamp date;
-  
+
   const ExercisePage({
     super.key,
     required this.title,
@@ -39,7 +39,7 @@ class ExercisePage extends StatefulWidget {
 
   @override
   State<ExercisePage> createState() => _ExercisePage();
-  }
+}
 
 class _ExercisePage extends State<ExercisePage> {
   final TextEditingController _weightController = TextEditingController();
@@ -47,30 +47,28 @@ class _ExercisePage extends State<ExercisePage> {
   final AuthInterface authService = DependencyManager.authService;
 
   Future<void> _launchURL() async {
-    try{
+    try {
       final Uri url = Uri.parse(widget.url);
       if (await canLaunchUrl(url)) {
         await launchUrl(url);
-      } else {
-        
-      }
-    }
-    catch (e){}
+      } else {}
+    } catch (e) {}
   }
 
-  void _saveWeight() async{
+  void _saveWeight() async {
     final user = authService.currentUser;
     if (user == null) return;
-    try{
+    try {
       num weight = num.parse(_weightController.text);
-      await dbService.updateUserExerciseWeight(user.uid, widget.workoutIndex, widget.exerciseIndex, weight, widget.date);
-    } 
-    catch (e) {
-      await dbService.updateUserExerciseWeight(user.uid, widget.workoutIndex, widget.exerciseIndex, 0, widget.date);
-      }
+      await dbService.updateUserExerciseWeight(user.uid, widget.workoutIndex,
+          widget.exerciseIndex, weight, widget.date);
+    } catch (e) {
+      await dbService.updateUserExerciseWeight(
+          user.uid, widget.workoutIndex, widget.exerciseIndex, 0, widget.date);
+    }
   }
 
-  void _updateWeightRoutine(){
+  void _updateWeightRoutine() {
     final currentWeight = num.tryParse(_weightController.text) ?? 0;
     Navigator.pop(context, currentWeight);
   }
@@ -79,8 +77,8 @@ class _ExercisePage extends State<ExercisePage> {
   void initState() {
     super.initState();
     if (widget.weight != 0) {
-    _weightController.text = widget.weight.toString();
-  }
+      _weightController.text = widget.weight.toString();
+    }
   }
 
   @override
@@ -92,78 +90,92 @@ class _ExercisePage extends State<ExercisePage> {
         return true;
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Información del ejercicio',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        )
-        ),
-        body: ContentPadding(
-          child: Column(
-            children: [
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.fitness_center), // Ícono que deseas usar
-                  title: Text(widget.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  subtitle: Text(widget.subtitle, style: const TextStyle(fontSize: 14)),
+          appBar: AppBar(
+              title: const Text(
+            'Información del ejercicio',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          )),
+          body: ContentPadding(
+            child: Column(
+              children: [
+                Card(
+                  child: ListTile(
+                    leading: const Icon(
+                        Icons.fitness_center), // Ícono que deseas usar
+                    title: Text(widget.title,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    subtitle: Text(widget.subtitle,
+                        style: const TextStyle(fontSize: 14)),
+                  ),
                 ),
-              ),
-              const ItemSeparator(),
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.repeat_on),
-                  title: const Text("Series", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  subtitle: Text(widget.series.toString(), style: const TextStyle(fontSize: 14)),
+                const ItemSeparator(),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.repeat_on),
+                    title: const Text("Series",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    subtitle: Text(widget.series.toString(),
+                        style: const TextStyle(fontSize: 14)),
+                  ),
                 ),
-              ),
-              const ItemSeparator(),
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.replay),
-                  title: const Text("Repeticiones", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  subtitle: Text(widget.repetitions.toString(), style: const TextStyle(fontSize: 14)),
+                const ItemSeparator(),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.replay),
+                    title: const Text("Repeticiones",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    subtitle: Text(widget.repetitions.toString(),
+                        style: const TextStyle(fontSize: 14)),
+                  ),
                 ),
-              ),
-              const ItemSeparator(),
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.speaker_notes),
-                  title: const Text("Comentarios", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  subtitle: Text(widget.comment.isNotEmpty ? widget.comment : "Ninguno", style: const TextStyle(fontSize: 14)),
+                const ItemSeparator(),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.speaker_notes),
+                    title: const Text("Comentarios",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    subtitle: Text(
+                        widget.comment.isNotEmpty ? widget.comment : "Ninguno",
+                        style: const TextStyle(fontSize: 14)),
+                  ),
                 ),
-              ),
-              const ItemSeparator(),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller:
-                      _weightController,
-                    keyboardType:
-                      TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
-                    decoration:
-                      const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.scale),
+                const ItemSeparator(),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller: _weightController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.scale),
                         labelText: 'Peso',
                         hintText: 'Ej: 30',
-                        border:
-                        OutlineInputBorder(),
+                        border: OutlineInputBorder(),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: ActionBtn(title: "Ver video", onPressed: ()=>{_launchURL()}, fontWeight: FontWeight.bold),
-              ),
-            ],
-              ),)
-      ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: ActionBtn(
+                    title: "Ver video",
+                    onPressed: _launchURL,
+                    fontWeight: FontWeight.bold,
+                    disabled: widget.url.isEmpty,
+                  ),
+                ),
+              ],
+            ),
+          )),
     );
   }
 }

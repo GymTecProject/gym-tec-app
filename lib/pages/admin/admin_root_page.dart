@@ -14,14 +14,14 @@ class AdminRootPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const List<NavTab> tabs = [
-      NavTab(label: 'Home', icon: Icon(Icons.home), widget: HomePage()),
+      NavTab(label: 'Inicio', icon: Icon(Icons.home), widget: HomePage()),
       NavTab(
-          label: 'Admin',
-          icon: Icon(Icons.accessibility_new),
+          label: 'Administrar',
+          icon: Icon(Icons.admin_panel_settings),
           widget: AdminPage()),
-      NavTab(label: 'Profile', icon: Icon(Icons.person), widget: ProfilePage()),
+      NavTab(label: 'Perfil', icon: Icon(Icons.person), widget: ProfilePage()),
       NavTab(
-          label: 'Settings',
+          label: 'Ajustes',
           icon: Icon(Icons.settings),
           widget: SettingsPage()),
     ];
