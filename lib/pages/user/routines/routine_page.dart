@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:gym_tec/components/routines/routine_history.dart';
 import 'package:gym_tec/components/ui/buttons/card_btn.dart';
@@ -29,7 +27,99 @@ class _RoutinePageState extends State<RoutinePage> {
   bool showSkeleton = true;
 
   RoutineData? routine;
-  List<Workout> workout = [];
+  List<Workout>? workout = [
+    Workout(
+      days: [1],
+      exercises: [
+        RoutineExercise(
+            name: 'Cargando...',
+            category: 'Cargando...',
+            series: 0,
+            repetitions: 0,
+            weight: 0,
+            url: "",
+            comment: ""),
+      ],
+    ),
+    Workout(
+      days: [2],
+      exercises: [
+        RoutineExercise(
+            name: 'Cargando...',
+            category: 'Cargando...',
+            series: 0,
+            repetitions: 0,
+            weight: 0,
+            url: "",
+            comment: ""),
+      ],
+    ),
+    Workout(
+      days: [3],
+      exercises: [
+        RoutineExercise(
+            name: 'Cargando...',
+            category: 'Cargando...',
+            series: 0,
+            repetitions: 0,
+            weight: 0,
+            url: "",
+            comment: ""),
+      ],
+    ),
+    Workout(
+      days: [4],
+      exercises: [
+        RoutineExercise(
+            name: 'Cargando...',
+            category: 'Cargando...',
+            series: 0,
+            repetitions: 0,
+            weight: 0,
+            url: "",
+            comment: ""),
+      ],
+    ),
+    Workout(
+      days: [5],
+      exercises: [
+        RoutineExercise(
+            name: 'Cargando...',
+            category: 'Cargando...',
+            series: 0,
+            repetitions: 0,
+            weight: 0,
+            url: "",
+            comment: ""),
+      ],
+    ),
+    Workout(
+      days: [6],
+      exercises: [
+        RoutineExercise(
+            name: 'Cargando...',
+            category: 'Cargando...',
+            series: 0,
+            repetitions: 0,
+            weight: 0,
+            url: "",
+            comment: ""),
+      ],
+    ),
+    Workout(
+      days: [7],
+      exercises: [
+        RoutineExercise(
+            name: 'Cargando...',
+            category: 'Cargando...',
+            series: 0,
+            repetitions: 0,
+            weight: 0,
+            url: "",
+            comment: ""),
+      ],
+    ),
+  ];
 
   void _fetchRoutineData() async {
     final user = authService.currentUser;
@@ -37,7 +127,8 @@ class _RoutinePageState extends State<RoutinePage> {
     if (user == null) return;
     final routineData = await dbService.getUserLastestRoutine(user.uid);
     if (routineData == null) {
-      workout = [];
+      workout = null;
+      routine = null;
       return;
     }
     setState(() {
@@ -80,8 +171,8 @@ class _RoutinePageState extends State<RoutinePage> {
   }
 
   void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(Uri(path: url))) {
+      await launchUrl(Uri(path: url));
     } else {
       throw 'Could not launch $url';
     }
@@ -129,13 +220,11 @@ class _RoutinePageState extends State<RoutinePage> {
   void initState() {
     super.initState();
     _fetchRoutineData();
-    Timer(const Duration(seconds: 30), () {
-      if (routine == null) {
-        setState(() {
-          showSkeleton = false;
-        });
-      }
-    });
+    if (workout!.isNotEmpty) {
+      setState(() {
+        showSkeleton = false;
+      });
+    }
   }
 
   @override
@@ -149,105 +238,99 @@ class _RoutinePageState extends State<RoutinePage> {
         ),
       )),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(
-              child: ContentPadding(
-                child: Column(
+        child: Skeletonizer(
+          enabled: showSkeleton,
+          child: routine != null
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    routine != null
-                        ? Column(
-                            children: [
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 26),
-                                        'Fecha: ${DateFormat('dd/MM/yyyy').format(routine!.date.toDate())}'),
-                                    if (routine!.expirationDate
-                                        .toDate()
-                                        .isBefore(DateTime.now()))
-                                      IconButton(
-                                        onPressed: _openWhatsAppDialog,
-                                        icon: const Icon(
-                                            Icons.warning_amber_rounded),
-                                      ),
-                                    IconButton(
-                                        onPressed: _openHistroyDialog,
-                                        icon: const Icon(Icons.event_repeat)),
-                                  ]),
-                              const ContextSeparator(),
-                              ListView.separated(
-                                itemCount: workout.length,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                separatorBuilder: (context, index) =>
-                                    const ContextSeparator(),
-                                itemBuilder: (BuildContext context, int index) {
-                                  return CardBtn(
-                                    title: _getDaysTitle(workout[index].days),
-                                    subtitle:
-                                        _dayCategory(workout[index].exercises),
-                                    onPressed: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (BuildContext context) {
-                                            return RoutineDay(
-                                              title: _getDaysTitle(
-                                                  workout[index].days),
-                                              exercises:
-                                                  workout[index].exercises,
-                                              workoutIndex: index,
-                                              date: routine!.date,
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          )
-                        : showSkeleton
-                            ? Column(
-                                children: [
-                                  Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 26),
-                                            'Fecha: ${DateFormat('dd/MM/yyyy').format(DateTime.now())}'),
-                                      ]),
-                                  const ContextSeparator(),
-                                  Skeletonizer(
-                                    enabled: routine == null,
-                                    child: ListView.separated(
-                                      itemCount: 4,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context, index) => CardBtn(
-                                        title: 'No hay rutina asignada',
-                                        onPressed: () => {},
-                                      ),
-                                      separatorBuilder: (context, index) =>
-                                          const ContextSeparator(),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : const Text('No una hay rutina asignada'),
+                    Center(
+                      child: ContentPadding(
+                        child: Column(
+                          children: [
+                            Column(
+                              children: [
+                                routine == null
+                                    ? Row(
+                                        children: [
+                                          Text(
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 26),
+                                              'Fecha: ${DateFormat('dd/MM/yyyy').format(DateTime.now())}'),
+                                        ],
+                                      )
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                            Text(
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 26),
+                                                'Fecha: ${DateFormat('dd/MM/yyyy').format(routine!.date.toDate())}'),
+                                            if (routine!.expirationDate
+                                                .toDate()
+                                                .isBefore(DateTime.now()))
+                                              IconButton(
+                                                onPressed: _openWhatsAppDialog,
+                                                icon: const Icon(Icons
+                                                    .warning_amber_rounded),
+                                              ),
+                                            IconButton(
+                                                onPressed: _openHistroyDialog,
+                                                icon: const Icon(
+                                                    Icons.event_repeat)),
+                                          ]),
+                                const ContextSeparator(),
+                                ListView.separated(
+                                  itemCount: workout!.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  separatorBuilder: (context, index) =>
+                                      const ContextSeparator(),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return CardBtn(
+                                      title:
+                                          _getDaysTitle(workout![index].days),
+                                      subtitle: _dayCategory(
+                                          workout![index].exercises),
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              return RoutineDay(
+                                                title: _getDaysTitle(
+                                                    workout![index].days),
+                                                exercises:
+                                                    workout![index].exercises,
+                                                workoutIndex: index,
+                                                date: routine!.date,
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
-                ),
-              ),
-            ),
-          ],
+                )
+              : const Center(
+                  child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('No hay rutina asignada',
+                       ),
+                  ],
+                )),
         ),
       ),
     );
