@@ -13,6 +13,13 @@ void main() async {
       .collection('users')
       .doc('testUser')
       .set({'name': 'Juan', 'sex': 'male', 'expirationDate': Timestamp.now()});
+
+  await fbFakeInstance
+      .collection('users')
+      .doc('testUser')
+      .collection('private')
+      .doc('data')
+      .set({'accountType': 'administrator'});
   final fakeDbService = DatabaseFirebase(firebaseInstance: fbFakeInstance);
   test('Should return userMeasurement object', () async {
     await fbFakeInstance

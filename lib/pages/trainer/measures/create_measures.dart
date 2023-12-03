@@ -72,7 +72,7 @@ class _CreateMeasuresPageState extends State<CreateMeasuresPage> {
                 (value) => setState(() => fatMass = double.tryParse(value!))),
             _buildNumberField('Porcentaje de grasa corporal',
                 (value) => setState(() => fatPercentage = double.tryParse(value!))),
-            _buildNumberField('Altura',
+            _buildNumberField('Altura (cm)',
                 (value) => setState(() => height = double.tryParse(value!))),
             _buildNumberField('Masa muscular',
                 (value) =>setState(() => muscleMass = double.tryParse(value!))),

@@ -105,6 +105,7 @@ class _SearchUserState extends State<SearchUser> {
           ),
         ));
     if (!mounted) return;
+    if (state == null) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(state),
@@ -122,6 +123,7 @@ class _SearchUserState extends State<SearchUser> {
           ),
         ));
     if (!mounted) return;
+    if (state != null) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(state),
@@ -188,23 +190,22 @@ class _SearchUserState extends State<SearchUser> {
                   } else if (snapshot.hasError || !snapshot.hasData) {
                     return const Text('Error or no data');
                   }
-      
+
                   List<UserPublicPrivateData> users = snapshot.data!;
                   List<UserPublicPrivateData> filteredUsers =
                       _filterUsers(users, _searchQuery);
-      
+
                   return ListView.builder(
                     itemCount: filteredUsers.length,
                     itemBuilder: (context, index) {
                       UserPublicPrivateData user = filteredUsers[index];
-      
+
                       String sexText = user.publicData.sex == Sex.male
                           ? "Hombre"
                           : user.publicData.sex == Sex.female
                               ? "Mujer"
                               : "Otro";
-      
-      
+
                       return Card(
                         clipBehavior: Clip.antiAlias,
                         child: ExpansionTile(
@@ -226,7 +227,8 @@ class _SearchUserState extends State<SearchUser> {
                             ),
                             ContentPadding(
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   IconButton.filledTonal(
                                     icon: const Icon(Icons.remove_red_eye),
@@ -242,8 +244,9 @@ class _SearchUserState extends State<SearchUser> {
                                   IconButton.filledTonal(
                                     icon: const Icon(Icons.straighten),
                                     tooltip: 'Registrar medidas',
-                                    onPressed: () => _navigateToRegisterMeasures(
-                                        user.publicData.id),
+                                    onPressed: () =>
+                                        _navigateToRegisterMeasures(
+                                            user.publicData.id),
                                   ),
                                   const ItemSeparator(),
                                   IconButton.filledTonal(
