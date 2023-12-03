@@ -78,6 +78,23 @@ service cloud.firestore {
       );
     }
 
+    match /weeklyChallenges/{challenge}{
+
+      allow read: if isLogged();
+      allow create, update: if (
+        isLogged()
+        && (isAdmin() || isTrainer())
+      );
+    }
+
+    match /errorReports/{report} {
+      allow create: if isLogged();
+      allow read: if (
+        isLogged()
+        && isAdmin()
+      )
+    }
+
     function isLogged() {
       return request.auth != null;
     }
