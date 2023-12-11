@@ -213,91 +213,97 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
 
                       return Card(
                         clipBehavior: Clip.antiAlias,
-                        child: ExpansionTile(
-                          key: ValueKey(user.publicData.id),
-                          title: Text(
-                            user.publicData.name,
-                            style: TextStyle(
-                              color: user.publicData.expirationDate
-                                      .toDate()
-                                      .isBefore(DateTime.now())
-                                  ? Colors.red
-                                  : null,
-                            ),
+                        child: Theme(
+                          data: Theme.of(context).copyWith(
+                            dividerColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
                           ),
-                          subtitle: Text(
-                              "$sexText - ${DateFormat('dd/MM/yyyy').format(user.publicData.expirationDate.toDate())}"),
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                children: [
-                                  ExpansionTileContent(
-                                      id: user.publicData.id,
-                                      accType: user.privateData
-                                          .getAccountTypeString()),
-                                ],
+                          child: ExpansionTile(
+                            key: ValueKey(user.publicData.id),
+                            title: Text(
+                              user.publicData.name,
+                              style: TextStyle(
+                                color: user.publicData.expirationDate
+                                        .toDate()
+                                        .isBefore(DateTime.now())
+                                    ? Colors.red
+                                    : null,
                               ),
                             ),
-                            ContentPadding(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  IconButton.filledTonal(
-                                    icon: const Icon(Icons.remove_red_eye),
-                                    tooltip: 'Visualizar medidas',
-                                    onPressed: () async {
-                                      final userMeasurements =
-                                          await dbService.getUserMeasurements(
-                                              user.publicData.id);
-                                      _navigateToSeeMeasures(userMeasurements);
-                                    },
-                                  ),
-                                  const ItemSeparator(),
-                                  IconButton.filledTonal(
-                                    icon: const Icon(Icons.straighten),
-                                    tooltip: 'Registrar medidas',
-                                    onPressed: () =>
-                                        _navigateToRegisterMeasures(
-                                            user.publicData.id),
-                                  ),
-                                  const ItemSeparator(),
-                                  IconButton.filledTonal(
-                                    icon: const Icon(Icons.fitness_center),
-                                    tooltip: 'Crear rutina',
-                                    onPressed: () => _navigateToCreateRoutine(
-                                        user.publicData.id),
-                                  ),
-                                  const ItemSeparator(),
-                                  IconButton.filledTonal(
-                                    icon:
-                                        const Icon(Icons.admin_panel_settings),
-                                    tooltip: 'Admin',
-                                    onPressed: () {
-                                      _navigateToAdminClient(
-                                          user.publicData, user.privateData);
-                                      // final result = await showDialog(
-                                      //   context: context,
-                                      //   builder: (context) {
-                                      //     return AdminDialog(
-                                      //         user: user.publicData,
-                                      //         initialRole: user.privateData
-                                      //             .getAccountTypeString());
-                                      //   },
-                                      // );
-                                      // if (result ==
-                                      //     'Rol actualizado con éxito.') {
-                                      //   _usersStream = dbService
-                                      //       .getAllUsersPublicPrivateDataStream();
-                                      //   setState(() {});
-                                      // }
-                                    },
-                                  ),
-                                ],
+                            subtitle: Text(
+                                "$sexText - ${DateFormat('dd/MM/yyyy').format(user.publicData.expirationDate.toDate())}"),
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  children: [
+                                    ExpansionTileContent(
+                                        id: user.publicData.id,
+                                        accType: user.privateData
+                                            .getAccountTypeString()),
+                                  ],
+                                ),
                               ),
-                            )
-                          ],
+                              ContentPadding(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    IconButton.filledTonal(
+                                      icon: const Icon(Icons.remove_red_eye),
+                                      tooltip: 'Visualizar medidas',
+                                      onPressed: () async {
+                                        final userMeasurements =
+                                            await dbService.getUserMeasurements(
+                                                user.publicData.id);
+                                        _navigateToSeeMeasures(userMeasurements);
+                                      },
+                                    ),
+                                    const ItemSeparator(),
+                                    IconButton.filledTonal(
+                                      icon: const Icon(Icons.straighten),
+                                      tooltip: 'Registrar medidas',
+                                      onPressed: () =>
+                                          _navigateToRegisterMeasures(
+                                              user.publicData.id),
+                                    ),
+                                    const ItemSeparator(),
+                                    IconButton.filledTonal(
+                                      icon: const Icon(Icons.fitness_center),
+                                      tooltip: 'Crear rutina',
+                                      onPressed: () => _navigateToCreateRoutine(
+                                          user.publicData.id),
+                                    ),
+                                    const ItemSeparator(),
+                                    IconButton.filledTonal(
+                                      icon:
+                                          const Icon(Icons.admin_panel_settings),
+                                      tooltip: 'Admin',
+                                      onPressed: () {
+                                        _navigateToAdminClient(
+                                            user.publicData, user.privateData);
+                                        // final result = await showDialog(
+                                        //   context: context,
+                                        //   builder: (context) {
+                                        //     return AdminDialog(
+                                        //         user: user.publicData,
+                                        //         initialRole: user.privateData
+                                        //             .getAccountTypeString());
+                                        //   },
+                                        // );
+                                        // if (result ==
+                                        //     'Rol actualizado con éxito.') {
+                                        //   _usersStream = dbService
+                                        //       .getAllUsersPublicPrivateDataStream();
+                                        //   setState(() {});
+                                        // }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       );
                     },

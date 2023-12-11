@@ -64,7 +64,7 @@ class _AdminEditClientState extends State<AdminEditClient> {
         _selectedAccountType = {_userTouchablePrivateData!.accountType};
         _selectedSex = _userTouchablePublicData!.sex;
 
-        _expirationDateController.text = DateFormat('yyyy-MM-dd')
+        _expirationDateController.text = DateFormat('dd-MM-yyyy')
             .format(_userTouchablePublicData!.expirationDate.toDate());
         _objectiveController.text = _userTouchableProtectedData!.objective;
         _nameController.text = _userTouchablePublicData!.name;
@@ -136,8 +136,7 @@ class _AdminEditClientState extends State<AdminEditClient> {
       UserPublicData newUserPublicData = UserPublicData(
           name: _nameController.text,
           sex: _selectedSex!,
-          expirationDate: Timestamp.fromDate(
-              DateTime.parse(_expirationDateController.text)));
+          expirationDate: Timestamp.fromDate(DateFormat('dd-MM-yyyy').parse(_expirationDateController.text)));
       UserProtectedData newUserProtectedData = UserProtectedData(
           id: _userTouchableProtectedData!.id,
           email: _emailController.text,
@@ -202,13 +201,19 @@ class _AdminEditClientState extends State<AdminEditClient> {
                                   border: const OutlineInputBorder(),
                                   suffixIcon: IconButton(
                                     onPressed: () async {
-                                      await showDatePicker(
+                                      DateTime? newDate = await showDatePicker(
                                         context: context,
                                         initialDate: DateTime.now(),
                                         firstDate: DateTime.now(),
                                         lastDate: DateTime.now()
                                             .add(const Duration(days: 365)),
                                       );
+                                      if (newDate == null) return;
+                                      setState(() {
+                                        _expirationDateController.text =
+                                            DateFormat('dd-MM-yyyy')
+                                                .format(newDate);
+                                      });
                                     },
                                     icon: const Icon(Icons.calendar_today),
                                   ),
