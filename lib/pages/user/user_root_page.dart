@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_tec/components/navigation/nav_space.dart';
 import 'package:gym_tec/components/navigation/nav_tab.dart';
 import 'package:gym_tec/pages/user/home_page/home_page.dart';
-import 'package:gym_tec/pages/settings_page.dart';
+import 'package:gym_tec/pages/settings/settings_root_page.dart';
 import 'package:gym_tec/pages/user/profile/profile.dart';
 
 

@@ -28,10 +28,11 @@ abstract class DatabaseInterface {
   Future<String?> createUserPrivateData(String uid, Map<String, dynamic> data);
   Future<String?> updateUserExpirationDate(
       String uid, Timestamp newExpirationDate);
+
+  Stream<UserPublicData> getUserPublicDataStream(String uid);
   Stream<UserPrivateData> getUserPrivateDataStream(String uid);
   Stream<UserProtectedData> getUserProtectedDataStream(String uid);
   Stream<List<UserPublicData>> getAllUsersStream();
-
   Future<String?> updateUserMedicalConditions(
       String uid, List<String> conditions);
   Stream<List<UserPublicPrivateData>> getAllUsersPublicPrivateDataStream();

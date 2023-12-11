@@ -8,13 +8,13 @@ import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:intl/intl.dart';
 
-import '../../../components/search_users/dialog/admin_dialog.dart';
 import '../../../models/users/user_data_private.dart';
 import '../../../models/users/user_data_public.dart';
 import '../../../models/users/user_data_public_private.dart';
 import '../../../models/measures/measurements.dart';
 import '../../trainer/measures/create_measures.dart';
 import '../../trainer/trainer_page/view_measures_page.dart';
+import 'admin_edit_client.dart';
 
 class AdminSearchUser extends StatefulWidget {
   const AdminSearchUser({super.key});
@@ -126,6 +126,17 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
         ));
   }
 
+  void _navigateToAdminClient(UserPublicData user, UserPrivateData userType) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AdminEditClient(
+            userPublicData: user,
+            userPrivateData: userType,
+          ),
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -200,7 +211,6 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                               ? "Mujer"
                               : "Otro";
 
-
                       return Card(
                         clipBehavior: Clip.antiAlias,
                         child: ExpansionTile(
@@ -215,8 +225,8 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                   : null,
                             ),
                           ),
-                          subtitle:
-                              Text("$sexText - ${DateFormat('dd/MM/yyyy').format(user.publicData.expirationDate.toDate())}"),
+                          subtitle: Text(
+                              "$sexText - ${DateFormat('dd/MM/yyyy').format(user.publicData.expirationDate.toDate())}"),
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(16.0),
@@ -264,22 +274,24 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                     icon:
                                         const Icon(Icons.admin_panel_settings),
                                     tooltip: 'Admin',
-                                    onPressed: () async {
-                                      final result = await showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AdminDialog(
-                                              user: user.publicData,
-                                              initialRole: user.privateData
-                                                  .getAccountTypeString());
-                                        },
-                                      );
-                                      if (result ==
-                                          'Rol actualizado con éxito.') {
-                                        _usersStream = dbService
-                                            .getAllUsersPublicPrivateDataStream();
-                                        setState(() {});
-                                      }
+                                    onPressed: () {
+                                      _navigateToAdminClient(
+                                          user.publicData, user.privateData);
+                                      // final result = await showDialog(
+                                      //   context: context,
+                                      //   builder: (context) {
+                                      //     return AdminDialog(
+                                      //         user: user.publicData,
+                                      //         initialRole: user.privateData
+                                      //             .getAccountTypeString());
+                                      //   },
+                                      // );
+                                      // if (result ==
+                                      //     'Rol actualizado con éxito.') {
+                                      //   _usersStream = dbService
+                                      //       .getAllUsersPublicPrivateDataStream();
+                                      //   setState(() {});
+                                      // }
                                     },
                                   ),
                                 ],

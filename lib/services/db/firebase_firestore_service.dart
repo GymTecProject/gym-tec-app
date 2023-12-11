@@ -7,11 +7,31 @@ import 'package:gym_tec/models/users/user_data_protected.dart';
 import 'package:gym_tec/models/users/user_data_public.dart';
 import 'package:gym_tec/models/users/user_data_public_private.dart';
 import 'package:gym_tec/models/weekly_challeges/challenge_data.dart';
+import 'package:rxdart/rxdart.dart';
+
 
 import '../../models/measures/measurements.dart';
 
 class DatabaseFirebase implements DatabaseInterface {
   late FirebaseFirestore firebaseInstance;
+
+  @override
+  Stream<UserPublicData> getUserPublicDataStream(String uid) {
+    return firebaseInstance
+        .collection('users')
+        .doc(uid)
+        .snapshots()
+        .map((snapshot) {
+          if (snapshot.exists) {
+            final data = snapshot.data()!;
+            data.addAll({'uid': snapshot.id});
+            return UserPublicData.fromJson(data);
+          }
+          return null;
+        })
+        .where((data) => data != null)
+        .cast<UserPublicData>();
+  }
 
   @override
   Stream<UserProtectedData> getUserProtectedDataStream(String uid) {
@@ -104,34 +124,51 @@ class DatabaseFirebase implements DatabaseInterface {
     return null;
   }
 
+//Stream<List<UserPublicPrivateData>>
   @override
   Stream<List<UserPublicPrivateData>> getAllUsersPublicPrivateDataStream() {
-    var publicDataStream =
-        FirebaseFirestore.instance.collection('users').snapshots();
+    return firebaseInstance.collection('users').snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        var privateDataStream = getUserPrivateDataStream(doc.id);
+        var publicDataStream = getUserPublicDataStream(doc.id);
 
-    return publicDataStream.asyncMap((publicSnapshot) async {
-      var futureList = publicSnapshot.docs.map((publicDoc) async {
-        try {
-          var publicDataMap = publicDoc.data();
-          publicDataMap.addAll({'uid': publicDoc.id});
-          var publicData = UserPublicData.fromJson(publicDataMap);
-
-          var privateDataStream = getUserPrivateDataStream(publicDoc.id);
-          var privateData = await privateDataStream.first;
-
+        return Rx.combineLatest([publicDataStream, privateDataStream],
+            (values) {
+          var publicData = values[0] as UserPublicData;
+          var privateData = values[1] as UserPrivateData;
           return UserPublicPrivateData(
               publicData: publicData, privateData: privateData);
-        } catch (e) {
-          return null;
-        }
-      });
+        });
+      }).toList();
+    }).flatMap((list) => CombineLatestStream.list(list));
 
-      var combinedData = await Future.wait(futureList);
-      return combinedData
-          .where((data) => data != null)
-          .cast<UserPublicPrivateData>()
-          .toList();
-    });
+    // var publicDataStream =
+    //     FirebaseFirestore.instance.collection('users').snapshots();
+    // //TODO: Fix double call to private collection;
+    // // finish admin client edit page
+    // return publicDataStream.asyncMap((publicSnapshot) async {
+    //   var futureList = publicSnapshot.docs.map((publicDoc) async {
+    //     try {
+    //       var publicDataMap = publicDoc.data();
+    //       publicDataMap.addAll({'uid': publicDoc.id});
+    //       var publicData = UserPublicData.fromJson(publicDataMap);
+
+    //       var privateDataStream = getUserPrivateDataStream(publicDoc.id);
+    //       var privateData = await privateDataStream.first;
+
+    //       return UserPublicPrivateData(
+    //           publicData: publicData, privateData: privateData);
+    //     } catch (e) {
+    //       return null;
+    //     }
+    //   });
+
+    //   var combinedData = await Future.wait(futureList);
+    //   return combinedData
+    //       .where((data) => data != null)
+    //       .cast<UserPublicPrivateData>()
+    //       .toList();
+    // });
   }
 
   @override

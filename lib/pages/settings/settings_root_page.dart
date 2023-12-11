@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
-import 'package:gym_tec/pages/error_report/error_report_page.dart';
+import 'package:gym_tec/pages/settings/error_report/error_report_page.dart';
 
-import '../services/dependency_manager.dart';
+import '../../services/dependency_manager.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
