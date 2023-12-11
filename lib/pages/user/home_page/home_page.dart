@@ -10,6 +10,7 @@ import 'package:gym_tec/pages/user/home_page/weekly_routines_page.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 
 import 'package:intl/intl.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../interfaces/auth_interface.dart';
 import '../../../models/measures/measurements.dart';
@@ -105,12 +106,17 @@ class _HomePageState extends State<HomePage>
           ),
           Padding(
             padding: const EdgeInsets.only(left: 15.0),
-            child: Text(
-              'Hola, ${_userPublicData?.name.split(' ')[0]}!',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onBackground,
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
+            child: Skeletonizer(
+              enabled: _userPublicData == null,
+              child: _userPublicData == null
+              ? const Text("Hola, Daniel como estas!")
+              :Text(
+                'Hola, ${_userPublicData?.name.split(' ')[0]}!',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onBackground,
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),

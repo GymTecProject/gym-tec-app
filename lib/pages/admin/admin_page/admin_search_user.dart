@@ -8,13 +8,13 @@ import 'package:gym_tec/pages/trainer/trainer_page/expantion_tile_content.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:intl/intl.dart';
 
-import '../../../components/search_users/dialog/admin_dialog.dart';
 import '../../../models/users/user_data_private.dart';
 import '../../../models/users/user_data_public.dart';
 import '../../../models/users/user_data_public_private.dart';
 import '../../../models/measures/measurements.dart';
 import '../../trainer/measures/create_measures.dart';
 import '../../trainer/trainer_page/view_measures_page.dart';
+import 'admin_edit_client.dart';
 
 class AdminSearchUser extends StatefulWidget {
   const AdminSearchUser({super.key});
@@ -126,6 +126,17 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
         ));
   }
 
+  void _navigateToAdminClient(UserPublicData user, UserPrivateData userType) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AdminEditClient(
+            userPublicData: user,
+            userPrivateData: userType,
+          ),
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -200,92 +211,99 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                               ? "Mujer"
                               : "Otro";
 
-
                       return Card(
                         clipBehavior: Clip.antiAlias,
-                        child: ExpansionTile(
-                          key: ValueKey(user.publicData.id),
-                          title: Text(
-                            user.publicData.name,
-                            style: TextStyle(
-                              color: user.publicData.expirationDate
-                                      .toDate()
-                                      .isBefore(DateTime.now())
-                                  ? Colors.red
-                                  : null,
-                            ),
+                        child: Theme(
+                          data: Theme.of(context).copyWith(
+                            dividerColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
                           ),
-                          subtitle:
-                              Text("$sexText - ${DateFormat('dd/MM/yyyy').format(user.publicData.expirationDate.toDate())}"),
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                children: [
-                                  ExpansionTileContent(
-                                      id: user.publicData.id,
-                                      accType: user.privateData
-                                          .getAccountTypeString()),
-                                ],
+                          child: ExpansionTile(
+                            key: ValueKey(user.publicData.id),
+                            title: Text(
+                              user.publicData.name,
+                              style: TextStyle(
+                                color: user.publicData.expirationDate
+                                        .toDate()
+                                        .isBefore(DateTime.now())
+                                    ? Colors.red
+                                    : null,
                               ),
                             ),
-                            ContentPadding(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  IconButton.filledTonal(
-                                    icon: const Icon(Icons.remove_red_eye),
-                                    tooltip: 'Visualizar medidas',
-                                    onPressed: () async {
-                                      final userMeasurements =
-                                          await dbService.getUserMeasurements(
-                                              user.publicData.id);
-                                      _navigateToSeeMeasures(userMeasurements);
-                                    },
-                                  ),
-                                  const ItemSeparator(),
-                                  IconButton.filledTonal(
-                                    icon: const Icon(Icons.straighten),
-                                    tooltip: 'Registrar medidas',
-                                    onPressed: () =>
-                                        _navigateToRegisterMeasures(
-                                            user.publicData.id),
-                                  ),
-                                  const ItemSeparator(),
-                                  IconButton.filledTonal(
-                                    icon: const Icon(Icons.fitness_center),
-                                    tooltip: 'Crear rutina',
-                                    onPressed: () => _navigateToCreateRoutine(
-                                        user.publicData.id),
-                                  ),
-                                  const ItemSeparator(),
-                                  IconButton.filledTonal(
-                                    icon:
-                                        const Icon(Icons.admin_panel_settings),
-                                    tooltip: 'Admin',
-                                    onPressed: () async {
-                                      final result = await showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AdminDialog(
-                                              user: user.publicData,
-                                              initialRole: user.privateData
-                                                  .getAccountTypeString());
-                                        },
-                                      );
-                                      if (result ==
-                                          'Rol actualizado con éxito.') {
-                                        _usersStream = dbService
-                                            .getAllUsersPublicPrivateDataStream();
-                                        setState(() {});
-                                      }
-                                    },
-                                  ),
-                                ],
+                            subtitle: Text(
+                                "$sexText - ${DateFormat('dd/MM/yyyy').format(user.publicData.expirationDate.toDate())}"),
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  children: [
+                                    ExpansionTileContent(
+                                        id: user.publicData.id,
+                                        accType: user.privateData
+                                            .getAccountTypeString()),
+                                  ],
+                                ),
                               ),
-                            )
-                          ],
+                              ContentPadding(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    IconButton.filledTonal(
+                                      icon: const Icon(Icons.remove_red_eye),
+                                      tooltip: 'Visualizar medidas',
+                                      onPressed: () async {
+                                        final userMeasurements =
+                                            await dbService.getUserMeasurements(
+                                                user.publicData.id);
+                                        _navigateToSeeMeasures(userMeasurements);
+                                      },
+                                    ),
+                                    const ItemSeparator(),
+                                    IconButton.filledTonal(
+                                      icon: const Icon(Icons.straighten),
+                                      tooltip: 'Registrar medidas',
+                                      onPressed: () =>
+                                          _navigateToRegisterMeasures(
+                                              user.publicData.id),
+                                    ),
+                                    const ItemSeparator(),
+                                    IconButton.filledTonal(
+                                      icon: const Icon(Icons.fitness_center),
+                                      tooltip: 'Crear rutina',
+                                      onPressed: () => _navigateToCreateRoutine(
+                                          user.publicData.id),
+                                    ),
+                                    const ItemSeparator(),
+                                    IconButton.filledTonal(
+                                      icon:
+                                          const Icon(Icons.admin_panel_settings),
+                                      tooltip: 'Admin',
+                                      onPressed: () {
+                                        _navigateToAdminClient(
+                                            user.publicData, user.privateData);
+                                        // final result = await showDialog(
+                                        //   context: context,
+                                        //   builder: (context) {
+                                        //     return AdminDialog(
+                                        //         user: user.publicData,
+                                        //         initialRole: user.privateData
+                                        //             .getAccountTypeString());
+                                        //   },
+                                        // );
+                                        // if (result ==
+                                        //     'Rol actualizado con éxito.') {
+                                        //   _usersStream = dbService
+                                        //       .getAllUsersPublicPrivateDataStream();
+                                        //   setState(() {});
+                                        // }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       );
                     },

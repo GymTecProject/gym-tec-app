@@ -208,57 +208,63 @@ class _SearchUserState extends State<SearchUser> {
 
                       return Card(
                         clipBehavior: Clip.antiAlias,
-                        child: ExpansionTile(
-                          key: ValueKey(user.publicData.id),
-                          title: Text(user.publicData.name),
-                          subtitle: Text(
-                              "$sexText - ${DateFormat('dd//MM/yyyy').format(user.publicData.expirationDate.toDate())}"),
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                children: [
-                                  ExpansionTileContent(
-                                      id: user.publicData.id,
-                                      accType: user.privateData
-                                          .getAccountTypeString()),
-                                ],
+                        child: Theme(
+                          data: Theme.of(context).copyWith(
+                            dividerColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                          ),
+                          child: ExpansionTile(
+                            key: ValueKey(user.publicData.id),
+                            title: Text(user.publicData.name),
+                            subtitle: Text(
+                                "$sexText - ${DateFormat('dd//MM/yyyy').format(user.publicData.expirationDate.toDate())}"),
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  children: [
+                                    ExpansionTileContent(
+                                        id: user.publicData.id,
+                                        accType: user.privateData
+                                            .getAccountTypeString()),
+                                  ],
+                                ),
                               ),
-                            ),
-                            ContentPadding(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  IconButton.filledTonal(
-                                    icon: const Icon(Icons.remove_red_eye),
-                                    tooltip: 'Visualizar medidas',
-                                    onPressed: () async {
-                                      final userMeasurements =
-                                          await dbService.getUserMeasurements(
-                                              user.publicData.id);
-                                      _navigateToSeeMeasures(userMeasurements);
-                                    },
-                                  ),
-                                  const ItemSeparator(),
-                                  IconButton.filledTonal(
-                                    icon: const Icon(Icons.straighten),
-                                    tooltip: 'Registrar medidas',
-                                    onPressed: () =>
-                                        _navigateToRegisterMeasures(
-                                            user.publicData.id),
-                                  ),
-                                  const ItemSeparator(),
-                                  IconButton.filledTonal(
-                                    icon: const Icon(Icons.fitness_center),
-                                    tooltip: 'Crear rutina',
-                                    onPressed: () => _navigateToCreateRoutine(
-                                        user.publicData.id),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
+                              ContentPadding(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    IconButton.filledTonal(
+                                      icon: const Icon(Icons.remove_red_eye),
+                                      tooltip: 'Visualizar medidas',
+                                      onPressed: () async {
+                                        final userMeasurements =
+                                            await dbService.getUserMeasurements(
+                                                user.publicData.id);
+                                        _navigateToSeeMeasures(userMeasurements);
+                                      },
+                                    ),
+                                    const ItemSeparator(),
+                                    IconButton.filledTonal(
+                                      icon: const Icon(Icons.straighten),
+                                      tooltip: 'Registrar medidas',
+                                      onPressed: () =>
+                                          _navigateToRegisterMeasures(
+                                              user.publicData.id),
+                                    ),
+                                    const ItemSeparator(),
+                                    IconButton.filledTonal(
+                                      icon: const Icon(Icons.fitness_center),
+                                      tooltip: 'Crear rutina',
+                                      onPressed: () => _navigateToCreateRoutine(
+                                          user.publicData.id),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       );
                     },

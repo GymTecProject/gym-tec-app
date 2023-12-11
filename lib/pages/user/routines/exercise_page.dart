@@ -49,10 +49,15 @@ class _ExercisePage extends State<ExercisePage> {
   Future<void> _launchURL() async {
     try {
       final Uri url = Uri.parse(widget.url);
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url);
-      } else {}
-    } catch (e) {}
+      await launchUrl(url);
+      
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("No se pudo abrir el video"),
+        ),
+      );
+    }
   }
 
   void _saveWeight() async {

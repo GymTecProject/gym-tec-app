@@ -23,7 +23,7 @@ service cloud.firestore {
         )
         allow update: if (
           request.auth != null
-          && (request.auth.uid == userId || isAdmin())
+          && (isAdmin() || request.auth.uid == userId)
 
         )
       }
@@ -31,11 +31,11 @@ service cloud.firestore {
         allow create: if true;
         allow read: if (
           isLogged()
-          && (request.auth.uid == userId || isAdmin() || isTrainer())
+          && (isAdmin() || isTrainer() || request.auth.uid == userId )
         )
         allow update: if (
           isLogged()
-          && (request.auth.uid == userId || isAdmin())
+          && (isAdmin() || request.auth.uid == userId)
         )
       }
 
@@ -43,15 +43,14 @@ service cloud.firestore {
         allow create: if true;
         allow read: if (
           isLogged()
-          && (request.auth.uid == userId || isAdmin())
+          && (isAdmin() || request.auth.uid == userId)
         )
         allow update: if isAdmin()
       }
       match /users/{userId}/measurements/{data} {
         allow create: if (
           isLogged()
-          && (isAdmin() || isTrainer())
-        );
+        )
         allow read: if (
           isLogged()
           && (isAdmin() || isTrainer() || isMeasurementOwner())

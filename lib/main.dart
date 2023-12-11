@@ -11,18 +11,6 @@ import 'package:intl/intl.dart';
 import 'color_schemes.g.dart';
 import 'firebase_options.dart';
 
-// TEST USERS
-/*
-ADMIN
-  - email: amandadickerson@example.net
-  - password: 123456
-TRAINER
-  - email: andersonroberta@example.org
-  - password: 123456
-USER
-  - email: baileymanuel@example.net
-  - password: 123456
-*/
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
