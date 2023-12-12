@@ -47,6 +47,7 @@ dependencies:
   pinput: ^3.0.1
   url_launcher: ^6.1.14
   rxdart: ^0.27.7
+  firebase_performance: ^0.9.3+8
   
 
 flutter_launcher_icons:

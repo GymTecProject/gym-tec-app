@@ -67,6 +67,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '65200996131',
     projectId: 'gymtec-2023',
     storageBucket: 'gymtec-2023.appspot.com',
+    iosClientId: '65200996131-04peih50iv4gv5fdrmjie6ic4adhk9lm.apps.googleusercontent.com',
     iosBundleId: 'com.example.gymTec',
   );
 
@@ -76,6 +77,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '65200996131',
     projectId: 'gymtec-2023',
     storageBucket: 'gymtec-2023.appspot.com',
+    iosClientId: '65200996131-sn4qfdbasos3leq9v9d8vl88nn2t0n45.apps.googleusercontent.com',
     iosBundleId: 'com.example.gymTec.RunnerTests',
   );
 }
