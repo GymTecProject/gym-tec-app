@@ -134,6 +134,7 @@ class _RoutinePageState extends State<RoutinePage> {
     setState(() {
       routine = routineData;
       workout = routineData.workout;
+      showSkeleton = false;
     });
   }
 
@@ -171,10 +172,16 @@ class _RoutinePageState extends State<RoutinePage> {
   }
 
   void _launchURL(String url) async {
-    if (await canLaunchUrl(Uri(path: url))) {
-      await launchUrl(Uri(path: url));
-    } else {
-      throw 'Could not launch $url';
+    try{
+      Uri whatsAppUrl = Uri.parse(url);
+      await launchUrl(whatsAppUrl);
+    }
+    catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No se pudo abrir Whatsapp'),
+        ),
+      );
     }
   }
 
@@ -220,11 +227,6 @@ class _RoutinePageState extends State<RoutinePage> {
   void initState() {
     super.initState();
     _fetchRoutineData();
-    if (workout!.isNotEmpty) {
-      setState(() {
-        showSkeleton = false;
-      });
-    }
   }
 
   @override
