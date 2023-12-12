@@ -34,7 +34,7 @@ class _TrainerPageState extends State<TrainerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return ContentPadding(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -44,36 +44,31 @@ class _TrainerPageState extends State<TrainerPage> {
             child: Text(
               'Panel de Entrenador',
               style: TextStyle(
-                fontSize: 50,
+                fontSize: 40,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          Center(
-            child: ContentPadding(
-              child: Column(
-                children: [
-                  ListView.separated(
-                    itemCount: cardData.length,
-                    shrinkWrap: true,
-                    separatorBuilder: (context, index) =>
-                        const ContextSeparator(),
-                    itemBuilder: (context, index) => CardBtn(
-                      title: cardData[index]['title'] as String,
-                      subtitle: cardData[index]['subtitle'] as String,
-                      imgPath: cardData[index]['imgPath'] as String,
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return cardData[index]['page'] as Widget;
-                            },
-                          ),
-                        );
+          const ContextSeparator(),
+          Expanded(
+            child: ListView.separated(
+              itemCount: cardData.length,
+              shrinkWrap: true,
+              separatorBuilder: (context, index) =>
+                  const ContextSeparator(),
+              itemBuilder: (context, index) => CardBtn(
+                title: cardData[index]['title'] as String,
+                subtitle: cardData[index]['subtitle'] as String,
+                imgPath: cardData[index]['imgPath'] as String,
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return cardData[index]['page'] as Widget;
                       },
                     ),
-                  )
-                ],
+                  );
+                },
               ),
             ),
           ),

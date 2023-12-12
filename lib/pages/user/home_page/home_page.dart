@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SingleChildScrollView(
+    return ContentPadding(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -109,54 +109,54 @@ class _HomePageState extends State<HomePage>
             child: Skeletonizer(
               enabled: _userPublicData == null,
               child: _userPublicData == null
-              ? const Text("Hola, Daniel como estas!")
+              ? const Text("Hola, Daniel como estas!",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                )
+              )
               :Text(
                 'Hola, ${_userPublicData?.name.split(' ')[0]}!',
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onBackground,
-                  fontSize: 50,
+                  fontSize: 40,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
           ),
           const ContextSeparator(),
-          Center(
-            child: ContentPadding(
-              child: Column(
-                children: [
-                  ListView.separated(
-                    itemCount: HomePage.cardData.length,
-                    shrinkWrap: true,
-                    separatorBuilder: (context, index) =>
-                        const ContextSeparator(),
-                    itemBuilder: (context, index) => CardBtn(
-                        title: HomePage.cardData[index]['title'] as String,
-                        subtitle:
-                            HomePage.cardData[index]['subtitle'] as String,
-                        imgPath: HomePage.cardData[index]['imgPath'] as String,
-                        onPressed: () async {
-                          if (HomePage.cardData[index]['title'] == 'Progreso') {
-                            // When "Progreso" is clicked, fetch user measurements and navigate
-                            final userMeasurements =
-                                await dbService.getUserMeasurements(
-                                    authService.currentUser!.uid);
-                            _navigateToSeeMeasures(userMeasurements);
-                          } else {
-                            // For other cards, navigate to the respective page
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) {
-                                  return HomePage.cardData[index]['page']
-                                      as Widget;
-                                },
-                              ),
-                            );
-                          }
-                        }),
-                  )
-                ],
-              ),
+          Expanded(
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: HomePage.cardData.length,
+              separatorBuilder: (context, index) =>
+                  const ContextSeparator(),
+              itemBuilder: (context, index) => CardBtn(
+                  title: HomePage.cardData[index]['title'] as String,
+                  subtitle:
+                      HomePage.cardData[index]['subtitle'] as String,
+                  imgPath: HomePage.cardData[index]['imgPath'] as String,
+                  onPressed: () async {
+                    if (HomePage.cardData[index]['title'] == 'Progreso') {
+                      // When "Progreso" is clicked, fetch user measurements and navigate
+                      final userMeasurements =
+                          await dbService.getUserMeasurements(
+                              authService.currentUser!.uid);
+                      _navigateToSeeMeasures(userMeasurements);
+                    } else {
+                      // For other cards, navigate to the respective page
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return HomePage.cardData[index]['page']
+                                as Widget;
+                          },
+                        ),
+                      );
+                    }
+                  }),
             ),
           ),
         ],
