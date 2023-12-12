@@ -9,7 +9,6 @@ import 'package:gym_tec/models/users/user_data_public_private.dart';
 import 'package:gym_tec/models/weekly_challeges/challenge_data.dart';
 import 'package:rxdart/rxdart.dart';
 
-
 import '../../models/measures/measurements.dart';
 
 class DatabaseFirebase implements DatabaseInterface {
@@ -172,35 +171,51 @@ class DatabaseFirebase implements DatabaseInterface {
   }
 
   @override
-  Stream<List<UserPublicPrivateData>> getActiveUsersPublicPrivateDataStream() {
-    var publicDataStream = FirebaseFirestore.instance
-        .collection('users')
-        .where('expirationDate', isGreaterThan: Timestamp.now())
-        .snapshots();
-
-    return publicDataStream.asyncMap((publicSnapshot) async {
-      var futureList = publicSnapshot.docs.map((publicDoc) async {
-        try {
-          var publicDataMap = publicDoc.data();
-          publicDataMap.addAll({'uid': publicDoc.id});
-          var publicData = UserPublicData.fromJson(publicDataMap);
-
-          var privateDataStream = getUserPrivateDataStream(publicDoc.id);
-          var privateData = await privateDataStream.first;
-
-          return UserPublicPrivateData(
-              publicData: publicData, privateData: privateData);
-        } catch (e) {
-          return null;
-        }
+  Stream<List<UserPublicData>> getActiveUsersPublicDataStream() {
+    try {
+      return firebaseInstance
+          .collection('users')
+          .where('expirationDate', isGreaterThan: Timestamp.now())
+          .snapshots()
+          .map((collection) {
+        return collection.docs.map((doc) {
+          final data = doc.data();
+          data.addAll({'uid': doc.id});
+          return UserPublicData.fromJson(data);
+        }).toList();
       });
+    } catch (e) {
+      return const Stream.empty();
+    }
 
-      var combinedData = await Future.wait(futureList);
-      return combinedData
-          .where((data) => data != null)
-          .cast<UserPublicPrivateData>()
-          .toList();
-    });
+    // var publicDataStream = FirebaseFirestore.instance
+    //     .collection('users')
+    //     .where('expirationDate', isGreaterThan: Timestamp.now())
+    //     .snapshots();
+
+    // return publicDataStream.asyncMap((publicSnapshot) async {
+    //   var futureList = publicSnapshot.docs.map((publicDoc) async {
+    //     try {
+    //       var publicDataMap = publicDoc.data();
+    //       publicDataMap.addAll({'uid': publicDoc.id});
+    //       var publicData = UserPublicData.fromJson(publicDataMap);
+
+    //       var privateDataStream = getUserPrivateDataStream(publicDoc.id);
+    //       var privateData = await privateDataStream.first;
+
+    //       return UserPublicPrivateData(
+    //           publicData: publicData, privateData: privateData);
+    //     } catch (e) {
+    //       return null;
+    //     }
+    //   });
+
+    //   var combinedData = await Future.wait(futureList);
+    //   return combinedData
+    //       .where((data) => data != null)
+    //       .cast<UserPublicPrivateData>()
+    //       .toList();
+    // });
   }
 
   @override

@@ -153,36 +153,28 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
       body: ContentPadding(
         child: Column(
           children: [
-            Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  side:
-                      BorderSide(color: Theme.of(context).colorScheme.outline),
-                  borderRadius: const BorderRadius.all(Radius.circular(12))),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(children: [
-                  const Text("Semanas de rutina"),
-                  const ItemSeparator(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: List.generate(
-                        5,
-                        (index) => InputChip(
-                              label: Text("${index + 2}"),
-                              showCheckmark: false,
-                              selected: amountOfWeeks == index + 2,
-                              onPressed: () {
-                                setState(() {
-                                  amountOfWeeks = index + 2;
-                                  isChipSelected = true;
-                                });
-                              },
-                            )).toList(),
-                  ),
-                ]),
+            Column(children: [
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Semanas de rutina")),
+              const ItemSeparator(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(
+                    5,
+                    (index) => InputChip(
+                          label: Text("${index + 2}"),
+                          showCheckmark: false,
+                          selected: amountOfWeeks == index + 2,
+                          onPressed: () {
+                            setState(() {
+                              amountOfWeeks = index + 2;
+                              isChipSelected = true;
+                            });
+                          },
+                        )).toList(),
               ),
-            ),
+            ]),
             const ContextSeparator(),
             Visibility(
                 visible: routine.workout.isEmpty,

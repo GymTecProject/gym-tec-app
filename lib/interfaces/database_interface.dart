@@ -36,7 +36,7 @@ abstract class DatabaseInterface {
   Future<String?> updateUserMedicalConditions(
       String uid, List<String> conditions);
   Stream<List<UserPublicPrivateData>> getAllUsersPublicPrivateDataStream();
-  Stream<List<UserPublicPrivateData>> getActiveUsersPublicPrivateDataStream();
+  Stream<List<UserPublicData>> getActiveUsersPublicDataStream();
 
   // Routines
   Future<List<RoutineData>?> getUserRoutines(String uid, int limit);

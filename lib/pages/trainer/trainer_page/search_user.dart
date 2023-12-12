@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
+import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
@@ -11,9 +12,7 @@ import 'package:gym_tec/pages/trainer/trainer_page/view_measures_page.dart';
 import 'package:gym_tec/services/dependency_manager.dart';
 import 'package:intl/intl.dart';
 
-import '../../../models/users/user_data_private.dart';
 import '../../../models/users/user_data_public.dart';
-import '../../../models/users/user_data_public_private.dart';
 
 class SearchUser extends StatefulWidget {
   const SearchUser({super.key});
@@ -26,16 +25,14 @@ class _SearchUserState extends State<SearchUser> {
   final DatabaseInterface dbService = DependencyManager.databaseService;
   final AuthInterface authService = DependencyManager.authService;
 
-  late Stream<List<UserPublicPrivateData>> _usersStream;
+  late Stream<List<UserPublicData>> _usersStream;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  int? _value;
-  final List<String> _accTypes = ['Administrator', 'Trainer', 'Client'];
 
   @override
   void initState() {
     super.initState();
-    _usersStream = dbService.getActiveUsersPublicPrivateDataStream();
+    _usersStream = dbService.getActiveUsersPublicDataStream();
     _searchController.addListener(() {
       setState(() {
         _searchQuery = _searchController.text;
@@ -49,33 +46,11 @@ class _SearchUserState extends State<SearchUser> {
     super.dispose();
   }
 
-  AccountType _mapStringToAccountType(String accountTypeString) {
-    switch (accountTypeString) {
-      case 'Administrator':
-        return AccountType.administrator;
-      case 'Trainer':
-        return AccountType.trainer;
-      case 'Client':
-        return AccountType.client;
-      default:
-        throw Exception('Invalid account type string');
-    }
-  }
-
-  List<UserPublicPrivateData> _filterUsers(
-      List<UserPublicPrivateData> users, String query) {
+  List<UserPublicData> _filterUsers(List<UserPublicData> users, String query) {
     return users.where((user) {
-      bool nameMatches =
-          user.publicData.name.toLowerCase().contains(query.toLowerCase());
+      bool nameMatches = user.name.toLowerCase().contains(query.toLowerCase());
 
-      bool accountTypeMatches = true;
-      if (_value != null) {
-        var selectedAccountType = _mapStringToAccountType(_accTypes[_value!]);
-        accountTypeMatches =
-            user.privateData.accountType == selectedAccountType;
-      }
-
-      return nameMatches && accountTypeMatches;
+      return nameMatches;
     }).toList();
   }
 
@@ -88,6 +63,7 @@ class _SearchUserState extends State<SearchUser> {
           ),
         ));
     if (!mounted) return;
+    if (state == null) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(state),
@@ -152,31 +128,9 @@ class _SearchUserState extends State<SearchUser> {
                 ),
               ),
             ),
-            ContentPadding(
-              padding: 10,
-              child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      for (int i = 0; i < _accTypes.length; i++)
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: ChoiceChip(
-                            label: Text(_accTypes[i]),
-                            selected: _value == i,
-                            onSelected: (bool selected) {
-                              setState(() {
-                                _value = selected ? i : null;
-                              });
-                            },
-                          ),
-                        ),
-                    ],
-                  )),
-            ),
+            const ContextSeparator(),
             Expanded(
-              child: StreamBuilder<List<UserPublicPrivateData>?>(
+              child: StreamBuilder<List<UserPublicData>>(
                 stream: _usersStream,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -188,21 +142,23 @@ class _SearchUserState extends State<SearchUser> {
                       ),
                     );
                   } else if (snapshot.hasError || !snapshot.hasData) {
+                    print(snapshot.error);
+                    print(snapshot.data);
                     return const Text('Error or no data');
                   }
 
-                  List<UserPublicPrivateData> users = snapshot.data!;
-                  List<UserPublicPrivateData> filteredUsers =
+                  List<UserPublicData> users = snapshot.data!;
+                  List<UserPublicData> filteredUsers =
                       _filterUsers(users, _searchQuery);
 
                   return ListView.builder(
                     itemCount: filteredUsers.length,
                     itemBuilder: (context, index) {
-                      UserPublicPrivateData user = filteredUsers[index];
+                      UserPublicData user = filteredUsers[index];
 
-                      String sexText = user.publicData.sex == Sex.male
+                      String sexText = user.sex == Sex.male
                           ? "Hombre"
-                          : user.publicData.sex == Sex.female
+                          : user.sex == Sex.female
                               ? "Mujer"
                               : "Otro";
 
@@ -214,19 +170,18 @@ class _SearchUserState extends State<SearchUser> {
                             shadowColor: Colors.transparent,
                           ),
                           child: ExpansionTile(
-                            key: ValueKey(user.publicData.id),
-                            title: Text(user.publicData.name),
+                            key: ValueKey(user.id),
+                            title: Text(user.name),
                             subtitle: Text(
-                                "$sexText - ${DateFormat('dd//MM/yyyy').format(user.publicData.expirationDate.toDate())}"),
+                                "$sexText - ${DateFormat('dd//MM/yyyy').format(user.expirationDate.toDate())}"),
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Column(
                                   children: [
                                     ExpansionTileContent(
-                                        id: user.publicData.id,
-                                        accType: user.privateData
-                                            .getAccountTypeString()),
+                                      id: user.id,
+                                    )
                                   ],
                                 ),
                               ),
@@ -239,10 +194,10 @@ class _SearchUserState extends State<SearchUser> {
                                       icon: const Icon(Icons.remove_red_eye),
                                       tooltip: 'Visualizar medidas',
                                       onPressed: () async {
-                                        final userMeasurements =
-                                            await dbService.getUserMeasurements(
-                                                user.publicData.id);
-                                        _navigateToSeeMeasures(userMeasurements);
+                                        final userMeasurements = await dbService
+                                            .getUserMeasurements(user.id);
+                                        _navigateToSeeMeasures(
+                                            userMeasurements);
                                       },
                                     ),
                                     const ItemSeparator(),
@@ -250,15 +205,14 @@ class _SearchUserState extends State<SearchUser> {
                                       icon: const Icon(Icons.straighten),
                                       tooltip: 'Registrar medidas',
                                       onPressed: () =>
-                                          _navigateToRegisterMeasures(
-                                              user.publicData.id),
+                                          _navigateToRegisterMeasures(user.id),
                                     ),
                                     const ItemSeparator(),
                                     IconButton.filledTonal(
                                       icon: const Icon(Icons.fitness_center),
                                       tooltip: 'Crear rutina',
-                                      onPressed: () => _navigateToCreateRoutine(
-                                          user.publicData.id),
+                                      onPressed: () =>
+                                          _navigateToCreateRoutine(user.id),
                                     )
                                   ],
                                 ),

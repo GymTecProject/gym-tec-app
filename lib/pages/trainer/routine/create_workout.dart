@@ -3,6 +3,7 @@ import 'package:gym_tec/components/ui/buttons/card_btn.dart';
 import 'package:gym_tec/components/ui/buttons/action_fab.dart';
 import 'package:gym_tec/components/ui/buttons/expandable_fab.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
+import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
 import 'package:gym_tec/models/routines/routine_exercise.dart';
 import 'package:gym_tec/models/routines/routine_workout.dart';
@@ -112,39 +113,29 @@ class _CreateWorkoutState extends State<CreateWorkout> {
       body: ContentPadding(
         child: Column(
           children: [
-            Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                side: BorderSide(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
-                borderRadius: const BorderRadius.all(Radius.circular(12)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(children: [
-                  const Text("Días"),
-                  const ItemSeparator(),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: widget.weekDays.entries
-                          .map((e) => InputChip(
-                                label: Text(e.key.toString()),
-                                showCheckmark: false,
-                                selected: (widget.weekDays[e.key] ==
-                                        widget.buttonName ||
-                                    widget.workout.days.contains(e.key)),
-                                onPressed: (widget.weekDays[e.key] !=
-                                            widget.buttonName &&
-                                        widget.weekDays[e.key] != "")
-                                    ? null
-                                    : () => setDays(e.key),
-                              ))
-                          .toList()),
-                ]),
-              ),
-            ),
-            const ItemSeparator(),
+            Column(children: [
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Días de la semana")),
+              const ItemSeparator(),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: widget.weekDays.entries
+                      .map((e) => InputChip(
+                            label: Text(e.key.toString()),
+                            showCheckmark: false,
+                            selected: (widget.weekDays[e.key] ==
+                                    widget.buttonName ||
+                                widget.workout.days.contains(e.key)),
+                            onPressed: (widget.weekDays[e.key] !=
+                                        widget.buttonName &&
+                                    widget.weekDays[e.key] != "")
+                                ? null
+                                : () => setDays(e.key),
+                          ))
+                      .toList()),
+            ]),
+            const ContextSeparator(),
             Visibility(
                 visible: widget.workout.exercises.isEmpty,
                 child: RichText(

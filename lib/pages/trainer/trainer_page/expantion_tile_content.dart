@@ -7,10 +7,10 @@ import '../../../components/search_users/custom_list_tile.dart';
 
 class ExpansionTileContent extends StatefulWidget {
   final String id;
-  final String accType;
+  final String? accType;
 
   const ExpansionTileContent(
-      {super.key, required this.id, required this.accType});
+      {super.key, required this.id, this.accType});
 
   @override
   State<ExpansionTileContent> createState() => _ExpansionTileContentState();
@@ -30,7 +30,7 @@ class _ExpansionTileContentState extends State<ExpansionTileContent> {
       children: [
         CustomListTile(
           title: 'Tipo de Usuario',
-          content: widget.accType,
+          content: widget.accType??"",
           icon: Icons.person,
         ),
         StreamBuilder<UserProtectedData>(
