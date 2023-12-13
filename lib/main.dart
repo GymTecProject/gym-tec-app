@@ -22,15 +22,15 @@ void main() async {
 
   // run emulator if debug mode is on
   // firebase emulators:start
-  // if (kDebugMode) {
-  //   try {
-  //     FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
-  //     await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-  //   } catch (e) {
-  //     // ignore: avoid_print
-  //     print(e);
-  //   }
-  // }
+  if (kDebugMode) {
+    try {
+      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+      await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    } catch (e) {
+      // ignore: avoid_print
+      print(e);
+    }
+  }
   ImageUtils.svgPrecacheImage();
   Intl.defaultLocale = 'es-419';
   await initializeDateFormatting('es_419');
