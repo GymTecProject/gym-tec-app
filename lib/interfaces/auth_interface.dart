@@ -9,6 +9,7 @@ abstract class AuthInterface {
 
   Future<AccountType?> emailAndPasswordLogin(UserLoginForm userLoginForm);
   Future<String?> registerUser(UserRegisterForm userRegisterForm);
+  Future<bool> resetPassword(String email);
   void googleLogin();
   void facebookLogin();
   void appleLogin();

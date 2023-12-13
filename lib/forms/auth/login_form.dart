@@ -113,8 +113,8 @@ class _LoginFormState extends State<LoginForm> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       _userLoginFormData = UserLoginForm(
-                          email: _emailController.text,
-                          password: _passwordController.text);
+                          email: _emailController.text.trim(),
+                          password: _passwordController.text.trim());
                       submit(_userLoginFormData);
                     }
                   },
