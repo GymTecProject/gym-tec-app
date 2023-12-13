@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gym_tec/auth/password_reset.dart';
 
 import 'package:gym_tec/forms/auth/login_form.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
@@ -42,13 +43,16 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void onResetPassword() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PasswordReset()));
+  }
+
   void showLoginError() {
-    final logginErrorSnackBar = SnackBar(
+    const logginErrorSnackBar = SnackBar(
       content: Text(
         'Correo o contraseña incorrectos',
-        style: TextStyle(color: Theme.of(context).colorScheme.error),
       ),
-      duration: const Duration(seconds: 3),
+      duration: Duration(seconds: 3),
     );
     ScaffoldMessenger.of(context).showSnackBar(logginErrorSnackBar);
   }
@@ -60,8 +64,17 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: const Text('Iniciar Sesión'),
       ),
-      body: LoginForm(
-        onSubmit: onLogin,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          LoginForm(
+            onSubmit: onLogin,
+          ),
+          TextButton(
+            onPressed: onResetPassword,
+            child: const Text('¿Olvidaste tu contraseña?'),
+          )
+        ],
       ),
     ));
   }

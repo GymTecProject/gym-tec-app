@@ -120,8 +120,8 @@ class _RegisterFormState extends State<RegisterForm> {
 
       _userRegisterForm.name =
           _nameController.text.trim().toLowerCase().toTitleCase();
-      _userRegisterForm.phoneNumber = _phoneController.text;
-      _userRegisterForm.email = _emailController.text;
+      _userRegisterForm.phoneNumber = _phoneController.text.trim();
+      _userRegisterForm.email = _emailController.text.trim();
       _userRegisterForm.birthdate =
           Timestamp.fromDate(DateTime.parse(validBirthDate));
       _userRegisterForm.sex = _selectedSex;

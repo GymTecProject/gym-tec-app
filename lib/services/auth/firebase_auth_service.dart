@@ -99,6 +99,21 @@ class AuthFirebase implements AuthInterface {
   }
 
   @override
+  Future<bool> resetPassword(String email) async {
+    try{
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      return true;
+    } on FirebaseAuthException catch (error) {
+      if (error.code == 'user-not-found') {
+        return false;
+      } else {
+        return false;
+      }
+    }
+  
+  }
+
+  @override
   void googleLogin() {}
 
   @override
