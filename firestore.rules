@@ -19,10 +19,11 @@ service cloud.firestore {
       match /users/{userId} {
         allow create: if true;
         allow read: if (
-          request.auth != null
+          isLogged()
+          && (isAdmin() || isTrainer() || request.auth.uid == userId)
         )
         allow update: if (
-          request.auth != null
+          isLogged()
           && (isAdmin() || request.auth.uid == userId)
 
         )

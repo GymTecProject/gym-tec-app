@@ -124,7 +124,11 @@ class _PageBody extends State<PageBody> {
                               const WidgetSpan(child: ItemSeparator()),
                               TextSpan(
                                 text: userProtectedData?.phoneNumber ?? '',
-                              )
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface),
+                                )
                             ])),
                             const ItemSeparator(),
                             RichText(
@@ -133,7 +137,12 @@ class _PageBody extends State<PageBody> {
                                   alignment: PlaceholderAlignment.middle,
                                   child: Icon(Icons.email)),
                               const WidgetSpan(child: ItemSeparator()),
-                              TextSpan(text: userProtectedData?.email ?? '')
+                              TextSpan(text: userProtectedData?.email ?? '',
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface)
+                              )
                             ]))
                           ]),
                     ),

@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
     // initialize dependency manager
 
     return MaterialApp.router(
-      title: 'Flutter Demo',
+      title: 'Gym Tec',
       theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
       darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
       themeMode: ThemeMode.system,

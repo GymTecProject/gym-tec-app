@@ -124,14 +124,13 @@ class _CreateWorkoutState extends State<CreateWorkout> {
                       .map((e) => InputChip(
                             label: Text(e.key.toString()),
                             showCheckmark: false,
+                            isEnabled: !(widget.weekDays[e.key] !=
+                                        widget.buttonName &&
+                                    widget.weekDays[e.key] != ""),
                             selected: (widget.weekDays[e.key] ==
                                     widget.buttonName ||
                                 widget.workout.days.contains(e.key)),
-                            onPressed: (widget.weekDays[e.key] !=
-                                        widget.buttonName &&
-                                    widget.weekDays[e.key] != "")
-                                ? null
-                                : () => setDays(e.key),
+                            onPressed: () => setDays(e.key),
                           ))
                       .toList()),
             ]),
