@@ -46,7 +46,7 @@ class _RegisterFormState extends State<RegisterForm> {
   late bool _isObscure;
 
   final TextEditingController _nameController = TextEditingController();
-  final RegExp _nameValidCharacters = RegExp(r'^[a-zA-Z ]+$');
+  final RegExp _nameValidCharacters = RegExp(r'^[A-Za-zÀ-ÿ ]+$');
 
   final TextEditingController _phoneController = TextEditingController();
   final RegExp _phoneValidCharacters = RegExp(r'^[0-9]+$');
