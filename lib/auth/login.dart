@@ -27,7 +27,10 @@ class _LoginPageState extends State<LoginPage> {
   void onLogin(UserLoginForm userData) async {
     AccountType? account = await _authService.emailAndPasswordLogin(userData);
     if (!mounted) return;
-    if (account == null) showLoginError();
+    if (account == null) {
+      showLoginError();
+      return;
+    };
     switch (account) {
       case AccountType.administrator:
         context.go('/admin');

@@ -32,16 +32,9 @@ class AuthFirebase implements AuthInterface {
       if (userPrivateData == null) return null;
 
       return userPrivateData.accountType;
-    } on FirebaseAuthException catch (error) {
-      if (error.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (error.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      } else {
-        print(error.code);
-      }
+    } on FirebaseAuthException {
+      return null;
     }
-    return null;
   }
 
   @override
@@ -85,22 +78,25 @@ class AuthFirebase implements AuthInterface {
               protected != null &&
               private != null &&
               measures != null)
-          ? credential.user!.uid
+          ? "success"
           : null;
     } on FirebaseAuthException catch (error) {
-      if (error.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (error.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+      switch (error.code) {
+        case 'email-already-in-use':
+          return "El correo ya está en uso";
+        case 'invalid-email':
+          return "El correo es inválido";
+        case 'weak-password':
+          return "La contraseña es muy débil";
+        default:
+          return "Error desconocido";
       }
-
-      return null;
     }
   }
 
   @override
   Future<bool> resetPassword(String email) async {
-    try{
+    try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       return true;
     } on FirebaseAuthException catch (error) {
@@ -110,7 +106,6 @@ class AuthFirebase implements AuthInterface {
         return false;
       }
     }
-  
   }
 
   @override

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-
 import 'package:gym_tec/forms/auth/register_form.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/models/users/user_register_form.dart';
@@ -17,11 +16,26 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final AuthInterface authService = DependencyManager.authService;
 
+  void showRegisterError(String message) {
+    final registerErrorSnackBar = SnackBar(
+      content: Text(
+        message,
+      ),
+      duration: const Duration(seconds: 3),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(registerErrorSnackBar);
+  }
+
   void onRegister(UserRegisterForm newUser) async {
-    String? uid = await authService.registerUser(newUser);
-    if(!mounted) return;
-    if (uid != null) {
-      context.go('/client');
+    String? response = await authService.registerUser(newUser);
+    if (!mounted) return;
+    switch (response) {
+      case 'success':
+        context.go('/login');
+        break;
+      default:
+        showRegisterError(response!);
+        break;
     }
   }
 
