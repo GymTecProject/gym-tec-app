@@ -31,7 +31,7 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   int? _value;
-  final List<String> _accTypes = ['Administrator', 'Trainer', 'Client'];
+  final List<String> _accTypes = ['Administrador', 'Entrenador', 'Cliente'];
 
   @override
   void initState() {
@@ -52,11 +52,11 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
 
   AccountType _mapStringToAccountType(String accountTypeString) {
     switch (accountTypeString) {
-      case 'Administrator':
+      case 'Administrador':
         return AccountType.administrator;
-      case 'Trainer':
+      case 'Entrenador':
         return AccountType.trainer;
-      case 'Client':
+      case 'Cliente':
         return AccountType.client;
       default:
         throw Exception('Invalid account type string');
@@ -137,6 +137,7 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
         ));
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,7 +153,7 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
               child: TextField(
                 controller: _searchController,
                 decoration: const InputDecoration(
-                  labelText: 'Search',
+                  labelText: 'Buscar',
                   suffixIcon: Icon(Icons.search),
                 ),
               ),
@@ -256,7 +257,8 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                         final userMeasurements =
                                             await dbService.getUserMeasurements(
                                                 user.publicData.id);
-                                        _navigateToSeeMeasures(userMeasurements);
+                                        _navigateToSeeMeasures(
+                                            userMeasurements);
                                       },
                                     ),
                                     const ItemSeparator(),
@@ -276,8 +278,8 @@ class _AdminSearchUserState extends State<AdminSearchUser> {
                                     ),
                                     const ItemSeparator(),
                                     IconButton.filledTonal(
-                                      icon:
-                                          const Icon(Icons.admin_panel_settings),
+                                      icon: const Icon(
+                                          Icons.admin_panel_settings),
                                       tooltip: 'Admin',
                                       onPressed: () {
                                         _navigateToAdminClient(

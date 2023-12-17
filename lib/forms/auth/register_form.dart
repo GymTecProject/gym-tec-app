@@ -30,15 +30,6 @@ class RegisterForm extends StatefulWidget implements FormInterface {
   State<RegisterForm> createState() => _RegisterFormState();
 }
 
-/*TODO: 
-- add validations
-- add state to the sex selector
-- init _userRegisterForm
-- set _userRegisterForm values
-- validate _userRegisterForm
-- return a valid UserRegisterForm
-*/
-
 class _RegisterFormState extends State<RegisterForm> {
   late GlobalKey<FormState> _formKey;
   late UserRegisterForm _userRegisterForm;
@@ -83,7 +74,7 @@ class _RegisterFormState extends State<RegisterForm> {
         lastDate: dateTopLimit());
     if (date != null) {
       //format to mm/dd/yyyy
-      String formattedDate = "${date.month}/${date.day}/${date.year}";
+      String formattedDate = "${date.day}/${date.month}/${date.year}";
       _birthDateController.text = formattedDate;
     }
   }
@@ -116,7 +107,7 @@ class _RegisterFormState extends State<RegisterForm> {
     if (_formKey.currentState!.validate()) {
       List<String> date = _birthDateController.text.split('/');
       String validBirthDate =
-          '${date[2]}-${date[0].length < 2 ? '0${date[0]}' : date[0]}-${date[1].length < 2 ? '0${date[1]}' : date[1]}';
+          '${date[2]}-${date[1].length < 2 ? '0${date[1]}' : date[1]}-${date[0].length < 2 ? '0${date[0]}' : date[0]}';
 
       _userRegisterForm.name =
           _nameController.text.trim().toLowerCase().toTitleCase();
@@ -223,7 +214,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   }
                   List<String> date = value.split('/');
                   String formattedDate =
-                      '${date[2]}-${date[0].length < 2 ? '0${date[0]}' : date[0]}-${date[1].length < 2 ? '0${date[1]}' : date[1]}';
+                      '${date[2]}-${date[1].length < 2 ? '0${date[1]}' : date[1]}-${date[0].length < 2 ? '0${date[0]}' : date[0]}';
 
                   if (date.length != 3) {
                     return 'Por favor ingrese una fecha válida';
@@ -233,11 +224,11 @@ class _RegisterFormState extends State<RegisterForm> {
                       date[2].length != 4) {
                     return 'Por favor ingrese una fecha válida';
                   }
-                  if (int.parse(date[0]) > 12 || int.parse(date[0]) < 1) {
+                  if (int.parse(date[1]) > 12 || int.parse(date[1]) < 1) {
                     return 'Por favor ingrese una fecha válida';
                   }
 
-                  if (int.parse(date[1]) > 31 || int.parse(date[1]) < 1) {
+                  if (int.parse(date[0]) > 31 || int.parse(date[0]) < 1) {
                     return 'Por favor ingrese una fecha válida';
                   }
                   if (DateTime.parse(formattedDate).compareTo(dateLowLimit()) <
@@ -251,7 +242,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(),
                   label: const Text('Fecha de nacimiento'),
-                  hintText: 'mm/dd/yyyy',
+                  hintText: 'dd/mm/yyyy',
                   prefixIcon: const Icon(Icons.cake),
                   suffixIcon: IconButton(
                       onPressed: setBirthDate,
