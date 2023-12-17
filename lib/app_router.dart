@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:gym_tec/auth/auth.dart';
 import 'package:gym_tec/interfaces/auth_interface.dart';
 import 'package:gym_tec/interfaces/database_interface.dart';
+import 'package:gym_tec/legal/privacy_policy.dart';
+import 'package:gym_tec/legal/terms_and_conditions.dart';
 import 'package:gym_tec/models/users/user_data_private.dart';
 import 'package:gym_tec/pages/admin/admin_root_page.dart';
 import 'package:gym_tec/pages/trainer/trainer_root_page.dart';
@@ -25,6 +27,14 @@ class AppRouter {
       path: '/auth',
       builder: (context, state) => const AuthPage(),
       // redirect: (context, state) => _Guards.userNotLogged(context, state),
+    ),
+    GoRoute(
+      path: '/terms-and-conditions',
+      builder: (context, state) => const TermsAndConditions(),
+    ),
+    GoRoute(
+      path: '/privacy-policy',
+      builder: (context, state) => const PrivacyPolicy(),
     ),
     GoRoute(
       path: '/login',

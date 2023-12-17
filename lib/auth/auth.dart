@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -61,14 +62,47 @@ class _AuthPageState extends State<AuthPage> {
                     minimumSize:
                         MaterialStateProperty.all(const Size(200, 40)))),
             const ContextSeparator(),
-            const Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Text(
-                termsAndPrivacy,
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-                overflow: TextOverflow.clip,
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: RichText(
                 textAlign: TextAlign.center,
-              ),
+                text: TextSpan(
+                  children: [
+                    const TextSpan(
+                      text: "Al continuar, aceptas los ",
+                      style: TextStyle(
+                        color: Colors.grey
+                      )
+                    ),
+                    TextSpan(
+                      text: "Términos de Uso",
+                      recognizer: TapGestureRecognizer()..onTap = () => context.push('/terms-and-conditions'),
+                      style: const TextStyle(
+                        color: Colors.blue,
+                      ),
+                    ),
+                    const TextSpan(
+                      text: " y la ",
+                      style: TextStyle(
+                        color: Colors.grey
+                      )
+                    ),
+                    TextSpan(
+                      text: "Política de Privacidad",
+                      recognizer: TapGestureRecognizer()..onTap = () => context.push('/privacy-policy'),
+                      style: const TextStyle(
+                        color: Colors.blue,
+                      ),
+                    ),
+                    const TextSpan(
+                      text: " de GymTec.",
+                      style: TextStyle(
+                        color: Colors.grey
+                      )
+                    ),
+                  ]
+                ),
+              )
             ),
           ]),
     ));
