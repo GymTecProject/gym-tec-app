@@ -141,33 +141,6 @@ class DatabaseFirebase implements DatabaseInterface {
       }).toList();
     }).flatMap((list) => CombineLatestStream.list(list));
 
-    // var publicDataStream =
-    //     FirebaseFirestore.instance.collection('users').snapshots();
-    // //TODO: Fix double call to private collection;
-    // // finish admin client edit page
-    // return publicDataStream.asyncMap((publicSnapshot) async {
-    //   var futureList = publicSnapshot.docs.map((publicDoc) async {
-    //     try {
-    //       var publicDataMap = publicDoc.data();
-    //       publicDataMap.addAll({'uid': publicDoc.id});
-    //       var publicData = UserPublicData.fromJson(publicDataMap);
-
-    //       var privateDataStream = getUserPrivateDataStream(publicDoc.id);
-    //       var privateData = await privateDataStream.first;
-
-    //       return UserPublicPrivateData(
-    //           publicData: publicData, privateData: privateData);
-    //     } catch (e) {
-    //       return null;
-    //     }
-    //   });
-
-    //   var combinedData = await Future.wait(futureList);
-    //   return combinedData
-    //       .where((data) => data != null)
-    //       .cast<UserPublicPrivateData>()
-    //       .toList();
-    // });
   }
 
   @override
@@ -188,34 +161,6 @@ class DatabaseFirebase implements DatabaseInterface {
       return const Stream.empty();
     }
 
-    // var publicDataStream = FirebaseFirestore.instance
-    //     .collection('users')
-    //     .where('expirationDate', isGreaterThan: Timestamp.now())
-    //     .snapshots();
-
-    // return publicDataStream.asyncMap((publicSnapshot) async {
-    //   var futureList = publicSnapshot.docs.map((publicDoc) async {
-    //     try {
-    //       var publicDataMap = publicDoc.data();
-    //       publicDataMap.addAll({'uid': publicDoc.id});
-    //       var publicData = UserPublicData.fromJson(publicDataMap);
-
-    //       var privateDataStream = getUserPrivateDataStream(publicDoc.id);
-    //       var privateData = await privateDataStream.first;
-
-    //       return UserPublicPrivateData(
-    //           publicData: publicData, privateData: privateData);
-    //     } catch (e) {
-    //       return null;
-    //     }
-    //   });
-
-    //   var combinedData = await Future.wait(futureList);
-    //   return combinedData
-    //       .where((data) => data != null)
-    //       .cast<UserPublicPrivateData>()
-    //       .toList();
-    // });
   }
 
   @override

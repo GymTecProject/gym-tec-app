@@ -32,17 +32,20 @@ class _SplashScreenState extends State<SplashScreen> {
           switch (value.accountType) {
             case AccountType.administrator:
               context.go('/admin');
-              break;
+              return;
             case AccountType.trainer:
               context.go('/trainer');
-              break;
+              return;
             case AccountType.client:
               context.go('/client');
-              break;
+              return;
             default:
               context.go('/auth');
-              break;
+              return;
           }
+        } else {
+          context.go('/auth');
+          return;
         }
       });
     });
