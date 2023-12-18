@@ -71,9 +71,10 @@ class _RegisterFormState extends State<RegisterForm> {
         context: context,
         initialDate: DateTime.now(),
         firstDate: dateLowLimit(),
-        lastDate: dateTopLimit());
+        lastDate: dateTopLimit(),
+        confirmText: "Aceptar"
+      );
     if (date != null) {
-      //format to mm/dd/yyyy
       String formattedDate = "${date.day}/${date.month}/${date.year}";
       _birthDateController.text = formattedDate;
     }

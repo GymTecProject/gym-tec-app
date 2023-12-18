@@ -207,6 +207,7 @@ class _AdminEditClientState extends State<AdminEditClient> {
                                         firstDate: DateTime.now(),
                                         lastDate: DateTime.now()
                                             .add(const Duration(days: 365)),
+                                        confirmText: "Aceptar",
                                       );
                                       if (newDate == null) return;
                                       setState(() {
