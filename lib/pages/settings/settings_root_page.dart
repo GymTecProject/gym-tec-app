@@ -31,6 +31,20 @@ class _SettingsPageState extends State<SettingsPage> {
         }
       },
       {
+        'title': 'Términos de Uso',
+        'icon': Icons.description,
+        'onPressed': () {
+          context.push('/terms-and-conditions');
+        }
+      },
+      {
+        'title': 'Política de Privacidad',
+        'icon': Icons.privacy_tip,
+        'onPressed': () {
+          context.push('/privacy-policy');
+        }
+      },
+      {
         'title': 'Cerrar Sesión',
         'icon': Icons.logout,
         'onPressed': () {

@@ -10,37 +10,31 @@ class TermsAndConditions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Trerminos y Condiciones'),
+          title: const Text('Términos de Uso'),
         ),
         body: const ContentPadding(
           child: Card(
             child: ContentPadding(
               child: SingleChildScrollView(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Términos y Condiciones',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    Text(
+                      'Términos de Uso',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     ContextSeparator(),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "1. Registro y Datos Personales",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    Text(
+                      "1 Gym Tec cuenta con personal calificado y certificado, para guiarlo y apoyarlo,en el desarrollo de sus rutinas y planes de entrenamiento.",
                     ),   
                     ItemSeparator(),
-                                     
+                    Text(
+                      "2 El cliente debe respetar las normas de convivencia y comportamiento, dentro de las instalaciones del gimnasio.",
+                    ),
+                    ItemSeparator(),
                   ],
                 ),
               ),

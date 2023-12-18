@@ -27,9 +27,6 @@ class _AuthPageState extends State<AuthPage> {
       context.push('/register');
     }
 
-    const String termsAndPrivacy =
-        "Al continuar, aceptas los Términos de Uso y la Política de Privacidad de GymTec.";
-
     return Scaffold(
         body: Center(
       child: Column(

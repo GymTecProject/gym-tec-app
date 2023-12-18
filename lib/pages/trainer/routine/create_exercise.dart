@@ -34,6 +34,8 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
 
   RoutineExercise? _selectedExercise;
 
+  bool _loadingData = true;
+
   final List<String> _categories = [
     'Tren superior',
     'Tren inferior',
@@ -49,6 +51,7 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
         setState(() {
           _allExercises = exercises;
           _foundExcercises = _allExercises;
+          _loadingData = false;
         });
       }
     } catch (e) {
@@ -62,8 +65,9 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
     super.initState();
     _setsController.text =
         widget.exercise.series != 0 ? widget.exercise.series.toString() : "";
-    _repsController.text =
-        widget.exercise.repetitions != 0 ? widget.exercise.repetitions.toString() : "";
+    _repsController.text = widget.exercise.repetitions != 0
+        ? widget.exercise.repetitions.toString()
+        : "";
     _commentsController.text = widget.exercise.comment;
 
     _selectedExercise = RoutineExercise(
@@ -186,7 +190,15 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
                       )),
                 ),
                 Expanded(
-                    child: ListView.builder(
+                    child: _loadingData?
+                    const Center(
+                      child: SizedBox(
+                        width: 25.0,
+                        height: 25.0,
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                    :ListView.builder(
                         itemCount: _foundExcercises.length,
                         itemBuilder: (context, index) => Padding(
                               padding: const EdgeInsets.all(4.0),
@@ -227,9 +239,11 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
                                                           controller:
                                                               _setsController,
                                                           keyboardType:
-                                                            TextInputType.number,
+                                                              TextInputType
+                                                                  .number,
                                                           inputFormatters: <TextInputFormatter>[
-                                                            FilteringTextInputFormatter.digitsOnly
+                                                            FilteringTextInputFormatter
+                                                                .digitsOnly
                                                           ],
                                                           decoration:
                                                               const InputDecoration(
@@ -249,9 +263,11 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
                                                           controller:
                                                               _repsController,
                                                           keyboardType:
-                                                            TextInputType.number,
+                                                              TextInputType
+                                                                  .number,
                                                           inputFormatters: <TextInputFormatter>[
-                                                            FilteringTextInputFormatter.digitsOnly
+                                                            FilteringTextInputFormatter
+                                                                .digitsOnly
                                                           ],
                                                           decoration:
                                                               const InputDecoration(
@@ -285,8 +301,10 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
                                                   const ContextSeparator(),
                                                   ActionBtn(
                                                       title: "Guardar",
-                                                      disabled: _setsController.text.isEmpty ||
-                                                          _repsController.text.isEmpty,
+                                                      disabled: _setsController
+                                                              .text.isEmpty ||
+                                                          _repsController
+                                                              .text.isEmpty,
                                                       onPressed: _saveExercise),
                                                 ],
                                               ),

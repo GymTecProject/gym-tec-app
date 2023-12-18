@@ -30,6 +30,8 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
   List<Exercise> _allExercises = [];
   List<Exercise> _foundExcercises = [];
 
+  bool _loadingData = true;
+
   //RoutineExercise? _selectedExercise;
 
   final List<String> items = [
@@ -49,6 +51,7 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
         setState(() {
           _allExercises = exercises;
           _foundExcercises = _allExercises;
+          _loadingData = false;
         });
       }
     } catch (e) {
@@ -111,7 +114,7 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
       _runFilter("");
       _value = null;
     });
-    if(!mounted) return;
+    if (!mounted) return;
     Navigator.pop(context);
   }
 
@@ -132,7 +135,7 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
       _runFilter(_searchController.text);
       _value = null;
     });
-
+    if (!mounted) return;
     Navigator.pop(context);
   }
 
@@ -176,8 +179,8 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
                         ),
                         const ItemSeparator(),
                         Container(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
                             borderRadius: BorderRadius.circular(5),
@@ -316,7 +319,16 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
                       )),
                 ),
                 Expanded(
-                    child: ListView.builder(
+                    child: 
+                    _loadingData?
+                    const Center(
+                      child: SizedBox(
+                        width: 25.0,
+                        height: 25.0,
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                    :ListView.builder(
                         itemCount: _foundExcercises.length,
                         itemBuilder: (context, index) => Padding(
                               padding: const EdgeInsets.all(4.0),
@@ -381,8 +393,9 @@ class _ManageExercisesPage extends State<ManageExercisesPage> {
                                                       ),
                                                       const ItemSeparator(),
                                                       Container(
-                                                        padding: const EdgeInsets
-                                                            .symmetric(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
                                                                 horizontal: 10,
                                                                 vertical: 5),
                                                         decoration:
