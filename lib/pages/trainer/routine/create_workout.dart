@@ -5,9 +5,12 @@ import 'package:gym_tec/components/ui/buttons/expandable_fab.dart';
 import 'package:gym_tec/components/ui/padding/content_padding.dart';
 import 'package:gym_tec/components/ui/separators/context_separator.dart';
 import 'package:gym_tec/components/ui/separators/item_separator.dart';
+import 'package:gym_tec/interfaces/database_interface.dart';
+import 'package:gym_tec/models/excercises/exercise.dart';
 import 'package:gym_tec/models/routines/routine_exercise.dart';
 import 'package:gym_tec/models/routines/routine_workout.dart';
 import 'package:gym_tec/pages/trainer/routine/create_exercise.dart';
+import 'package:gym_tec/services/dependency_manager.dart';
 
 class CreateWorkout extends StatefulWidget {
   final String buttonName;
@@ -31,7 +34,17 @@ class CreateWorkout extends StatefulWidget {
 
 class _CreateWorkoutState extends State<CreateWorkout> {
   final ScrollController _scrollController = ScrollController();
+  final DatabaseInterface dbService = DependencyManager.databaseService;
   List<bool> exercisesCreated = [];
+
+  List<Exercise> exercisesCatalog = [];
+
+  void _fetchExercises() async {
+    final exercises = await dbService.getExercises();
+    setState(() {
+      exercisesCatalog = exercises;
+    });
+  }
 
   @override
   void initState() {
@@ -43,6 +56,7 @@ class _CreateWorkoutState extends State<CreateWorkout> {
         exercisesCreated.add(true);
       }
     }
+    _fetchExercises();
     super.initState();
   }
 
@@ -155,41 +169,45 @@ class _CreateWorkoutState extends State<CreateWorkout> {
                             color: Theme.of(context).colorScheme.onSurface,
                           ))
                     ]))),
-            Flexible(
-              child: ListView.builder(
-                shrinkWrap: true,
-                controller: _scrollController,
-                itemCount: widget.workout.exercises.length + 1,
-                itemBuilder: (context, index) {
-                  if (index != widget.workout.exercises.length) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: CardBtn(
-                        title: widget.workout.exercises[index].name,
-                        subtitle: "Series: ${widget.workout.exercises[index].series}\nRepeticiones: ${
-                          widget.workout.exercises[index].repetitions}\nComentarios: ${
-                            widget.workout.exercises[index].comment.isNotEmpty ? widget.workout.exercises[index].comment : "Ninguno"}",
-                        onPressed: () async {
-                          final exercise = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CreateExercisePage(
-                                exercise: widget.workout.exercises[index],
+            PageStorage(
+              bucket: PageStorageBucket(),
+              child: Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  controller: _scrollController,
+                  itemCount: widget.workout.exercises.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index != widget.workout.exercises.length) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: CardBtn(
+                          title: widget.workout.exercises[index].name,
+                          subtitle: "Series: ${widget.workout.exercises[index].series}\nRepeticiones: ${
+                            widget.workout.exercises[index].repetitions}\nComentarios: ${
+                              widget.workout.exercises[index].comment.isNotEmpty ? widget.workout.exercises[index].comment : "Ninguno"}",
+                          onPressed: () async {
+                            final exercise = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CreateExercisePage(
+                                  exercisesCatalog: exercisesCatalog,
+                                  exercise: widget.workout.exercises[index],
+                                ),
                               ),
-                            ),
-                          );
-                          if (exercise != null) {
-                            setState(() {
-                              widget.workout.exercises[index] = exercise;
-                              exercisesCreated[index] = true;
-                            });
-                          }
-                        },
-                      ),
-                    );
-                  }
-                  return null;
-                },
+                            );
+                            if (exercise != null) {
+                              setState(() {
+                                widget.workout.exercises[index] = exercise;
+                                exercisesCreated[index] = true;
+                              });
+                            }
+                          },
+                        ),
+                      );
+                    }
+                    return null;
+                  },
+                ),
               ),
             )
           ],

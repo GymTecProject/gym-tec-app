@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
       ],
       supportedLocales: const [
         Locale('es', '419'),

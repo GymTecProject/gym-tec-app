@@ -123,12 +123,14 @@ class _RoutinePageState extends State<RoutinePage> {
 
   void _fetchRoutineData() async {
     final user = authService.currentUser;
-
     if (user == null) return;
+
     final routineData = await dbService.getUserLastestRoutine(user.uid);
+    
     if (routineData == null) {
-      workout = null;
-      routine = null;
+      setState(() {
+        showSkeleton = false;
+      });
       return;
     }
     setState(() {

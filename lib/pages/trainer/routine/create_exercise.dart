@@ -12,8 +12,12 @@ import 'package:gym_tec/services/dependency_manager.dart';
 
 class CreateExercisePage extends StatefulWidget {
   final RoutineExercise exercise;
+  final List<Exercise> exercisesCatalog;
 
-  const CreateExercisePage({super.key, required this.exercise});
+  const CreateExercisePage({
+    super.key,
+    required this.exercisesCatalog, 
+    required this.exercise});
 
   @override
   State<CreateExercisePage> createState() => _CreateExercisePageState();
@@ -34,8 +38,6 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
 
   RoutineExercise? _selectedExercise;
 
-  bool _loadingData = true;
-
   final List<String> _categories = [
     'Tren superior',
     'Tren inferior',
@@ -44,23 +46,9 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
     'Core'
   ];
 
-  void _getAllExercises() async {
-    try {
-      var exercises = await dbService.getExercises();
-      if (exercises.isNotEmpty) {
-        setState(() {
-          _allExercises = exercises;
-          _foundExcercises = _allExercises;
-          _loadingData = false;
-        });
-      }
-    } catch (e) {
-      return null;
-    }
-  }
-
   @override
   void initState() {
+    _allExercises = widget.exercisesCatalog;
     _foundExcercises = _allExercises;
     super.initState();
     _setsController.text =
@@ -77,8 +65,6 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
         comment: "",
         series: 0,
         repetitions: 0);
-
-    _getAllExercises();
   }
 
   void _runFilter(String entered) {
@@ -190,7 +176,7 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
                       )),
                 ),
                 Expanded(
-                    child: _loadingData?
+                    child: widget.exercisesCatalog.isEmpty?
                     const Center(
                       child: SizedBox(
                         width: 25.0,
