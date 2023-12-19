@@ -28,51 +28,47 @@ class _ExpansionTileContentState extends State<ExpansionTileContent> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomListTile(
-          title: 'Tipo de Usuario',
-          content: widget.accType??"",
-          icon: Icons.person,
-        ),
         StreamBuilder<UserProtectedData>(
-            stream: dbService.getUserProtectedDataStream(widget.id),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final userProtectedData = snapshot.data!;
-                return Column(
-                  children: [
-                    CustomListTile(
-                      title: 'Correo',
-                      content: userProtectedData.email,
-                      icon: Icons.email,
-                    ),
-                    CustomListTile(
-                      title: 'Teléfono',
-                      content: userProtectedData.phoneNumber,
-                      icon: Icons.phone,
-                    ),
-                    CustomListTile(
-                      title: 'Objetivo',
-                      content: userProtectedData.objective,
-                      icon: Icons.flag,
-                    ),
-                    ...userProtectedData.medicalConditions
-                        .map((condition) => CustomListTile(
-                              title: 'Condición Médica',
-                              content: condition,
-                              icon: Icons.healing,
-                            ))
-                        .toList(),
-                  ],
-                );
-              }
-              return const Center(
-                child: SizedBox(
-                  width: 25.0,
-                  height: 25.0,
-                  child: CircularProgressIndicator(),
-                ),
+          stream: dbService.getUserProtectedDataStream(widget.id),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final userProtectedData = snapshot.data!;
+              return Column(
+                children: [
+                  CustomListTile(
+                    title: 'Correo',
+                    content: userProtectedData.email,
+                    icon: Icons.email,
+                  ),
+                  CustomListTile(
+                    title: 'Teléfono',
+                    content: userProtectedData.phoneNumber,
+                    icon: Icons.phone,
+                  ),
+                  CustomListTile(
+                    title: 'Objetivo',
+                    content: userProtectedData.objective,
+                    icon: Icons.flag,
+                  ),
+                  ...userProtectedData.medicalConditions
+                      .map((condition) => CustomListTile(
+                            title: 'Condición Médica',
+                            content: condition,
+                            icon: Icons.healing,
+                          ))
+                      .toList(),
+                ],
               );
-            })
+            }
+            return const Center(
+              child: SizedBox(
+                width: 25.0,
+                height: 25.0,
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+        )
       ],
     );
   }

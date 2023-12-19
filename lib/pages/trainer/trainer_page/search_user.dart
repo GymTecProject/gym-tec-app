@@ -173,7 +173,7 @@ class _SearchUserState extends State<SearchUser> {
                             key: ValueKey(user.id),
                             title: Text(user.name),
                             subtitle: Text(
-                                "$sexText - ${DateFormat('dd//MM/yyyy').format(user.expirationDate.toDate())}"),
+                                "$sexText - ${DateFormat('dd/MM/yyyy').format(user.expirationDate.toDate())}"),
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(16.0),
