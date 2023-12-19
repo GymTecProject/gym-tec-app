@@ -10,7 +10,7 @@ class PrivacyPolicy extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Términos de Uso'),
+          title: const Text('Política de Privacidad'),
         ),
         body: const ContentPadding(
           child: Card(
