@@ -31,7 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
     if (!mounted) return;
     switch (response) {
       case 'success':
-        context.go('/login');
+        context.go('/client');
         break;
       default:
         showRegisterError(response!);

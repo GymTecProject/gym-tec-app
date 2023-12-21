@@ -50,6 +50,7 @@ dependencies:
   firebase_performance: ^0.9.3+8
   flutter_localizations:
     sdk: flutter
+  firebase_analytics: ^10.7.4
   
 
 flutter_launcher_icons:
