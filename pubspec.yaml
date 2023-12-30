@@ -51,6 +51,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   firebase_analytics: ^10.7.4
+  auto_size_text: ^3.0.0
   
 
 flutter_launcher_icons:
