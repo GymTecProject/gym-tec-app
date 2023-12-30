@@ -1,4 +1,7 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:gym_tec/components/ui/padding/content_padding.dart';
+import 'package:gym_tec/components/ui/separators/item_separator.dart';
 
 class CardBtn extends StatelessWidget {
   const CardBtn(
@@ -18,12 +21,12 @@ class CardBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ButtonStyle defaultStyle = ElevatedButton.styleFrom(
-      // backgroundColor: const Color(0xFF424242), // Hex color #424242
+      padding: const EdgeInsets.all(0),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0), // Curved edges
+        borderRadius: BorderRadius.circular(12.0),
       ),
       fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 150),
-      padding: const EdgeInsets.only(top: 16.0, left: 16.0),
+      
     );
 
     Image? img = imgPath != null
@@ -45,26 +48,22 @@ class CardBtn extends StatelessWidget {
               bottomRight: Radius.circular(12.0),
             )),
             child: img),
-        Align(
-          alignment: Alignment.topLeft,
+        ContentPadding(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+              AutoSizeText(
+                title,
+                maxLines: 1,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 4),
+              const ItemSeparator(),
               Text(
                 subtitle ?? '',
                 style: const TextStyle(
-                  // color: Colors.grey,
                   fontSize: 14,
                 ),
               ),
