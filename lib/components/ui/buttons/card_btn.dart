@@ -21,13 +21,12 @@ class CardBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ButtonStyle defaultStyle = ElevatedButton.styleFrom(
-      // backgroundColor: const Color(0xFF424242), // Hex color #424242
       padding: const EdgeInsets.all(0),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0), // Curved edges
+        borderRadius: BorderRadius.circular(12.0),
       ),
       fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 150),
-      // padding: const EdgeInsets.only(top: 16.0, left: 16.0)
+      
     );
 
     Image? img = imgPath != null
@@ -50,7 +49,6 @@ class CardBtn extends StatelessWidget {
             )),
             child: img),
         ContentPadding(
-          // padding: 4,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -66,7 +64,6 @@ class CardBtn extends StatelessWidget {
               Text(
                 subtitle ?? '',
                 style: const TextStyle(
-                  // color: Colors.grey,
                   fontSize: 14,
                 ),
               ),
