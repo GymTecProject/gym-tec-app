@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_tec/auth/auth.dart';
@@ -18,50 +19,57 @@ import 'auth/login.dart';
 import 'auth/register.dart';
 
 class AppRouter {
-  static final routes = GoRouter(initialLocation: '/', routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const SplashScreen(),
-    ),
-    GoRoute(
-      path: '/auth',
-      builder: (context, state) => const AuthPage(),
-      // redirect: (context, state) => _Guards.userNotLogged(context, state),
-    ),
-    GoRoute(
-      path: '/terms-and-conditions',
-      builder: (context, state) => const TermsAndConditions(),
-    ),
-    GoRoute(
-      path: '/privacy-policy',
-      builder: (context, state) => const PrivacyPolicy(),
-    ),
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => const LoginPage(),
-      // redirect: (context, state) => _Guards.userNotLogged(context, state),
-    ),
-    GoRoute(
-      path: '/register', 
-      builder: (context, state) => const RegisterPage(),
-      // redirect: (context, state) => _Guards.userNotLogged(context, state),
-    ),
-    GoRoute(
-      path: '/client',
-      builder: (context, state) => const UserRootPage(),
-      // redirect: (context, state) => _Guards.userIsClient(context, state),
-    ),
-    GoRoute(
-      path: '/admin',
-      builder: (context, state) => const AdminRootPage(),
-      // redirect: (context, state) => _Guards.userIsAdministrator(context, state)
-    ),
-    GoRoute(
-      path: '/trainer',
-      builder: (context, state) => const TrainerRootPage(),
-      // redirect: (context, state) => _Guards.userIsTrainer(context, state)
-    ),
-  ]);
+
+
+  static final routes = GoRouter(
+      observers: [
+        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
+      ],
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const SplashScreen(),
+        ),
+        GoRoute(
+          path: '/auth',
+          builder: (context, state) => const AuthPage(),
+          // redirect: (context, state) => _Guards.userNotLogged(context, state),
+        ),
+        GoRoute(
+          path: '/terms-and-conditions',
+          builder: (context, state) => const TermsAndConditions(),
+        ),
+        GoRoute(
+          path: '/privacy-policy',
+          builder: (context, state) => const PrivacyPolicy(),
+        ),
+        GoRoute(
+          path: '/login',
+          builder: (context, state) => const LoginPage(),
+          // redirect: (context, state) => _Guards.userNotLogged(context, state),
+        ),
+        GoRoute(
+          path: '/register',
+          builder: (context, state) => const RegisterPage(),
+          // redirect: (context, state) => _Guards.userNotLogged(context, state),
+        ),
+        GoRoute(
+          path: '/client',
+          builder: (context, state) => const UserRootPage(),
+          // redirect: (context, state) => _Guards.userIsClient(context, state),
+        ),
+        GoRoute(
+          path: '/admin',
+          builder: (context, state) => const AdminRootPage(),
+          // redirect: (context, state) => _Guards.userIsAdministrator(context, state)
+        ),
+        GoRoute(
+          path: '/trainer',
+          builder: (context, state) => const TrainerRootPage(),
+          // redirect: (context, state) => _Guards.userIsTrainer(context, state)
+        ),
+      ]);
 }
 
 class _Guards {
@@ -109,7 +117,8 @@ class _Guards {
       return '/auth';
     }
   }
-    static FutureOr<String?> userIsTrainer(
+
+  static FutureOr<String?> userIsTrainer(
       BuildContext context, GoRouterState state) async {
     final user = _authService.currentUser;
     if (user == null) return '/auth';
@@ -125,7 +134,8 @@ class _Guards {
       return '/auth';
     }
   }
-    static FutureOr<String?> userIsClient(
+
+  static FutureOr<String?> userIsClient(
       BuildContext context, GoRouterState state) async {
     final user = _authService.currentUser;
     if (user == null) return '/auth';
